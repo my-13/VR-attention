@@ -3,6 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[Serializable]
+public class SaveData
+{
+    public int level;
+    public float timeElapsed;
+    public string playerName;
+}
+
 public class GameManager : MonoBehaviour
 {
     // Time taken to complete the game
