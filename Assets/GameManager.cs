@@ -19,6 +19,12 @@ public class TimeTrials
 {
     public SaveData saveDataUsed;
     public float timeTakenMS;
+
+    public Vector3[] leftHandPosition;
+    public Vector3[] rightHandPosition;
+    public Vector3[] leftHandVelocity;
+    public Vector3[] rightHandVelocity;
+    
 }
 
 public class GameManager : MonoBehaviour
@@ -89,12 +95,12 @@ public class GameManager : MonoBehaviour
         }
         
         
+
         // Summon
         /*for (int i = 0; i < included_objects.Length; i++)
         {
             GameObject prefabObj = included_objects[i];
             GameObject obj = Instantiate(prefabObj, positions[i] + new Vector3(0,2,0), Quaternion.identity);
-
         }*/
     }
 
