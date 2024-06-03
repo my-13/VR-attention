@@ -6,21 +6,39 @@ using UnityEngine;
 [Serializable]
 public class SaveData
 {
-    public int level;
-    public float timeElapsed;
-    public string playerName;
+    public int numberOfPoints;
+    public float polygonRadius;
+    public float distanceToPolygon;
+    public string objectTypes;
+    public int numberOfDistractions;
+
+}
+
+[Serializable]
+public class TimeTrials
+{
+    public SaveData saveDataUsed;
+    public float timeTakenMS;
 }
 
 public class GameManager : MonoBehaviour
 {
     // Time taken to complete the game
-    private int time_ms = 0;
-    private int start_time_ms = 0;
+    private System.Diagnostics.Stopwatch stopwatch;
+    private long time_ms = 0;
+    private long start_time_ms = 0;
+
+    // Options canvas
+    public GameObject options;
 
     // Polygon parameters
-    public int numPoints = 6;
-    public float radius = 1;
+    private GameObject pointsSlider;
+    private int numPoints;
+    private GameObject radiusSlider;
+    private float radius;
 
+    private GameObject distanceSlider;
+    private float distance;
 
     // List of objects to be spawned
     public GameObject[] objects;
@@ -28,32 +46,49 @@ public class GameManager : MonoBehaviour
     // List of objects that are included in that list determined from the options
     private GameObject[] included_objects;
 
-    private Vector3[] positions;
+    private Vector3[] shapePositions;
 
     // Start is called before the first frame update
     void Start()
     {
+        // UI Objects
+        pointsSlider = options.transform.Find("PointsSlider").gameObject;
+        radiusSlider = options.transform.Find("RadiusSlider").gameObject;
+        distanceSlider = options.transform.Find("DistanceSlider").gameObject;
+        stopwatch = new System.Diagnostics.Stopwatch();
+
+    
+
         Debug.Log("Hello World!");
         included_objects = objects;
         StartGame();
     }
 
-    void StartGame()
+    public void StartGame()
     {
+
+        // Collecting data from UI Options
+        numPoints = (int) pointsSlider.GetComponent<SliderTextUpdate>().value;
+        radius = radiusSlider.GetComponent<SliderTextUpdate>().value;
+        distance = distanceSlider.GetComponent<SliderTextUpdate>().value;
+
         // Get the starting time
-        start_time_ms = System.DateTime.Now.Millisecond;
+        stopwatch.Start();
+        start_time_ms = stopwatch.ElapsedMilliseconds;
 
 
         // Generating the points based on the polygon automatically, regardless of the number of points
-        double angle = 2 * Math.PI / numPoints;
-        positions = new Vector3[numPoints];
-        for (int i = 0; i < numPoints; i++)
-        {
+        
+        shapePositions = new Vector3[numPoints];
 
-            positions[i] = new Vector3((float)(radius * Math.Asin(i * angle)), (float)(radius * Math.Acos(i * angle)), 0);
+
+        // Generating the points based on the polygon automatically, regardless of the number of points
+        for (int i = 0; i < numPoints; i++) 
+        {
+            shapePositions[i] = new Vector3((float)(radius * Math.Cos(2 * Math.PI * i / numPoints)), 0, (float)(radius * Math.Sin(2 * Math.PI * i / numPoints)));
         }
         
-
+        
         // Summon
         /*for (int i = 0; i < included_objects.Length; i++)
         {
@@ -66,7 +101,8 @@ public class GameManager : MonoBehaviour
     void EndGame()
     {
         // Get the ending time
-        int end_time_ms = System.DateTime.Now.Millisecond;
+        stopwatch.Stop();
+        long end_time_ms = stopwatch.ElapsedMilliseconds;
 
         // Calculate the time taken
         time_ms = end_time_ms - start_time_ms;
@@ -75,9 +111,4 @@ public class GameManager : MonoBehaviour
         Debug.Log("Time taken: " + time_ms + "ms");
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

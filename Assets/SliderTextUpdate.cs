@@ -6,13 +6,12 @@ public class SliderTextUpdate : MonoBehaviour
 {
 
     public string text = "";
-    private float value;
+    public float value;
     public GameObject sliderText;
 
     public void UpdateValue()
     {
         value = GetComponent<UnityEngine.UI.Slider>().value;
-        Debug.Log("Value: " + value);
         // Text mesh pro
         sliderText.GetComponent<TMPro.TextMeshProUGUI>().text = text + " " + value.ToString();
         //sliderText.GetComponent<UnityEngine.UI.Text>().text = text + " " + value.ToString();

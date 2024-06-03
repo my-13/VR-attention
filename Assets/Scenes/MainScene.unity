@@ -239,6 +239,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   text: 'Number of Distractors:'
+  value: 0
   sliderText: {fileID: 868109143}
 --- !u!114 &142804222 stripped
 MonoBehaviour:
@@ -1294,6 +1295,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   text: Radius (Meters)
+  value: 0
   sliderText: {fileID: 1600905248}
 --- !u!1 &584154255
 GameObject:
@@ -2467,6 +2469,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   text: 'Distance (meters): '
+  value: 0
   sliderText: {fileID: 405288083}
 --- !u!1 &1165160981
 GameObject:
@@ -2659,14 +2662,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c24a42872c94f924698ccc385f4723ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numPoints: 5
-  radius: 1
-  objects:
-  - {fileID: 1837642756708611309, guid: 9645c73626326b74090129fc5da27415, type: 3}
-  - {fileID: 1837642756708611309, guid: 9645c73626326b74090129fc5da27415, type: 3}
-  - {fileID: 1837642756708611309, guid: 9645c73626326b74090129fc5da27415, type: 3}
-  - {fileID: 1837642756708611309, guid: 9645c73626326b74090129fc5da27415, type: 3}
-  - {fileID: 1837642756708611309, guid: 9645c73626326b74090129fc5da27415, type: 3}
+  options: {fileID: 1004297099}
+  objects: []
 --- !u!1 &1204967447
 GameObject:
   m_ObjectHideFlags: 0
@@ -4447,63 +4444,6 @@ RectTransform:
   m_AnchoredPosition: {x: -5, y: 0}
   m_SizeDelta: {x: -20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1001 &1645151027
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 1011918762507936288, guid: 9645c73626326b74090129fc5da27415, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -1.3563832
-      objectReference: {fileID: 0}
-    - target: {fileID: 1011918762507936288, guid: 9645c73626326b74090129fc5da27415, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.999
-      objectReference: {fileID: 0}
-    - target: {fileID: 1011918762507936288, guid: 9645c73626326b74090129fc5da27415, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 1.4285309
-      objectReference: {fileID: 0}
-    - target: {fileID: 1011918762507936288, guid: 9645c73626326b74090129fc5da27415, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1011918762507936288, guid: 9645c73626326b74090129fc5da27415, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1011918762507936288, guid: 9645c73626326b74090129fc5da27415, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1011918762507936288, guid: 9645c73626326b74090129fc5da27415, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1011918762507936288, guid: 9645c73626326b74090129fc5da27415, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1011918762507936288, guid: 9645c73626326b74090129fc5da27415, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1011918762507936288, guid: 9645c73626326b74090129fc5da27415, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1837642756708611309, guid: 9645c73626326b74090129fc5da27415, type: 3}
-      propertyPath: m_Name
-      value: CubeGrab
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 9645c73626326b74090129fc5da27415, type: 3}
 --- !u!1 &1735147545
 GameObject:
   m_ObjectHideFlags: 0
@@ -4516,7 +4456,7 @@ GameObject:
   - component: {fileID: 1735147548}
   - component: {fileID: 1735147547}
   m_Layer: 0
-  m_Name: Text (TMP)
+  m_Name: MenuText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4831,7 +4771,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1890320184}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1175078477}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+        m_MethodName: StartGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1890320184
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5098,6 +5050,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   text: 'Number of Objects:'
+  value: 0
   sliderText: {fileID: 512078066}
 --- !u!1 &2018140839
 GameObject:
@@ -5433,4 +5386,3 @@ SceneRoots:
   - {fileID: 2109396823}
   - {fileID: 2034870700}
   - {fileID: 1175078476}
-  - {fileID: 1645151027}
