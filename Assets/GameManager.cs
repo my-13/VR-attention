@@ -11,7 +11,6 @@ public class SaveData
     public float distanceToPolygon;
     public string objectTypes;
     public int numberOfDistractions;
-
 }
 
 [Serializable]
@@ -19,12 +18,10 @@ public class TimeTrials
 {
     public SaveData saveDataUsed;
     public float timeTakenMS;
-
     public Vector3[] leftHandPosition;
     public Vector3[] rightHandPosition;
     public Vector3[] leftHandVelocity;
     public Vector3[] rightHandVelocity;
-    
 }
 
 public class GameManager : MonoBehaviour
@@ -33,40 +30,28 @@ public class GameManager : MonoBehaviour
     private System.Diagnostics.Stopwatch stopwatch;
     private long time_ms = 0;
     private long start_time_ms = 0;
+    
+    public ConfigOptions configOptions;
 
-    // Options canvas
-    public GameObject options;
 
     // Polygon parameters
-    private GameObject pointsSlider;
     private int numPoints;
-    private GameObject radiusSlider;
     private float radius;
-
-    private GameObject distanceSlider;
     private float distance;
 
     // List of objects to be spawned
     public GameObject[] objects;
-
-    // List of objects that are included in that list determined from the options
-    private GameObject[] included_objects;
-
     private Vector3[] shapePositions;
+
+    public Camera vrCamera;
 
     // Start is called before the first frame update
     void Start()
     {
         // UI Objects
-        pointsSlider = options.transform.Find("PointsSlider").gameObject;
-        radiusSlider = options.transform.Find("RadiusSlider").gameObject;
-        distanceSlider = options.transform.Find("DistanceSlider").gameObject;
         stopwatch = new System.Diagnostics.Stopwatch();
 
-    
 
-        Debug.Log("Hello World!");
-        included_objects = objects;
         StartGame();
     }
 
@@ -74,9 +59,11 @@ public class GameManager : MonoBehaviour
     {
 
         // Collecting data from UI Options
-        numPoints = (int) pointsSlider.GetComponent<SliderTextUpdate>().value;
-        radius = radiusSlider.GetComponent<SliderTextUpdate>().value;
-        distance = distanceSlider.GetComponent<SliderTextUpdate>().value;
+        radius = configOptions.radiusOfObjectsMeters;
+        distance = configOptions.distanceFromUserMeters;
+        objects = new GameObject[configOptions.otherObjects.Length + configOptions.distractorObjects.Length + 1];
+        objects = configOptions.otherObjects;
+        numPoints = objects.Length;
 
         // Get the starting time
         stopwatch.Start();
@@ -89,19 +76,37 @@ public class GameManager : MonoBehaviour
 
 
         // Generating the points based on the polygon automatically, regardless of the number of points
-        for (int i = 0; i < numPoints; i++) 
-        {
-            shapePositions[i] = new Vector3((float)(radius * Math.Cos(2 * Math.PI * i / numPoints)), 0, (float)(radius * Math.Sin(2 * Math.PI * i / numPoints)));
-        }
-        
         
 
-        // Summon
-        /*for (int i = 0; i < included_objects.Length; i++)
+
+        for (int i = 0; i < numPoints; i++) 
         {
-            GameObject prefabObj = included_objects[i];
-            GameObject obj = Instantiate(prefabObj, positions[i] + new Vector3(0,2,0), Quaternion.identity);
-        }*/
+            if (configOptions.itemLocation == ItemLocation.OnTable)
+            {
+                shapePositions[i] = new Vector3((float)(radius * Math.Cos(2 * Math.PI * i / numPoints)), -0.5f, (float)(radius * Math.Sin(2 * Math.PI * i / numPoints)));
+            }
+            else if (configOptions.itemLocation == ItemLocation.InAir)
+            {
+                shapePositions[i] = new Vector3((float)(radius * Math.Cos(2 * Math.PI * i / numPoints)), (float)(radius * Math.Sin(2 * Math.PI * i / numPoints)),0);
+            }
+            
+        }
+        
+        Vector3 cameraPos = vrCamera.transform.position;
+        Vector3 cameraForward = vrCamera.transform.forward * distance;
+        Vector3 shapeCenter = cameraPos + cameraForward;
+
+
+        // Summon
+        for (int i = 0; i < shapePositions.Length; i++)
+        {
+            GameObject prefabObj = objects[i];
+            GameObject obj = Instantiate(prefabObj.transform, shapePositions[i] + shapeCenter, prefabObj.transform.rotation).gameObject;
+            obj.transform.localScale *= configOptions.itemsScale;
+        }
+
+
+
     }
 
     void EndGame()
