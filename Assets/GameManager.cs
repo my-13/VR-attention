@@ -3,6 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum LineOrientation
+{
+    Horizontal,
+    Vertical
+}
+
 [Serializable]
 public class SaveData
 {
@@ -32,7 +38,7 @@ public class GameManager : MonoBehaviour
     private long start_time_ms = 0;
     
     public ConfigOptions configOptions;
-
+    public GameObject linePrefab;
 
     // Polygon parameters
     private int numPoints;
@@ -103,12 +109,23 @@ public class GameManager : MonoBehaviour
             GameObject prefabObj = objects[i];
             GameObject obj = Instantiate(prefabObj.transform, shapePositions[i] + shapeCenter, prefabObj.transform.rotation).gameObject;
             obj.transform.localScale *= configOptions.itemsScale;
+            RandLineOrientation(obj);
         }
-
-
-
     }
 
+    public LineOrientation RandLineOrientation(GameObject obj)
+    {
+        LineOrientation orientation = (LineOrientation) UnityEngine.Random.Range(0, 2);
+        GameObject line = Instantiate(linePrefab.transform, obj.transform.position + (vrCamera.transform.forward * -0.05f * configOptions.itemsScale), linePrefab.transform.rotation).gameObject;
+        Debug.Log(orientation);
+        if (orientation == LineOrientation.Horizontal)
+        {
+            line.transform.Rotate(0, 0, 90);
+        }
+
+        return orientation;
+    }
+    
     void EndGame()
     {
         // Get the ending time
