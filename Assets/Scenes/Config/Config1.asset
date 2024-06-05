@@ -26,5 +26,6 @@ MonoBehaviour:
   distanceFromUserMeters: 1
   itemLocation: 1
   itemsScale: 0.5
-  itemColor: {r: 0, g: 0, b: 0, a: 0}
-  distracterItemColor: {r: 0, g: 0, b: 0, a: 0}
+  itemColor: {r: 0, g: 0, b: 1, a: 0}
+  distracterItemColor: {r: 1, g: 0, b: 0, a: 0}
+  regularItemColor: {r: 0, g: 1, b: 0, a: 0}

@@ -36,6 +36,9 @@ public class GameManager : MonoBehaviour
     private System.Diagnostics.Stopwatch stopwatch;
     private long time_ms = 0;
     private long start_time_ms = 0;
+    public bool isTrialRunning = false;
+    public bool isStudyRunning = false;
+    public LineOrientation itemOrientation;
     
     public ConfigOptions configOptions;
     public GameObject linePrefab;
@@ -56,13 +59,74 @@ public class GameManager : MonoBehaviour
     {
         // UI Objects
         stopwatch = new System.Diagnostics.Stopwatch();
+    }
 
+    public void RunTrial()
+    {
+        if (isTrialRunning == true)
+        {
+            // Wait until the trial is over before starting a new one
+            return;
+        }
+        isTrialRunning = true;
 
-        StartGame();
+        // Get the camera position and forward vector
+        Vector3 cameraPos = vrCamera.transform.position;
+        Vector3 cameraForward = vrCamera.transform.forward * distance;
+        Vector3 shapeCenter = cameraPos + cameraForward;
+        
+        // Shuffle the positions of the objects to randomize study
+        var rng = new System.Random();
+        Shuffle(rng, shapePositions);
+
+        // Get the starting time
+        stopwatch.Start();
+        start_time_ms = stopwatch.ElapsedMilliseconds;
+
+        // Summon The Objects
+        for (int i = 0; i < shapePositions.Length; i++)
+        {
+            GameObject prefabObj = objects[i];
+            GameObject obj = Instantiate(prefabObj.transform, shapePositions[i] + shapeCenter, prefabObj.transform.rotation).gameObject;
+            obj.transform.localScale *= configOptions.itemsScale;
+            if (i == 0)
+            {
+                itemOrientation = RandLineOrientation(obj);
+                obj.GetComponent<Renderer>().material.color = configOptions.itemColor;
+            }
+            else
+            {
+                
+                RandLineOrientation(obj);
+                obj.GetComponent<Renderer>().material.color = configOptions.regularItemColor;
+            }
+        }
+    }
+
+    public void EndTrial()
+    {
+        // Collect data here
+        // Get the ending time
+        stopwatch.Stop();
+        long end_time_ms = stopwatch.ElapsedMilliseconds;
+
+        // Calculate the time taken
+        time_ms = end_time_ms - start_time_ms;
+
+        // Print the time taken
+        Debug.Log("Time taken: " + time_ms + "ms");
+        isTrialRunning = false;
     }
 
     public void StartGame()
     {
+        if (isStudyRunning == true)
+        {
+            // We already have a study running, so we should end it before starting a new one
+            RunTrial();
+            return;
+        }
+        isStudyRunning = true;
 
         // Collecting data from UI Options
         radius = configOptions.radiusOfObjectsMeters;
@@ -71,20 +135,10 @@ public class GameManager : MonoBehaviour
         objects = configOptions.otherObjects;
         numPoints = objects.Length;
 
-        // Get the starting time
-        stopwatch.Start();
-        start_time_ms = stopwatch.ElapsedMilliseconds;
-
-
         // Generating the points based on the polygon automatically, regardless of the number of points
-        
         shapePositions = new Vector3[numPoints];
 
-
         // Generating the points based on the polygon automatically, regardless of the number of points
-        
-
-
         for (int i = 0; i < numPoints; i++) 
         {
             if (configOptions.itemLocation == ItemLocation.OnTable)
@@ -98,26 +152,14 @@ public class GameManager : MonoBehaviour
             
         }
         
-        Vector3 cameraPos = vrCamera.transform.position;
-        Vector3 cameraForward = vrCamera.transform.forward * distance;
-        Vector3 shapeCenter = cameraPos + cameraForward;
+        RunTrial();
 
-
-        // Summon
-        for (int i = 0; i < shapePositions.Length; i++)
-        {
-            GameObject prefabObj = objects[i];
-            GameObject obj = Instantiate(prefabObj.transform, shapePositions[i] + shapeCenter, prefabObj.transform.rotation).gameObject;
-            obj.transform.localScale *= configOptions.itemsScale;
-            RandLineOrientation(obj);
-        }
     }
 
     public LineOrientation RandLineOrientation(GameObject obj)
     {
         LineOrientation orientation = (LineOrientation) UnityEngine.Random.Range(0, 2);
         GameObject line = Instantiate(linePrefab.transform, obj.transform.position + (vrCamera.transform.forward * -0.05f * configOptions.itemsScale), linePrefab.transform.rotation).gameObject;
-        Debug.Log(orientation);
         if (orientation == LineOrientation.Horizontal)
         {
             line.transform.Rotate(0, 0, 90);
@@ -126,17 +168,45 @@ public class GameManager : MonoBehaviour
         return orientation;
     }
     
-    void EndGame()
+    public void StartButtonPressed()
     {
-        // Get the ending time
-        stopwatch.Stop();
-        long end_time_ms = stopwatch.ElapsedMilliseconds;
+        StartGame();
+    }
+    
+    public void PrimaryButtonPressed()
+    {
+        if (isTrialRunning)
+        {
+            // Collect data here
 
-        // Calculate the time taken
-        time_ms = end_time_ms - start_time_ms;
-
-        // Print the time taken
-        Debug.Log("Time taken: " + time_ms + "ms");
+        }
     }
 
+    public void SecondaryButtonPressed()
+    {
+        if (isTrialRunning)
+        {
+            // Collect data here
+
+        }
+    }
+
+    void EndGame()
+    {
+        
+        isStudyRunning = false;
+    }
+
+    // Helper functions
+    
+    // Matt Howels
+    public static void Shuffle<T> (System.Random rng, T[] array)
+    {
+        int n = array.Length;
+        while (n > 1) 
+        {
+            int k = rng.Next(n--);
+            (array[k], array[n]) = (array[n], array[k]);
+        }
+    }
 }

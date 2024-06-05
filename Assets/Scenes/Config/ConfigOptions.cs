@@ -23,6 +23,7 @@ public class ConfigOptions : ScriptableObject
     public float itemsScale = 1;
     public Color itemColor;
     public Color distracterItemColor;
+    public Color regularItemColor;
 }
 
 
