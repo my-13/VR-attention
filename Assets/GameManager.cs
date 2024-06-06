@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem.LowLevel;
 
 public enum LineOrientation
 {
@@ -17,17 +18,16 @@ public class SaveData
     public float distanceToPolygon;
     public string objectTypes;
     public int numberOfDistractions;
+    public int numberOfTrials;
 }
 
 [Serializable]
-public class TimeTrials
+public class Trials
 {
     public SaveData saveDataUsed;
-    public float timeTakenMS;
-    public Vector3[] leftHandPosition;
-    public Vector3[] rightHandPosition;
-    public Vector3[] leftHandVelocity;
-    public Vector3[] rightHandVelocity;
+    public int numberOfTrials = 0; // This should be equivalent to the number of trialTimes
+    public List<float> trialTimesMiliseconds = new();
+    public List<bool> wasCorrect = new();
 }
 
 public class GameManager : MonoBehaviour
@@ -36,12 +36,14 @@ public class GameManager : MonoBehaviour
     private System.Diagnostics.Stopwatch stopwatch;
     private long time_ms = 0;
     private long start_time_ms = 0;
-    public bool isTrialRunning = false;
-    public bool isStudyRunning = false;
-    public LineOrientation itemOrientation;
-    
+    private bool isTrialRunning = false;
+    private bool isStudyRunning = false;
+    private LineOrientation itemOrientation;
+    private Trials trials;
     public ConfigOptions configOptions;
     public GameObject linePrefab;
+    public GameObject trialObjects;
+    public GameObject checkmark;
 
     // Polygon parameters
     private int numPoints;
@@ -57,11 +59,24 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
         // UI Objects
         stopwatch = new System.Diagnostics.Stopwatch();
     }
 
-    public void RunTrial()
+    IEnumerator WaitForTrial(bool wait, int minSec = 2, int maxSec = 5)
+    {   
+        if (wait)
+        {
+            
+            yield return new WaitForSeconds(UnityEngine.Random.Range(minSec,maxSec));
+            RunOrientationTrial();
+        }
+        yield return new WaitForSeconds(0);
+        RunOrientationTrial();
+    }
+
+    public void RunOrientationTrial()
     {
         if (isTrialRunning == true)
         {
@@ -87,23 +102,28 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < shapePositions.Length; i++)
         {
             GameObject prefabObj = objects[i];
-            GameObject obj = Instantiate(prefabObj.transform, shapePositions[i] + shapeCenter, prefabObj.transform.rotation).gameObject;
+            GameObject obj = Instantiate(prefabObj, shapePositions[i] + shapeCenter, prefabObj.transform.rotation).gameObject;
+            obj.transform.SetParent(trialObjects.transform);
             obj.transform.localScale *= configOptions.itemsScale;
             if (i == 0)
             {
                 itemOrientation = RandLineOrientation(obj);
                 obj.GetComponent<Renderer>().material.color = configOptions.itemColor;
             }
+            else if (i < configOptions.distractorObjects.Length + 1)
+            {
+                RandLineOrientation(obj);
+                obj.GetComponent<Renderer>().material.color = configOptions.distracterItemColor;
+            }
             else
             {
-                
                 RandLineOrientation(obj);
                 obj.GetComponent<Renderer>().material.color = configOptions.regularItemColor;
             }
         }
     }
 
-    public void EndTrial()
+    public void EndOrientationTrial(bool wasCorrect)
     {
         // Collect data here
         // Get the ending time
@@ -116,6 +136,24 @@ public class GameManager : MonoBehaviour
         // Print the time taken
         Debug.Log("Time taken: " + time_ms + "ms");
         isTrialRunning = false;
+        trials.numberOfTrials++;
+        trials.trialTimesMiliseconds.Add(time_ms);
+        trials.wasCorrect.Add(wasCorrect);
+
+        // Destroy all objects
+        foreach (Transform transform in trialObjects.transform)
+        {
+            Destroy(transform.gameObject);
+        }
+
+        if (trials.numberOfTrials >= configOptions.numberOfTrials)
+        {
+            EndGame();
+        }
+        else
+        {
+            StartCoroutine(WaitForTrial(true));
+        }
     }
 
     public void StartGame()
@@ -123,16 +161,23 @@ public class GameManager : MonoBehaviour
         if (isStudyRunning == true)
         {
             // We already have a study running, so we should end it before starting a new one
-            RunTrial();
+            RunOrientationTrial();
             return;
         }
         isStudyRunning = true;
+        
+        trials = new Trials();
 
         // Collecting data from UI Options
         radius = configOptions.radiusOfObjectsMeters;
         distance = configOptions.distanceFromUserMeters;
         objects = new GameObject[configOptions.otherObjects.Length + configOptions.distractorObjects.Length + 1];
-        objects = configOptions.otherObjects;
+        
+        objects[0] = configOptions.mainObject;
+        configOptions.distractorObjects.CopyTo(objects, 1);
+        configOptions.otherObjects.CopyTo(objects, configOptions.distractorObjects.Length + 1);
+
+        //objects = configOptions.otherObjects;
         numPoints = objects.Length;
 
         // Generating the points based on the polygon automatically, regardless of the number of points
@@ -152,7 +197,7 @@ public class GameManager : MonoBehaviour
             
         }
         
-        RunTrial();
+        StartCoroutine(WaitForTrial(false));
 
     }
 
@@ -160,6 +205,7 @@ public class GameManager : MonoBehaviour
     {
         LineOrientation orientation = (LineOrientation) UnityEngine.Random.Range(0, 2);
         GameObject line = Instantiate(linePrefab.transform, obj.transform.position + (vrCamera.transform.forward * -0.05f * configOptions.itemsScale), linePrefab.transform.rotation).gameObject;
+        line.transform.SetParent(trialObjects.transform);
         if (orientation == LineOrientation.Horizontal)
         {
             line.transform.Rotate(0, 0, 90);
@@ -178,7 +224,14 @@ public class GameManager : MonoBehaviour
         if (isTrialRunning)
         {
             // Collect data here
-
+            if (itemOrientation == LineOrientation.Vertical)
+            {
+                EndOrientationTrial(true);
+            }
+            else
+            {
+                EndOrientationTrial(false);
+            }
         }
     }
 
@@ -187,14 +240,42 @@ public class GameManager : MonoBehaviour
         if (isTrialRunning)
         {
             // Collect data here
-
+            if (itemOrientation == LineOrientation.Horizontal)
+            {
+                EndOrientationTrial(true);
+            }
+            else
+            {
+                EndOrientationTrial(false);
+            }
         }
     }
 
     void EndGame()
     {
+        // Save the data to a file
+        string json = JsonUtility.ToJson(trials);
+        System.IO.File.WriteAllText("trials.json", json);
+
+        Vector3 cameraPos = vrCamera.transform.position;
+        Vector3 cameraForward = vrCamera.transform.forward * distance;
+        Vector3 shapeCenter = cameraPos + cameraForward;
+
+        Instantiate(checkmark, shapeCenter,Quaternion.identity).transform.SetParent(trialObjects.transform);
         
+        StartCoroutine(ClearTrialObjects());
+
         isStudyRunning = false;
+    }
+
+    public IEnumerator ClearTrialObjects()
+    {
+        
+        yield return new WaitForSeconds(2);
+        foreach (Transform transform in trialObjects.transform)
+        {
+            Destroy(transform.gameObject);
+        }
     }
 
     // Helper functions

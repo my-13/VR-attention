@@ -24,6 +24,7 @@ public class ConfigOptions : ScriptableObject
     public Color itemColor;
     public Color distracterItemColor;
     public Color regularItemColor;
+    public int numberOfTrials;
 }
 
 

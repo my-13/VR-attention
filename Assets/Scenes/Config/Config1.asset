@@ -13,15 +13,14 @@ MonoBehaviour:
   m_Name: Config1
   m_EditorClassIdentifier: 
   configName: Config
-  mainObject: {fileID: 0}
+  mainObject: {fileID: 1837642756708611309, guid: e33be15daf3fd6441b2d427a161164a0, type: 3}
   otherObjects:
   - {fileID: 1837642756708611309, guid: 9645c73626326b74090129fc5da27415, type: 3}
   - {fileID: 1837642756708611309, guid: 9645c73626326b74090129fc5da27415, type: 3}
   - {fileID: 1837642756708611309, guid: 9645c73626326b74090129fc5da27415, type: 3}
   - {fileID: 1837642756708611309, guid: 9645c73626326b74090129fc5da27415, type: 3}
+  distractorObjects:
   - {fileID: 1837642756708611309, guid: 9645c73626326b74090129fc5da27415, type: 3}
-  - {fileID: 1837642756708611309, guid: e33be15daf3fd6441b2d427a161164a0, type: 3}
-  distractorObjects: []
   radiusOfObjectsMeters: 0.25
   distanceFromUserMeters: 1
   itemLocation: 1
@@ -29,3 +28,4 @@ MonoBehaviour:
   itemColor: {r: 0, g: 0, b: 1, a: 0}
   distracterItemColor: {r: 1, g: 0, b: 0, a: 0}
   regularItemColor: {r: 0, g: 1, b: 0, a: 0}
+  numberOfTrials: 10

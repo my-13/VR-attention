@@ -69,6 +69,17 @@
                 },
                 {
                     "name": "",
+                    "id": "1b6bca9b-ba60-4e9b-928b-cfc78c2bd91f",
+                    "path": "<Keyboard>/upArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse;XR",
+                    "action": "A",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "e291eaef-9c65-410e-a2e7-ec008e274616",
                     "path": "<ViveController>{RightHand}/{SecondaryButton}",
                     "interactions": "",
@@ -82,6 +93,17 @@
                     "name": "",
                     "id": "1016b7e1-dbe3-41eb-ab53-fa90be9ede7b",
                     "path": "<ViveController>{LeftHand}/{SecondaryButton}",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse;XR",
+                    "action": "B",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f0fac3c0-1192-4d89-a8c5-4ca2db0b06c0",
+                    "path": "<Keyboard>/rightArrow",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse;XR",
