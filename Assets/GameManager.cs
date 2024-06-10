@@ -4,11 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem.LowLevel;
 
-public enum LineOrientation
-{
-    Horizontal,
-    Vertical
-}
+
 
 [Serializable]
 public class SaveData
@@ -21,26 +17,15 @@ public class SaveData
     public int numberOfTrials;
 }
 
-[Serializable]
-public class Trials
-{
-    public SaveData saveDataUsed;
-    public int numberOfTrials = 0; // This should be equivalent to the number of trialTimes
-    public List<float> trialTimesMiliseconds = new();
-    public List<bool> wasCorrect = new();
-}
 
 public class GameManager : MonoBehaviour
 {
     // Time taken to complete the game
-    private System.Diagnostics.Stopwatch stopwatch;
-    private long time_ms = 0;
-    private long start_time_ms = 0;
     private bool isTrialRunning = false;
     private bool isStudyRunning = false;
-    private LineOrientation itemOrientation;
-    private Trials trials;
     public ConfigOptions configOptions;
+    
+    // Objects referenced to be passed to the trials scripts
     public GameObject linePrefab;
     public GameObject trialObjects;
     public GameObject checkmark;
@@ -53,15 +38,12 @@ public class GameManager : MonoBehaviour
     // List of objects to be spawned
     public GameObject[] objects;
     private Vector3[] shapePositions;
-
     public Camera vrCamera;
 
     // Start is called before the first frame update
     void Start()
     {
 
-        // UI Objects
-        stopwatch = new System.Diagnostics.Stopwatch();
     }
 
     IEnumerator WaitForTrial(bool wait, int minSec = 2, int maxSec = 5)
