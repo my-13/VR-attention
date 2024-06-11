@@ -2071,7 +2071,7 @@ Transform:
   m_GameObject: {fileID: 546294148}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -10.332475, y: -8.407736, z: -8.369516}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5678,11 +5678,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c24a42872c94f924698ccc385f4723ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isTrialRunning: 0
   configOptions: {fileID: 11400000, guid: 085c8950d956c8842ba5a2d273a6c40e, type: 2}
   linePrefab: {fileID: 4056634127491352500, guid: 76a916dc3aa02d44e8a8eefa370e4d4e, type: 3}
-  trialObjects: {fileID: 546294148}
+  trialObjectsParent: {fileID: 546294148}
   checkmark: {fileID: 5921756293722336148, guid: aa27940eb6d320943ad532f3ec2968a9, type: 3}
+  trial: 0
   objects: []
+  shapePositions: []
   vrCamera: {fileID: 452463683}
 --- !u!114 &1175078478
 MonoBehaviour:
@@ -8757,7 +8760,7 @@ GameObject:
   - component: {fileID: 1857406413}
   - component: {fileID: 1857406412}
   m_Layer: 0
-  m_Name: Sphere
+  m_Name: FocusSphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
