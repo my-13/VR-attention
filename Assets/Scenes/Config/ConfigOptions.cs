@@ -19,6 +19,11 @@ public class ConfigOptions : ScriptableObject
     public GameObject[] orientationDistractorObjects;
     public Color orientationDistracterItemColor;
     public Color orientationRegularItemColor;
+    [Range(1, 6)]
+    public float orientationTimeToSpawnMin = 2;
+    [Range(1, 6)]
+    public float orientationTimeToSpawnMax = 5;
+    
     public Color orientationBackgroundColor; 
     public bool orientationRandomizeColors = false;
     public bool orientation2DShapes = false;

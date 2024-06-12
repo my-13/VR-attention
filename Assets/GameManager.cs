@@ -75,12 +75,13 @@ public class GameManager : MonoBehaviour
             if (finishedTrials == 0)
             {
                 // This should never run
-                OrientationTrials.TrialStart(this, 10, false);
+        
+                OrientationTrials.TrialStart(this, 10, false, configOptions.orientationTimeToSpawnMin, configOptions.orientationTimeToSpawnMax);
             }
             if (finishedTrials == 1)
             {
                 // Randomize the colors for orientation
-                OrientationTrials.TrialStart(this, 10, true);
+                OrientationTrials.TrialStart(this, 10, true, configOptions.orientationTimeToSpawnMin, configOptions.orientationTimeToSpawnMax);
             }
             if (finishedTrials == 2)
             {
@@ -99,6 +100,8 @@ public class GameManager : MonoBehaviour
         }
 
         stopwatch = new System.Diagnostics.Stopwatch();
+        
+        
 
         isStudyRunning = true;
 
@@ -108,7 +111,7 @@ public class GameManager : MonoBehaviour
         GenerateShapePoints();
 
         // Start the first trial
-        OrientationTrials.TrialStart(this, 10, false);
+        OrientationTrials.TrialStart(this, 10, false, configOptions.orientationTimeToSpawnMin, configOptions.orientationTimeToSpawnMax);
 
         // Start the second trial
         //QuickColorMemory.TrialStart(this);

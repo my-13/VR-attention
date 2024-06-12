@@ -18,11 +18,13 @@ MonoBehaviour:
   - {fileID: 1837642756708611309, guid: e33be15daf3fd6441b2d427a161164a0, type: 3}
   - {fileID: 1837642756708611309, guid: e33be15daf3fd6441b2d427a161164a0, type: 3}
   - {fileID: 1837642756708611309, guid: e33be15daf3fd6441b2d427a161164a0, type: 3}
-  - {fileID: 1837642756708611309, guid: e33be15daf3fd6441b2d427a161164a0, type: 3}
+  - {fileID: 4738884146677316936, guid: 00b25e9ac6f14a142abe3c68f7075302, type: 3}
   orientationDistractorObjects:
   - {fileID: 1837642756708611309, guid: e33be15daf3fd6441b2d427a161164a0, type: 3}
   orientationDistracterItemColor: {r: 0.14901961, g: 1, b: 0.18039216, a: 0}
   orientationRegularItemColor: {r: 0, g: 0, b: 1, a: 0}
+  orientationTimeToSpawnMin: 4.48
+  orientationTimeToSpawnMax: 5
   orientationBackgroundColor: {r: 0, g: 0, b: 0, a: 0}
   orientationRandomizeColors: 0
   orientation2DShapes: 0

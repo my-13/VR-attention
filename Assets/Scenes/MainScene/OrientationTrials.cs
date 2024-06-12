@@ -49,9 +49,10 @@ public class OrientationTrials : MonoBehaviour
     private static GameObject[] objects;
 
 
-    public static void TrialStart(GameManager manager, int numOfTrials, bool randColors, int minSec = 2, int maxSec = 5)
+    public static void TrialStart(GameManager manager, int numOfTrials, bool randColors, float minSec = 2, float maxSec = 5)
     {
         stopwatch = new System.Diagnostics.Stopwatch();
+        stopwatch.Start();
 
         manager.trial = Trial.Orientation;
         trials = new OrientationTrialData();
@@ -70,10 +71,10 @@ public class OrientationTrials : MonoBehaviour
         radius = configOptions.radiusOfObjectsMeters;
         distance = configOptions.distanceFromUserMeters;
 
-        manager.StartCoroutine( WaitForTrial(manager, false, randomizeColors, minSec, maxSec));
+        manager.StartCoroutine( WaitForTrial(manager, true, randomizeColors, minSec, maxSec));
     }
 
-    public static IEnumerator WaitForTrial(GameManager manager, bool wait, bool randomizeColors, int minSec = 2, int maxSec = 5)
+    public static IEnumerator WaitForTrial(GameManager manager, bool wait, bool randomizeColors, float minSec = 2, float maxSec = 5)
     {   
         if (wait)
         {
@@ -108,7 +109,6 @@ public class OrientationTrials : MonoBehaviour
         GameManager.Shuffle(rng, shapePositions);
 
         // Get the starting time
-        stopwatch.Start();
         start_time_ms = stopwatch.ElapsedMilliseconds;
         
 
@@ -155,9 +155,7 @@ public class OrientationTrials : MonoBehaviour
     public static void StopOrientationTrial(GameManager manager, LineOrientation orientation)
     {   
         // Get the ending time
-        stopwatch.Stop();
         long end_time_ms = stopwatch.ElapsedMilliseconds;
-        stopwatch.Reset();
         // Calculate the time taken
         time_ms = end_time_ms - start_time_ms;
 
