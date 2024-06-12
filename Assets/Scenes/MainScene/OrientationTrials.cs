@@ -43,11 +43,13 @@ public class OrientationTrials : MonoBehaviour
     public static Camera vrCamera;
     
     private static float distance;
+    public static int numberOfTrials;
+    public static bool randomizeColors;
     private static float radius;
     private static GameObject[] objects;
 
 
-    public static void TrialStart(GameManager manager, int minSec = 2, int maxSec = 5)
+    public static void TrialStart(GameManager manager, int numOfTrials, bool randColors, int minSec = 2, int maxSec = 5)
     {
         stopwatch = new System.Diagnostics.Stopwatch();
 
@@ -61,25 +63,28 @@ public class OrientationTrials : MonoBehaviour
         linePrefab = manager.linePrefab;
         trialObjectsParent = manager.trialObjectsParent;
         checkmark = manager.checkmark;
+        
+        numberOfTrials = numOfTrials;
+        randomizeColors = randColors;
 
         radius = configOptions.radiusOfObjectsMeters;
         distance = configOptions.distanceFromUserMeters;
 
-        manager.StartCoroutine( WaitForTrial(manager, false, minSec, maxSec));
+        manager.StartCoroutine( WaitForTrial(manager, false, randomizeColors, minSec, maxSec));
     }
 
-    public static IEnumerator WaitForTrial(GameManager manager, bool wait, int minSec = 2, int maxSec = 5)
+    public static IEnumerator WaitForTrial(GameManager manager, bool wait, bool randomizeColors, int minSec = 2, int maxSec = 5)
     {   
         if (wait)
         {
             
             yield return new WaitForSeconds(UnityEngine.Random.Range(minSec,maxSec));
-            RunOrientationTrial(manager);
+            RunOrientationTrial(manager, randomizeColors);
         }
         yield return new WaitForSeconds(0);
-        RunOrientationTrial(manager);
+        RunOrientationTrial(manager, randomizeColors);
     }
-    public static void RunOrientationTrial(GameManager manager)
+    public static void RunOrientationTrial(GameManager manager, bool randomizeColors)
     {
         if (isTrialRunning == true)
         {
@@ -91,9 +96,13 @@ public class OrientationTrials : MonoBehaviour
 
         // Get the camera position and forward vector
         Vector3 cameraPos = manager.vrCamera.transform.position;
-        Vector3 cameraForward = manager.vrCamera.transform.forward * distance;
-        Vector3 shapeCenter = cameraPos + cameraForward;
+        GameObject[] spawnPoints = GameObject.FindGameObjectsWithTag("ItemSpawn");
+        Vector3 spawnPos = spawnPoints[0].transform.position;
         
+        // Calculate the vector from the camera to the center of the spawn point
+        Vector3 cameraForward = (spawnPos - cameraPos).normalized * distance;
+        Vector3 shapeCenter = cameraPos + cameraForward;
+
         // Shuffle the positions of the objects to randomize study
         var rng = new System.Random();
         GameManager.Shuffle(rng, shapePositions);
@@ -102,9 +111,18 @@ public class OrientationTrials : MonoBehaviour
         stopwatch.Start();
         start_time_ms = stopwatch.ElapsedMilliseconds;
         
-        //Debug.Log(shapePositions.Length);
+
+        Color normalColor = configOptions.orientationRegularItemColor;
+        Color distractorColor = configOptions.orientationDistracterItemColor;
 
 
+        if (randomizeColors)
+        {
+            Color[] colors = {normalColor, distractorColor};
+            GameManager.Shuffle(rng, colors);
+            normalColor = colors[0];
+            distractorColor = colors[1];
+        }
 
         // Summon The Objects
         for (int i = 0; i < shapePositions.Length; i++)
@@ -113,20 +131,22 @@ public class OrientationTrials : MonoBehaviour
             GameObject obj = Instantiate(prefabObj, shapePositions[i] + shapeCenter, prefabObj.transform.rotation).gameObject;
             obj.transform.SetParent(trialObjectsParent.transform);
             obj.transform.localScale *= configOptions.itemsScale;
+
+
             if (i == 0)
             {
                 itemOrientation = RandLineOrientation(obj);
-                obj.GetComponent<Renderer>().material.color = configOptions.itemColor;
+                obj.GetComponent<Renderer>().material.color = normalColor;
             }
             else if (i < configOptions.orientationDistractorObjects.Length + 1)
             {
                 RandLineOrientation(obj);
-                obj.GetComponent<Renderer>().material.color = configOptions.orientationDistracterItemColor;
+                obj.GetComponent<Renderer>().material.color = distractorColor;
             }
             else
             {
                 RandLineOrientation(obj);
-                obj.GetComponent<Renderer>().material.color = configOptions.orientationRegularItemColor;
+                obj.GetComponent<Renderer>().material.color = normalColor;
             }
         }
         
@@ -143,7 +163,10 @@ public class OrientationTrials : MonoBehaviour
 
         // Print the time taken
         Debug.Log("Time taken: " + time_ms + "ms");
+        
         isTrialRunning = false;
+        manager.isTrialRunning = false;
+
         trials.numberOfTrials++;
         trials.trialTimesMiliseconds.Add(time_ms);
         bool wasCorrect = orientation == itemOrientation;
@@ -161,14 +184,14 @@ public class OrientationTrials : MonoBehaviour
         }
         else
         {
-            manager.StartCoroutine( WaitForTrial(manager, true));
+            manager.StartCoroutine( WaitForTrial(manager, true, randomizeColors));
         }
     }
 
     public static LineOrientation RandLineOrientation(GameObject obj)
     {
         LineOrientation orientation = (LineOrientation) UnityEngine.Random.Range(0, 2);
-        GameObject line = Instantiate(linePrefab.transform, obj.transform.position + (vrCamera.transform.forward * -0.05f * configOptions.itemsScale), linePrefab.transform.rotation).gameObject;
+        GameObject line = Instantiate(linePrefab.transform, obj.transform.position + (vrCamera.transform.forward * -0.01f * configOptions.itemsScale), linePrefab.transform.rotation).gameObject;
         line.transform.SetParent(trialObjectsParent.transform);
         if (orientation == LineOrientation.Horizontal)
         {

@@ -1,10 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor.Experimental.GraphView;
+using System.IO;
 using UnityEngine;
-using UnityEngine.InputSystem.LowLevel;
+
 
 
 
@@ -32,6 +31,7 @@ public class GameManager : MonoBehaviour
     public bool isTrialRunning = false;
     private bool isStudyRunning = false;
     public ConfigOptions configOptions;
+    public System.Diagnostics.Stopwatch stopwatch;
     
     // Objects referenced to be passed to the trials scripts
     public GameObject linePrefab;
@@ -49,11 +49,19 @@ public class GameManager : MonoBehaviour
     [HideInInspector]
     public Vector3[] shapePositions;
     public Camera vrCamera;
+    public int finishedTrials = 0;
 
 
     // Start is called before the first frame update
     void Start()
     {
+        // Set background color of walls
+        // Get the walls
+        GameObject[] walls = GameObject.FindGameObjectsWithTag("Wall");
+        foreach (GameObject wall in walls)
+        {
+            wall.GetComponent<Renderer>().material.color = configOptions.orientationBackgroundColor;
+        }
 
     }
 
@@ -64,8 +72,33 @@ public class GameManager : MonoBehaviour
         if (isStudyRunning == true)
         {
             // We already have a study running, so we should end it before starting a new one
+            if (finishedTrials == 0)
+            {
+                // This should never run
+                OrientationTrials.TrialStart(this, 10, false);
+            }
+            if (finishedTrials == 1)
+            {
+                // Randomize the colors for orientation
+                OrientationTrials.TrialStart(this, 10, true);
+            }
+            if (finishedTrials == 2)
+            {
+                // Randomize the colors for orientation
+                QuickColorMemory.TrialStart(this);
+            }
+            if (finishedTrials == 3)
+            {
+                // Randomize the colors for orientation
+                QuickColorMemory.TrialStart(this);
+            }
+
+
+
             return;
         }
+
+        stopwatch = new System.Diagnostics.Stopwatch();
 
         isStudyRunning = true;
 
@@ -75,7 +108,7 @@ public class GameManager : MonoBehaviour
         GenerateShapePoints();
 
         // Start the first trial
-        OrientationTrials.TrialStart(this);
+        OrientationTrials.TrialStart(this, 10, false);
 
         // Start the second trial
         //QuickColorMemory.TrialStart(this);
@@ -92,7 +125,7 @@ public class GameManager : MonoBehaviour
 
         objects = new GameObject[configOptions.orientationOtherObjects.Length + configOptions.orientationDistractorObjects.Length + 1];
 
-        objects[0] = configOptions.orientationMainObject;
+        objects[0] = configOptions.orientationTargetObject;
         configOptions.orientationDistractorObjects.CopyTo(objects, 1);
         configOptions.orientationOtherObjects.CopyTo(objects, configOptions.orientationDistractorObjects.Length + 1);
 
@@ -106,11 +139,11 @@ public class GameManager : MonoBehaviour
         {
             if (configOptions.itemLocation == ItemLocation.OnTable)
             {
-                shapePositions[i] = new Vector3((float)(radius * Math.Cos(2 * Math.PI * i / numPoints)), -0.5f, (float)(radius * Math.Sin(2 * Math.PI * i / numPoints)));
+                shapePositions[i] = new Vector3((float)(radius * Math.Sin(2 * Math.PI * i / numPoints)), -0.5f, (float)(radius * Math.Cos(2 * Math.PI * i / numPoints)));
             }
             else if (configOptions.itemLocation == ItemLocation.InAir)
             {
-                shapePositions[i] = new Vector3((float)(radius * Math.Cos(2 * Math.PI * i / numPoints)), (float)(radius * Math.Sin(2 * Math.PI * i / numPoints)),0);
+                shapePositions[i] = new Vector3((float)(radius * Math.Sin(2 * Math.PI * i / numPoints)), (float)(radius * Math.Cos(2 * Math.PI * i / numPoints)),0);
             }   
         }
 
@@ -147,7 +180,6 @@ public class GameManager : MonoBehaviour
     public void EndGame()
     {
 
-
         isStudyRunning = false;
     }
 
@@ -161,8 +193,53 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void FixedUpdate() {
+        // Get the time from the stopwatch
+        if (isTrialRunning)
+        {
+            //long time_ms = stopwatch.ElapsedMilliseconds;
+            // Check what is happening, see if there's any input.
+
+            if (Input.GetKeyDown("space"))
+            {
+                // Log that in the file that we just started the trial
+            }
+
+            if (Input.GetKeyDown("up") || Input.GetKeyDown("down"))
+            {
+                // Log that in the file that we just pressed a button
+            }
+            
+            
+            
+        }
+    }
+
+
     // Helper functions
-    
+
+    public static void WriteLargeFile(string path, string content)
+    {
+        int bufferSize = 4096;
+        byte[] buffer = new byte[bufferSize];
+
+        using (var stream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize, FileOptions.SequentialScan))
+        {
+            using (var writer = new StreamWriter(stream))
+            {
+                int offset = 0;
+                while (offset < content.Length)
+                {
+                    int bytesToWrite = Math.Min(bufferSize, content.Length - offset);
+                    var chunk = content.Substring(offset, bytesToWrite);
+                    writer.Write(chunk);
+                    writer.Flush();
+                    offset += bytesToWrite;
+                }
+            }
+        }
+    }
+
     // Matt Howels
     public static void Shuffle<T> (System.Random rng, T[] array)
     {
@@ -173,4 +250,5 @@ public class GameManager : MonoBehaviour
             (array[k], array[n]) = (array[n], array[k]);
         }
     }
+
 }

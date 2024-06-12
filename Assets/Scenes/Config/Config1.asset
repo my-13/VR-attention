@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Config1
   m_EditorClassIdentifier: 
   configName: Config
-  orientationMainObject: {fileID: 1837642756708611309, guid: ca9f9f35a5cd81b4f94e589c0c4e7b7f, type: 3}
+  orientationTargetObject: {fileID: 1837642756708611309, guid: ca9f9f35a5cd81b4f94e589c0c4e7b7f, type: 3}
   orientationOtherObjects:
   - {fileID: 1837642756708611309, guid: e33be15daf3fd6441b2d427a161164a0, type: 3}
   - {fileID: 1837642756708611309, guid: e33be15daf3fd6441b2d427a161164a0, type: 3}
@@ -21,13 +21,15 @@ MonoBehaviour:
   - {fileID: 1837642756708611309, guid: e33be15daf3fd6441b2d427a161164a0, type: 3}
   orientationDistractorObjects:
   - {fileID: 1837642756708611309, guid: e33be15daf3fd6441b2d427a161164a0, type: 3}
-  orientationDistracterItemColor: {r: 0, g: 0.52156866, b: 1, a: 0}
-  orientationRegularItemColor: {r: 1, g: 0, b: 0, a: 0}
+  orientationDistracterItemColor: {r: 0.14901961, g: 1, b: 0.18039216, a: 0}
+  orientationRegularItemColor: {r: 0, g: 0, b: 1, a: 0}
+  orientationBackgroundColor: {r: 0, g: 0, b: 0, a: 0}
+  orientationRandomizeColors: 0
+  orientation2DShapes: 0
   radiusOfObjectsMeters: 0.25
-  distanceFromUserMeters: 1
+  distanceFromUserMeters: 0.6
   itemLocation: 1
   itemsScale: 0.5
-  itemColor: {r: 0.96728826, g: 1, b: 0, a: 0}
   changeColor: 1
   changeItem: 0
   numberOfTrials: 10

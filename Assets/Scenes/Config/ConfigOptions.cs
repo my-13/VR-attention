@@ -14,17 +14,20 @@ public enum ItemLocation
 public class ConfigOptions : ScriptableObject
 {
     public string configName;
-    public GameObject orientationMainObject;
+    public GameObject orientationTargetObject;
     public GameObject[] orientationOtherObjects;
     public GameObject[] orientationDistractorObjects;
     public Color orientationDistracterItemColor;
     public Color orientationRegularItemColor;
-    public bool randomizeColors = false;
+    public Color orientationBackgroundColor; 
+    public bool orientationRandomizeColors = false;
+    public bool orientation2DShapes = false;
+    
     public float radiusOfObjectsMeters;
     public float distanceFromUserMeters;
     public ItemLocation itemLocation;
     public float itemsScale = 1;
-    public Color itemColor;
+
 
     public bool changeColor = true;
     public bool changeItem = false;
