@@ -101,7 +101,14 @@ public class GameManager : MonoBehaviour
 
         stopwatch = new System.Diagnostics.Stopwatch();
         
+        // Get UI text
+        GameObject[] uiText = GameObject.FindGameObjectsWithTag("StartUI");
         
+        //Hide UI
+        foreach (GameObject text in uiText)
+        {
+            text.SetActive(false);
+        }
 
         isStudyRunning = true;
 
