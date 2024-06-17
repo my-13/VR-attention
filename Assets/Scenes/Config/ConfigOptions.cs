@@ -27,6 +27,8 @@ public class ConfigOptions : ScriptableObject
     public Color orientationBackgroundColor; 
     public bool orientationRandomizeColors = false;
     public bool orientation2DShapes = false;
+    [Range(0, 100)]
+    public int orientationPercentageOfDistractors = 50;
     
     public float radiusOfObjectsMeters;
     public float distanceFromUserMeters;

@@ -63,6 +63,10 @@ public class GameManager : MonoBehaviour
             wall.GetComponent<Renderer>().material.color = configOptions.orientationBackgroundColor;
         }
 
+
+        GameObject focusSphere = GameObject.FindGameObjectsWithTag("FocusSphere")[0];
+        focusSphere.transform.position = new Vector3(focusSphere.transform.position.x, vrCamera.transform.position.y, focusSphere.transform.position.z);
+
     }
 
 
