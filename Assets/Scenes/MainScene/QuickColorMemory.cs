@@ -35,7 +35,7 @@ public class QuickColorMemory : MonoBehaviour
     {
         // This will use exactly 6 objects, usually with random
 
-        objects = manager.configOptions.quickColorMemoryObjects;
+        //objects = manager.configOptions.quickColorMemoryObjects;
         manager.trial = Trial.ColorMemory;
         configOptions = manager.configOptions;
         vrCamera = manager.vrCamera;

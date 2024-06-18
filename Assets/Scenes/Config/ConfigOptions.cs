@@ -41,7 +41,7 @@ public class ConfigOptions : ScriptableObject
 
     public int numberOfTrials;
 
-    public GameObject[] quickColorMemoryObjects;
+    public OrientationBlockConfig[] orientationBlocks;
 }
 
 

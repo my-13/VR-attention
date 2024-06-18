@@ -49,6 +49,7 @@ public class OrientationTrials : MonoBehaviour
     private static GameObject[] objects;
 
 
+
     public static void TrialStart(GameManager manager, int numOfTrials, bool randColors, float minSec = 2, float maxSec = 5)
     {
         stopwatch = new System.Diagnostics.Stopwatch();
@@ -195,7 +196,7 @@ public class OrientationTrials : MonoBehaviour
         //{
         //    line.transform.Rotate(0, 0, 90);
         //}
-        
+
         return orientation;
     }
     
