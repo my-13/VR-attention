@@ -1354,7 +1354,7 @@ GameObject:
   - component: {fileID: 1857406412}
   m_Layer: 0
   m_Name: FocusSphere
-  m_TagString: FocusSphere
+  m_TagString: ItemSpawn
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

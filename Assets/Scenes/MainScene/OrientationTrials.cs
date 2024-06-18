@@ -189,13 +189,13 @@ public class OrientationTrials : MonoBehaviour
     public static LineOrientation RandLineOrientation(GameObject obj)
     {
         LineOrientation orientation = (LineOrientation) UnityEngine.Random.Range(0, 2);
-        GameObject line = Instantiate(linePrefab.transform, obj.transform.position + (vrCamera.transform.forward * -0.065f * configOptions.itemsScale), linePrefab.transform.rotation).gameObject;
-        line.transform.SetParent(trialObjectsParent.transform);
-        if (orientation == LineOrientation.Horizontal)
-        {
-            line.transform.Rotate(0, 0, 90);
-        }
-
+        //GameObject line = Instantiate(linePrefab.transform, obj.transform.position + (vrCamera.transform.forward * -0.065f * configOptions.itemsScale), linePrefab.transform.rotation).gameObject;
+        //line.transform.SetParent(trialObjectsParent.transform);
+        //if (orientation == LineOrientation.Horizontal)
+        //{
+        //    line.transform.Rotate(0, 0, 90);
+        //}
+        
         return orientation;
     }
     

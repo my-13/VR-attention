@@ -25,6 +25,8 @@ public enum Trial
     ColorMemory,
 }
 
+
+
 public class GameManager : MonoBehaviour
 {
     // Time taken to complete the game
@@ -64,7 +66,7 @@ public class GameManager : MonoBehaviour
         }
 
 
-        GameObject focusSphere = GameObject.FindGameObjectsWithTag("FocusSphere")[0];
+        GameObject focusSphere = GameObject.FindGameObjectsWithTag("ItemSpawn")[0];
         focusSphere.transform.position = new Vector3(focusSphere.transform.position.x, vrCamera.transform.position.y, focusSphere.transform.position.z);
 
     }
@@ -87,16 +89,7 @@ public class GameManager : MonoBehaviour
                 // Randomize the colors for orientation
                 OrientationTrials.TrialStart(this, 10, true, configOptions.orientationTimeToSpawnMin, configOptions.orientationTimeToSpawnMax);
             }
-            if (finishedTrials == 2)
-            {
-                // Randomize the colors for orientation
-                QuickColorMemory.TrialStart(this);
-            }
-            if (finishedTrials == 3)
-            {
-                // Randomize the colors for orientation
-                QuickColorMemory.TrialStart(this);
-            }
+
 
 
 
