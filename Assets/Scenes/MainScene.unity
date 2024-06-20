@@ -780,15 +780,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isTrialRunning: 0
+  currentBlockNumber: 0
   configOptions: {fileID: 11400000, guid: 085c8950d956c8842ba5a2d273a6c40e, type: 2}
+  trial: 0
   linePrefab: {fileID: 4056634127491352500, guid: 76a916dc3aa02d44e8a8eefa370e4d4e, type: 3}
   trialObjectsParent: {fileID: 546294148}
   checkmark: {fileID: 5921756293722336148, guid: aa27940eb6d320943ad532f3ec2968a9, type: 3}
-  trial: 0
+  verticalMaterial: {fileID: 2100000, guid: f26f00cd29343d44090d75ae40a4c1b8, type: 2}
+  horizontalMaterial: {fileID: 2100000, guid: a67da93913f8557449d50bc569907047, type: 2}
+  objectMaterial: {fileID: 0}
+  vrCamera: {fileID: 452463683}
   objects: []
   shapePositions: []
-  vrCamera: {fileID: 452463683}
-  finishedTrials: 0
 --- !u!114 &1175078478
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
@@ -13,7 +14,10 @@ public class OrientationBlockData
     public int blockID = 0;
     public int numberOfTrials = 0; // This should be equivalent to the number of trialTimes
     public List<float> trialTimesMiliseconds = new();
-    public List<bool> wasCorrect = new();
+    public List<LineOrientation> selectedOrientation = new();
+
+    public List<LineOrientation> actualOrientation = new();
+    
     public List<bool> hadDistractor = new();
 }
 
@@ -149,7 +153,7 @@ public class OrientationTrials : MonoBehaviour
             if (i == 0)
             {
                 obj.GetComponent<Renderer>().material.color = normalColor;
-                itemOrientation = RandLineOrientation(obj, obj.GetComponent<Renderer>().material);
+                itemOrientation = RandLineOrientation(obj, manager.verticalMaterial, manager.horizontalMaterial);
             }
             else if (i < config.distractorObjects.Length + 1)
             {
@@ -157,20 +161,20 @@ public class OrientationTrials : MonoBehaviour
                 {
                     trialHadDistractor = true;
                     obj.GetComponent<Renderer>().material.color = distractorColor;
-                    RandLineOrientation(obj, obj.GetComponent<Renderer>().material);
+                    RandLineOrientation(obj, manager.verticalMaterial, manager.horizontalMaterial);
                 }
                 else
                 {
                     trialHadDistractor = false;
                     obj.GetComponent<Renderer>().material.color = normalColor;
-                    RandLineOrientation(obj, obj.GetComponent<Renderer>().material);
+                    RandLineOrientation(obj, manager.verticalMaterial, manager.horizontalMaterial);
                 }
 
             }
             else
             {
                 obj.GetComponent<Renderer>().material.color = normalColor;
-                RandLineOrientation(obj, obj.GetComponent<Renderer>().material);
+                RandLineOrientation(obj, manager.verticalMaterial, manager.horizontalMaterial);
             }
         }
         
@@ -192,7 +196,8 @@ public class OrientationTrials : MonoBehaviour
         trials.numberOfTrials++;
         trials.trialTimesMiliseconds.Add(time_ms);
         bool wasCorrect = orientation == itemOrientation;
-        trials.wasCorrect.Add(wasCorrect);
+        trials.actualOrientation.Add(itemOrientation);
+        trials.selectedOrientation.Add(orientation);
         trials.hadDistractor.Add(trialHadDistractor);
 
         // Destroy all objects
@@ -203,7 +208,7 @@ public class OrientationTrials : MonoBehaviour
         
         if (trials.numberOfTrials >= config.numberOfTrials)
         {
-            TrialEnd(manager, config);
+            BlockEnd(manager, config);
         }
         else
         {
@@ -211,15 +216,16 @@ public class OrientationTrials : MonoBehaviour
         }
     }
 
-    public static LineOrientation RandLineOrientation(GameObject obj, Material material)
+    public static LineOrientation RandLineOrientation(GameObject obj, Material verticalMaterial, Material horizontalMaterial)
     {
         LineOrientation orientation = (LineOrientation) UnityEngine.Random.Range(0, 2);
-        //GameObject line = Instantiate(linePrefab.transform, obj.transform.position + (vrCamera.transform.forward * -0.065f * configOptions.itemsScale), linePrefab.transform.rotation).gameObject;
-        //line.transform.SetParent(trialObjectsParent.transform);
-        //if (orientation == LineOrientation.Horizontal)
-        //{
-        //    line.transform.Rotate(0, 0, 90);
-        //}
+
+        if (orientation == LineOrientation.Horizontal)
+        {
+            obj.GetComponent<Renderer>().materials = new Material[] {obj.GetComponent<Renderer>().material, horizontalMaterial};
+        }else{
+            obj.GetComponent<Renderer>().materials = new Material[] {obj.GetComponent<Renderer>().material, verticalMaterial};
+        }
 
         return orientation;
     }
@@ -240,7 +246,7 @@ public class OrientationTrials : MonoBehaviour
         }
     }
 
-    public static void TrialEnd(GameManager manager, OrientationBlockConfig config)
+    public static void BlockEnd(GameManager manager, OrientationBlockConfig config)
     {
         // Save the data to a file
         string json = JsonUtility.ToJson(OrientationTrials.trials);

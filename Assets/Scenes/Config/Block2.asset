@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 018eddff1d53d954c9a5a3a7a4606cf7, type: 3}
   m_Name: Block2
   m_EditorClassIdentifier: 
-  configName: Trial1
+  configName: Block2
   targetObject: {fileID: 0}
   otherObjects: []
   distractorObjects: []
-  distracterItemColor: {r: 0, g: 0, b: 0, a: 0}
-  regularItemColor: {r: 0, g: 0, b: 0, a: 0}
+  distracterItemColor: {r: 1, g: 0, b: 0, a: 0}
+  regularItemColor: {r: 0, g: 0, b: 1, a: 0}
   timeToSpawnMin: 2
   timeToSpawnMax: 5
   backgroundColor: {r: 0, g: 0, b: 0, a: 1}
@@ -25,9 +25,10 @@ MonoBehaviour:
   has2DShapes: 0
   randomPercentageOfDistractor: 50
   radiusOfObjectsMeters: 0.25
-  distanceFromUserMeters: 0.6
-  itemLocation: 0
-  itemsScale: 1
-  changeColor: 0
+  distanceFromUserMeters: 0.7
+  itemLocation: 1
+  itemsScale: 0.8
   changeItemPosition: 0
   numberOfTrials: 10
+  rotationDegrees: 0
+  randomrotation: 0

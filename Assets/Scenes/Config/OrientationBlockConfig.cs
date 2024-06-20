@@ -34,6 +34,6 @@ public class OrientationBlockConfig: ScriptableObject
     public bool changeItemPosition = false;
     public int numberOfTrials = 10;
     [Range(0, 180)]
-    public int rotation = 0;
+    public int rotationDegrees = 0;
     public bool randomrotation = false;
 }

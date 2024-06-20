@@ -128,18 +128,19 @@ public class GameManager : MonoBehaviour
 
         // Generating the points based on the polygon automatically, regardless of the number of points
         Vector3[] shapePositions = new Vector3[numPositionPoints];
-
+        int phaseShiftDeg = blockConfig.randomrotation ? UnityEngine.Random.Range(0, 180) : blockConfig.rotationDegrees;
+        
         // Generating the points based on the polygon automatically, regardless of the number of points
         for (int i = 0; i < numPositionPoints; i++) 
         {
             if (blockConfig.itemLocation == ItemLocation.OnTable)
             {
-                shapePositions[i] = new Vector3((float)(blockConfig.radiusOfObjectsMeters * Math.Sin(2 * Math.PI * i / numPositionPoints)), -0.5f, (float)(blockConfig.radiusOfObjectsMeters * Math.Cos(2 * Math.PI * i / numPositionPoints)));
+                shapePositions[i] = new Vector3((float)(blockConfig.radiusOfObjectsMeters * Math.Sin((phaseShiftDeg * Math.PI / 180) + (2 * Math.PI * i / numPositionPoints))), -0.5f, (float)(blockConfig.radiusOfObjectsMeters * Math.Cos((phaseShiftDeg * Math.PI / 180) + (2 * Math.PI * i / numPositionPoints))));
             }
             else if (blockConfig.itemLocation == ItemLocation.InAir)
             {
                 // TODO: Implement this so that a table appears near them
-                shapePositions[i] = new Vector3((float)(blockConfig.radiusOfObjectsMeters * Math.Sin(2 * Math.PI * i / numPositionPoints)), (float)(blockConfig.radiusOfObjectsMeters * Math.Cos(2 * Math.PI * i / numPositionPoints)),0);
+                shapePositions[i] = new Vector3((float)(blockConfig.radiusOfObjectsMeters * Math.Sin((phaseShiftDeg * Math.PI / 180) + (2 * Math.PI * i / numPositionPoints))), (float)(blockConfig.radiusOfObjectsMeters * Math.Cos((phaseShiftDeg * Math.PI / 180) + (2 * Math.PI * i / numPositionPoints))), 0);
             } 
         }
 
