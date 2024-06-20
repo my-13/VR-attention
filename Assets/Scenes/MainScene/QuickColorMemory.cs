@@ -15,7 +15,11 @@ public class ColorMemoryTrialData
     public List<bool> wasCorrect = new();
 }
 
-
+/*
+ * This class will not be used in the study. The class was a test to make sure different trials could be used.
+ * To use this trial will require changes to main code
+ * Hours wasted: 7
+ */
 public class QuickColorMemory : MonoBehaviour
 {
     
@@ -40,8 +44,8 @@ public class QuickColorMemory : MonoBehaviour
         configOptions = manager.configOptions;
         vrCamera = manager.vrCamera;
         trials = new ColorMemoryTrialData();
-        QuickColorMemory.changeColor = manager.configOptions.changeColor || changeColor;
-        QuickColorMemory.changeItem = manager.configOptions.changeItem || changeItem;
+        QuickColorMemory.changeColor = manager.configOptions.GetCurrentBlockConfig().randomizeColors || changeColor;
+        QuickColorMemory.changeItem = manager.configOptions.GetCurrentBlockConfig().changeItemPosition || changeItem;
         checkmark = manager.checkmark;
         trialObjectsParent = manager.trialObjectsParent;
         // Start the trial
@@ -91,7 +95,7 @@ public class QuickColorMemory : MonoBehaviour
         }
 
         // See if there is more trials to run
-        if (trials.numberOfTrials < configOptions.numberOfTrials)
+        if (trials.numberOfTrials < configOptions.GetCurrentBlockConfig().numberOfTrials)
         {
             // Run the next trial, after they press any button on
             

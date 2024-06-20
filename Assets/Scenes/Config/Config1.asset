@@ -13,26 +13,7 @@ MonoBehaviour:
   m_Name: Config1
   m_EditorClassIdentifier: 
   configName: Config
-  orientationTargetObject: {fileID: 1837642756708611309, guid: ca9f9f35a5cd81b4f94e589c0c4e7b7f, type: 3}
-  orientationOtherObjects:
-  - {fileID: 1837642756708611309, guid: e33be15daf3fd6441b2d427a161164a0, type: 3}
-  - {fileID: 1837642756708611309, guid: e33be15daf3fd6441b2d427a161164a0, type: 3}
-  - {fileID: 1837642756708611309, guid: e33be15daf3fd6441b2d427a161164a0, type: 3}
-  - {fileID: 4738884146677316936, guid: 00b25e9ac6f14a142abe3c68f7075302, type: 3}
-  orientationDistractorObjects:
-  - {fileID: 1837642756708611309, guid: e33be15daf3fd6441b2d427a161164a0, type: 3}
-  orientationDistracterItemColor: {r: 0.14901961, g: 1, b: 0.18039216, a: 0}
-  orientationRegularItemColor: {r: 0, g: 0, b: 1, a: 0}
-  orientationTimeToSpawnMin: 4.48
-  orientationTimeToSpawnMax: 5
-  orientationBackgroundColor: {r: 0, g: 0, b: 0, a: 0}
-  orientationRandomizeColors: 0
-  orientation2DShapes: 0
-  radiusOfObjectsMeters: 0.25
-  distanceFromUserMeters: 0.6
-  itemLocation: 1
-  itemsScale: 0.5
-  changeColor: 1
-  changeItem: 0
-  numberOfTrials: 10
-  quickColorMemoryObjects: []
+  orientationBlocks:
+  - {fileID: 11400000, guid: dc4a4657441efa84386723cdbd63f223, type: 2}
+  - {fileID: 11400000, guid: f90d65900484eab4f9e6efa1be673dec, type: 2}
+  currentBlock: 0

@@ -15,13 +15,17 @@ public class ConfigOptions : ScriptableObject
     public OrientationBlockConfig[] orientationBlocks;
     public int currentBlock = 0;
 
-    public OrientationBlockConfig getNextBlockConfig(){
+
+    public bool IsLastBlock(){
+        return currentBlock == orientationBlocks.Length - 1;
+    }
+    public OrientationBlockConfig GetNextBlockConfig(){
         currentBlock++;
 
         return orientationBlocks[currentBlock];
     }
 
-    public OrientationBlockConfig getCurrentBlockConfig(){
+    public OrientationBlockConfig GetCurrentBlockConfig(){
         return orientationBlocks[currentBlock];
     }
 }

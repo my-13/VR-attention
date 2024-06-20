@@ -2,7 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 
 
@@ -42,11 +44,10 @@ public class GameManager : MonoBehaviour
     public GameObject linePrefab;
     public GameObject trialObjectsParent;
     public GameObject checkmark;
+    public Material verticalMaterial;
+    public Material horizontalMaterial;
+    public Material objectMaterial;
 
-    // Polygon parameters
-    private int numPoints;
-    private float radius;
-    private float distance;
 
     // VR Camera
     public Camera vrCamera;
@@ -63,12 +64,6 @@ public class GameManager : MonoBehaviour
     {
         // Set background color of walls
         // Get the walls
-        GameObject[] walls = GameObject.FindGameObjectsWithTag("Wall");
-        foreach (GameObject wall in walls)
-        {
-            wall.GetComponent<Renderer>().material.color = configOptions.getCurrentBlockConfig().backgroundColor;
-        }
-
 
         GameObject focusSphere = GameObject.FindGameObjectsWithTag("ItemSpawn")[0];
         focusSphere.transform.position = new Vector3(focusSphere.transform.position.x, vrCamera.transform.position.y, focusSphere.transform.position.z);
@@ -84,17 +79,14 @@ public class GameManager : MonoBehaviour
             if (currentBlockNumber == 0)
             {
                 // This should never run
-        
-                OrientationTrials.TrialStart(this, 10, false, configOptions.getCurrentBlockConfig().timeToSpawnMin, configOptions.getCurrentBlockConfig().timeToSpawnMax);
+                
+                //OrientationTrials.TrialStart(this, configOptions.GetCurrentBlockConfig());
+                return;
             }
-            if (currentBlockNumber == 1)
-            {
+            if (!configOptions.IsLastBlock()){
                 // Randomize the colors for orientation
-                OrientationTrials.TrialStart(this, 10, true, configOptions.getCurrentBlockConfig().timeToSpawnMin, configOptions.getCurrentBlockConfig().timeToSpawnMax);
+                OrientationTrials.TrialStart(this, configOptions.GetNextBlockConfig());
             }
-
-
-
 
             return;
         }
@@ -112,52 +104,47 @@ public class GameManager : MonoBehaviour
 
         isStudyRunning = true;
 
-        radius = configOptions.getCurrentBlockConfig().radiusOfObjectsMeters;
-        distance = configOptions.getCurrentBlockConfig().distanceFromUserMeters;
-
-        GenerateShapePoints();
-
-        // Start the first trial
-        OrientationTrials.TrialStart(this, 10, false, configOptions.orientationTimeToSpawnMin, configOptions.orientationTimeToSpawnMax);
-
-        // Start the second trial
-        //QuickColorMemory.TrialStart(this);
-
-        // Start the second trial with the items changing
-        //QuickColorMemory.TrialStart(this);
         
-        // Wait until the project is done
+        if (!configOptions.IsLastBlock()){
+            OrientationTrials.TrialStart(this, configOptions.GetCurrentBlockConfig());
+        }
+        // Start the first trial
+        
     }
 
 
-    public void GenerateShapePoints()
+    public (Vector3[], GameObject[], int) GenerateShapePoints(OrientationBlockConfig blockConfig)
     {
 
-        objects = new GameObject[configOptions.orientationOtherObjects.Length + configOptions.orientationDistractorObjects.Length + 1];
+        GameObject[] configObjects = new GameObject[blockConfig.otherObjects.Length + blockConfig.distractorObjects.Length + 1];
 
-        objects[0] = configOptions.orientationTargetObject;
-        configOptions.orientationDistractorObjects.CopyTo(objects, 1);
-        configOptions.orientationOtherObjects.CopyTo(objects, configOptions.orientationDistractorObjects.Length + 1);
+        configObjects[0] = blockConfig.targetObject;
+        blockConfig.distractorObjects.CopyTo(configObjects, 1);
+        blockConfig.otherObjects.CopyTo(configObjects, blockConfig.distractorObjects.Length + 1);
 
-        numPoints = objects.Length;
+
+
+        int numPositionPoints = configObjects.Length;
 
         // Generating the points based on the polygon automatically, regardless of the number of points
-        shapePositions = new Vector3[numPoints];
+        Vector3[] shapePositions = new Vector3[numPositionPoints];
 
         // Generating the points based on the polygon automatically, regardless of the number of points
-        for (int i = 0; i < numPoints; i++) 
+        for (int i = 0; i < numPositionPoints; i++) 
         {
-            if (configOptions.itemLocation == ItemLocation.OnTable)
+            if (blockConfig.itemLocation == ItemLocation.OnTable)
             {
-                shapePositions[i] = new Vector3((float)(radius * Math.Sin(2 * Math.PI * i / numPoints)), -0.5f, (float)(radius * Math.Cos(2 * Math.PI * i / numPoints)));
+                shapePositions[i] = new Vector3((float)(blockConfig.radiusOfObjectsMeters * Math.Sin(2 * Math.PI * i / numPositionPoints)), -0.5f, (float)(blockConfig.radiusOfObjectsMeters * Math.Cos(2 * Math.PI * i / numPositionPoints)));
             }
-            else if (configOptions.itemLocation == ItemLocation.InAir)
+            else if (blockConfig.itemLocation == ItemLocation.InAir)
             {
-                shapePositions[i] = new Vector3((float)(radius * Math.Sin(2 * Math.PI * i / numPoints)), (float)(radius * Math.Cos(2 * Math.PI * i / numPoints)),0);
-            }   
+                // TODO: Implement this so that a table appears near them
+                shapePositions[i] = new Vector3((float)(blockConfig.radiusOfObjectsMeters * Math.Sin(2 * Math.PI * i / numPositionPoints)), (float)(blockConfig.radiusOfObjectsMeters * Math.Cos(2 * Math.PI * i / numPositionPoints)),0);
+            } 
         }
 
 
+        return (shapePositions, configObjects, numPositionPoints);
     }
 
     public void StartButtonPressed()
@@ -171,7 +158,7 @@ public class GameManager : MonoBehaviour
         {
             if (trial == Trial.Orientation)
             {
-                OrientationTrials.PrimaryButtonPressed(this);
+                OrientationTrials.PrimaryButtonPressed(this, configOptions.GetCurrentBlockConfig());
             }
         }
     }
@@ -182,20 +169,18 @@ public class GameManager : MonoBehaviour
         {
             if (trial == Trial.Orientation)
             {
-                OrientationTrials.SecondaryButtonPressed(this);
+                OrientationTrials.SecondaryButtonPressed(this, configOptions.GetCurrentBlockConfig());
             }
         }
     }
 
-    public void EndGame()
+    public void EndStudy()
     {
-
         isStudyRunning = false;
     }
 
     public IEnumerator ClearTrialObjects()
     {
-        
         yield return new WaitForSeconds(2);
         foreach (Transform transform in trialObjectsParent.transform)
         {

@@ -31,7 +31,6 @@ public class OrientationBlockConfig: ScriptableObject
     public ItemLocation itemLocation;
     [Range(0.01f, 10)]
     public float itemsScale = 1;
-    public bool changeColor = false;
     public bool changeItemPosition = false;
     public int numberOfTrials = 10;
     [Range(0, 180)]

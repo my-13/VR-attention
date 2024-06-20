@@ -2,15 +2,19 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 [Serializable]
-public class OrientationTrialData
+public class OrientationBlockData
 {
-    public SaveData saveDataUsed;
+    public OrientationBlockConfig saveDataUsed;
+    public string participantID = "0000";
+    public int blockID = 0;
     public int numberOfTrials = 0; // This should be equivalent to the number of trialTimes
     public List<float> trialTimesMiliseconds = new();
     public List<bool> wasCorrect = new();
+    public List<bool> hadDistractor = new();
 }
 
 public enum LineOrientation
@@ -27,73 +31,67 @@ public class OrientationTrials : MonoBehaviour
     private static long start_time_ms = 0;
     private static LineOrientation itemOrientation;
     [HideInInspector]
-    public static OrientationTrialData trials;
+    public static OrientationBlockData trials;
     private static bool isTrialRunning = false;
-    [HideInInspector]
-    public static GameObject linePrefab;
+    private static bool trialHadDistractor = false;
     [HideInInspector]
     public static GameObject trialObjectsParent;
     [HideInInspector]
-    public static GameObject checkmark;
-    [HideInInspector]
     public static ConfigOptions configOptions;
-    [HideInInspector]
-    public static Vector3[] shapePositions;
     [HideInInspector]
     public static Camera vrCamera;
     
-    private static float distance;
-    public static int numberOfTrials;
-    public static bool randomizeColors;
-    private static float radius;
+    //private static float radius;
     private static GameObject[] objects;
 
 
     public static void TrialStart(GameManager manager, OrientationBlockConfig config)
     {
         stopwatch = new System.Diagnostics.Stopwatch();
-
-        TrialStart(manager, config.numberOfTrials, config.randomizeColors, config.timeToSpawnMin, config.timeToSpawnMax);
-    
-    }
-
-    public static void TrialStart(GameManager manager, int numOfTrials, bool randColors, float minSec = 2, float maxSec = 5)
-    {
-        stopwatch = new System.Diagnostics.Stopwatch();
         stopwatch.Start();
 
         manager.trial = Trial.Orientation;
-        trials = new OrientationTrialData();
-        configOptions = manager.configOptions;
+        trials = new OrientationBlockData();
         vrCamera = manager.vrCamera;
-        
-        objects = manager.objects;
-        shapePositions = manager.shapePositions;
-        linePrefab = manager.linePrefab;
         trialObjectsParent = manager.trialObjectsParent;
-        checkmark = manager.checkmark;
+
+        SetupBlock(manager, config);
         
-        numberOfTrials = numOfTrials;
-        randomizeColors = randColors;
+        manager.StartCoroutine( WaitForTrial(manager, true, config) );
 
-        radius = configOptions.getCurrentBlockConfig().radiusOfObjectsMeters;
-        distance = configOptions.getCurrentBlockConfig().distanceFromUserMeters;
-
-        manager.StartCoroutine( WaitForTrial(manager, true, randomizeColors, minSec, maxSec));
     }
 
-    public static IEnumerator WaitForTrial(GameManager manager, bool wait, bool randomizeColors, float minSec = 2, float maxSec = 5)
+    public static void SetupBlock(GameManager manager, OrientationBlockConfig config) {
+        GameObject[] walls = GameObject.FindGameObjectsWithTag("Wall");
+        foreach (GameObject wall in walls)
+        {
+            wall.GetComponent<Renderer>().material.color = config.backgroundColor;
+        }
+    }
+
+
+    public static IEnumerator WaitForTrial(GameManager manager, bool wait, OrientationBlockConfig config)
     {   
         if (wait)
         {
-            
-            yield return new WaitForSeconds(UnityEngine.Random.Range(minSec,maxSec));
-            RunOrientationTrial(manager, randomizeColors);
+            yield return new WaitForSeconds(UnityEngine.Random.Range(config.timeToSpawnMin, config.timeToSpawnMax));
+            RunOrientationTrial(manager, config);
         }
         yield return new WaitForSeconds(0);
-        RunOrientationTrial(manager, randomizeColors);
+        RunOrientationTrial(manager, config);
     }
-    public static void RunOrientationTrial(GameManager manager, bool randomizeColors)
+
+    public static IEnumerator TimeoutBreak(GameManager manager, int waitTime, OrientationBlockConfig config)
+    {
+        // Put on text to wait
+
+        yield return new WaitForSeconds(waitTime);
+
+
+        // Remove text to wait
+
+    }
+    public static void RunOrientationTrial(GameManager manager, OrientationBlockConfig config)
     {
         if (isTrialRunning == true)
         {
@@ -105,62 +103,80 @@ public class OrientationTrials : MonoBehaviour
 
         // Get the camera position and forward vector
         Vector3 cameraPos = manager.vrCamera.transform.position;
-        GameObject[] spawnPoints = GameObject.FindGameObjectsWithTag("ItemSpawn");
-        Vector3 spawnPos = spawnPoints[0].transform.position;
+        Vector3 spawnPos = GameObject.FindGameObjectsWithTag("ItemSpawn")[0].transform.position;
         
         // Calculate the vector from the camera to the center of the spawn point
-        Vector3 cameraForward = (spawnPos - cameraPos).normalized * distance;
+        Vector3 cameraForward = (spawnPos - cameraPos).normalized * config.distanceFromUserMeters;
         Vector3 shapeCenter = cameraPos + cameraForward;
+
+        (Vector3[], GameObject[], int) pointsData = manager.GenerateShapePoints(config);
+        // Extracting points Data
+        Vector3[] objectPositions = pointsData.Item1;
+        GameObject[] trialObjects = pointsData.Item2;
+        int numberOfObjects = pointsData.Item3;
+
+
 
         // Shuffle the positions of the objects to randomize study
         var rng = new System.Random();
-        GameManager.Shuffle(rng, shapePositions);
+        GameManager.Shuffle(rng, objectPositions);
 
         // Get the starting time
         start_time_ms = stopwatch.ElapsedMilliseconds;
         
 
-        Color normalColor = configOptions.getCurrentBlockConfig().regularItemColor;
-        Color distractorColor = configOptions.getCurrentBlockConfig().distracterItemColor;
+        Color normalColor = config.regularItemColor;
+        Color distractorColor = config.distracterItemColor;
 
 
-        if (randomizeColors)
+        if (config.randomizeColors)
         {
             Color[] colors = {normalColor, distractorColor};
             GameManager.Shuffle(rng, colors);
             normalColor = colors[0];
             distractorColor = colors[1];
         }
-
+        
         // Summon The Objects
-        for (int i = 0; i < shapePositions.Length; i++)
+        for (int i = 0; i < objectPositions.Length; i++)
         {
-            GameObject prefabObj = objects[i];
-            GameObject obj = Instantiate(prefabObj, shapePositions[i] + shapeCenter, prefabObj.transform.rotation).gameObject;
+            GameObject prefabObj = trialObjects[i];
+            GameObject obj = Instantiate(prefabObj, objectPositions[i] + shapeCenter, prefabObj.transform.rotation).gameObject;
             obj.transform.SetParent(trialObjectsParent.transform);
-            obj.transform.localScale *= configOptions.getCurrentBlockConfig().itemsScale;
+            obj.transform.localScale *= config.itemsScale;
 
 
             if (i == 0)
             {
-                itemOrientation = RandLineOrientation(obj);
                 obj.GetComponent<Renderer>().material.color = normalColor;
+                itemOrientation = RandLineOrientation(obj, obj.GetComponent<Renderer>().material);
             }
-            else if (i < configOptions.getCurrentBlockConfig().distractorObjects.Length + 1)
+            else if (i < config.distractorObjects.Length + 1)
             {
-                RandLineOrientation(obj);
-                obj.GetComponent<Renderer>().material.color = distractorColor;
+                if (UnityEngine.Random.Range(0, 100) < config.randomPercentageOfDistractor)
+                {
+                    trialHadDistractor = true;
+                    obj.GetComponent<Renderer>().material.color = distractorColor;
+                    RandLineOrientation(obj, obj.GetComponent<Renderer>().material);
+                }
+                else
+                {
+                    trialHadDistractor = false;
+                    obj.GetComponent<Renderer>().material.color = normalColor;
+                    RandLineOrientation(obj, obj.GetComponent<Renderer>().material);
+                }
+
             }
             else
             {
-                RandLineOrientation(obj);
                 obj.GetComponent<Renderer>().material.color = normalColor;
+                RandLineOrientation(obj, obj.GetComponent<Renderer>().material);
             }
         }
         
     }
 
-    public static void StopOrientationTrial(GameManager manager, LineOrientation orientation)
+    public static void StopOrientationTrial(GameManager manager, LineOrientation orientation, OrientationBlockConfig config)
     {   
         // Get the ending time
         long end_time_ms = stopwatch.ElapsedMilliseconds;
@@ -177,6 +193,7 @@ public class OrientationTrials : MonoBehaviour
         trials.trialTimesMiliseconds.Add(time_ms);
         bool wasCorrect = orientation == itemOrientation;
         trials.wasCorrect.Add(wasCorrect);
+        trials.hadDistractor.Add(trialHadDistractor);
 
         // Destroy all objects
         foreach (Transform transform in trialObjectsParent.transform)
@@ -184,17 +201,17 @@ public class OrientationTrials : MonoBehaviour
             Destroy(transform.gameObject);
         }
         
-        if (trials.numberOfTrials >= configOptions.getCurrentBlockConfig().numberOfTrials)
+        if (trials.numberOfTrials >= config.numberOfTrials)
         {
-            TrialEnd(manager);
+            TrialEnd(manager, config);
         }
         else
         {
-            manager.StartCoroutine( WaitForTrial(manager, true, randomizeColors));
+            manager.StartCoroutine( WaitForTrial(manager, true, config));
         }
     }
 
-    public static LineOrientation RandLineOrientation(GameObject obj)
+    public static LineOrientation RandLineOrientation(GameObject obj, Material material)
     {
         LineOrientation orientation = (LineOrientation) UnityEngine.Random.Range(0, 2);
         //GameObject line = Instantiate(linePrefab.transform, obj.transform.position + (vrCamera.transform.forward * -0.065f * configOptions.itemsScale), linePrefab.transform.rotation).gameObject;
@@ -207,37 +224,37 @@ public class OrientationTrials : MonoBehaviour
         return orientation;
     }
     
-    public static void PrimaryButtonPressed(GameManager manager)
+    public static void PrimaryButtonPressed(GameManager manager, OrientationBlockConfig config)
     {
         if (isTrialRunning)
         {
-            StopOrientationTrial(manager, LineOrientation.Vertical);
+            StopOrientationTrial(manager, LineOrientation.Vertical, config);
         }
     }
 
-    public static void SecondaryButtonPressed(GameManager manager)
+    public static void SecondaryButtonPressed(GameManager manager, OrientationBlockConfig config)
     {
         if (isTrialRunning)
         {
-            StopOrientationTrial(manager,  LineOrientation.Horizontal);
+            StopOrientationTrial(manager,  LineOrientation.Horizontal, config);
         }
     }
 
-    public static void TrialEnd(GameManager manager)
+    public static void TrialEnd(GameManager manager, OrientationBlockConfig config)
     {
         // Save the data to a file
         string json = JsonUtility.ToJson(OrientationTrials.trials);
         System.IO.File.WriteAllText("orientation_trials.json", json);
 
         Vector3 cameraPos = vrCamera.transform.position;
-        Vector3 cameraForward = vrCamera.transform.forward * distance;
+        Vector3 cameraForward = vrCamera.transform.forward * config.distanceFromUserMeters;
         Vector3 shapeCenter = cameraPos + cameraForward;
 
-        Instantiate(checkmark, shapeCenter,Quaternion.identity).transform.SetParent(trialObjectsParent.transform);
+        Instantiate(manager.checkmark, shapeCenter,Quaternion.identity).transform.SetParent(trialObjectsParent.transform);
         
         manager.StartCoroutine(manager.ClearTrialObjects());
 
-        manager.EndGame();
+        manager.EndStudy();
         manager.trial = Trial.NoTrial;
         manager.isTrialRunning = false;
     }
