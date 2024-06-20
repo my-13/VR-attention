@@ -1,6 +1,12 @@
 using System;
 using UnityEngine;
 
+public enum ItemLocation
+{
+    OnTable,
+    InAir
+}
+
 [Serializable]
 [CreateAssetMenu(fileName = "OrientationBlockConfig", menuName = "ScriptableObjects/OrientationBlockConfig", order = 2)]
 public class OrientationBlockConfig: ScriptableObject
@@ -28,4 +34,7 @@ public class OrientationBlockConfig: ScriptableObject
     public bool changeColor = false;
     public bool changeItemPosition = false;
     public int numberOfTrials = 10;
+    [Range(0, 180)]
+    public int rotation = 0;
+    public bool randomrotation = false;
 }

@@ -32,27 +32,31 @@ public class GameManager : MonoBehaviour
     // Time taken to complete the game
     public bool isTrialRunning = false;
     private bool isStudyRunning = false;
+    public int currentBlockNumber = 0;
     public ConfigOptions configOptions;
     public System.Diagnostics.Stopwatch stopwatch;
+    
+    public Trial trial = Trial.NoTrial;
     
     // Objects referenced to be passed to the trials scripts
     public GameObject linePrefab;
     public GameObject trialObjectsParent;
     public GameObject checkmark;
-    public Trial trial = Trial.NoTrial;
 
     // Polygon parameters
     private int numPoints;
     private float radius;
     private float distance;
 
+    // VR Camera
+    public Camera vrCamera;
+
     // List of objects to be spawned
+    [HideInInspector]
     public GameObject[] objects;
+
     [HideInInspector]
     public Vector3[] shapePositions;
-    public Camera vrCamera;
-    public int finishedTrials = 0;
-
 
     // Start is called before the first frame update
     void Start()
@@ -62,13 +66,12 @@ public class GameManager : MonoBehaviour
         GameObject[] walls = GameObject.FindGameObjectsWithTag("Wall");
         foreach (GameObject wall in walls)
         {
-            wall.GetComponent<Renderer>().material.color = configOptions.orientationBackgroundColor;
+            wall.GetComponent<Renderer>().material.color = configOptions.getCurrentBlockConfig().backgroundColor;
         }
 
 
         GameObject focusSphere = GameObject.FindGameObjectsWithTag("ItemSpawn")[0];
         focusSphere.transform.position = new Vector3(focusSphere.transform.position.x, vrCamera.transform.position.y, focusSphere.transform.position.z);
-
     }
 
 
@@ -78,16 +81,16 @@ public class GameManager : MonoBehaviour
         if (isStudyRunning == true)
         {
             // We already have a study running, so we should end it before starting a new one
-            if (finishedTrials == 0)
+            if (currentBlockNumber == 0)
             {
                 // This should never run
         
-                OrientationTrials.TrialStart(this, 10, false, configOptions.orientationTimeToSpawnMin, configOptions.orientationTimeToSpawnMax);
+                OrientationTrials.TrialStart(this, 10, false, configOptions.getCurrentBlockConfig().timeToSpawnMin, configOptions.getCurrentBlockConfig().timeToSpawnMax);
             }
-            if (finishedTrials == 1)
+            if (currentBlockNumber == 1)
             {
                 // Randomize the colors for orientation
-                OrientationTrials.TrialStart(this, 10, true, configOptions.orientationTimeToSpawnMin, configOptions.orientationTimeToSpawnMax);
+                OrientationTrials.TrialStart(this, 10, true, configOptions.getCurrentBlockConfig().timeToSpawnMin, configOptions.getCurrentBlockConfig().timeToSpawnMax);
             }
 
 
@@ -109,8 +112,8 @@ public class GameManager : MonoBehaviour
 
         isStudyRunning = true;
 
-        radius = configOptions.radiusOfObjectsMeters;
-        distance = configOptions.distanceFromUserMeters;
+        radius = configOptions.getCurrentBlockConfig().radiusOfObjectsMeters;
+        distance = configOptions.getCurrentBlockConfig().distanceFromUserMeters;
 
         GenerateShapePoints();
 

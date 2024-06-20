@@ -49,6 +49,13 @@ public class OrientationTrials : MonoBehaviour
     private static GameObject[] objects;
 
 
+    public static void TrialStart(GameManager manager, OrientationBlockConfig config)
+    {
+        stopwatch = new System.Diagnostics.Stopwatch();
+
+        TrialStart(manager, config.numberOfTrials, config.randomizeColors, config.timeToSpawnMin, config.timeToSpawnMax);
+    
+    }
 
     public static void TrialStart(GameManager manager, int numOfTrials, bool randColors, float minSec = 2, float maxSec = 5)
     {
@@ -69,8 +76,8 @@ public class OrientationTrials : MonoBehaviour
         numberOfTrials = numOfTrials;
         randomizeColors = randColors;
 
-        radius = configOptions.radiusOfObjectsMeters;
-        distance = configOptions.distanceFromUserMeters;
+        radius = configOptions.getCurrentBlockConfig().radiusOfObjectsMeters;
+        distance = configOptions.getCurrentBlockConfig().distanceFromUserMeters;
 
         manager.StartCoroutine( WaitForTrial(manager, true, randomizeColors, minSec, maxSec));
     }
@@ -113,8 +120,8 @@ public class OrientationTrials : MonoBehaviour
         start_time_ms = stopwatch.ElapsedMilliseconds;
         
 
-        Color normalColor = configOptions.orientationRegularItemColor;
-        Color distractorColor = configOptions.orientationDistracterItemColor;
+        Color normalColor = configOptions.getCurrentBlockConfig().regularItemColor;
+        Color distractorColor = configOptions.getCurrentBlockConfig().distracterItemColor;
 
 
         if (randomizeColors)
@@ -131,7 +138,7 @@ public class OrientationTrials : MonoBehaviour
             GameObject prefabObj = objects[i];
             GameObject obj = Instantiate(prefabObj, shapePositions[i] + shapeCenter, prefabObj.transform.rotation).gameObject;
             obj.transform.SetParent(trialObjectsParent.transform);
-            obj.transform.localScale *= configOptions.itemsScale;
+            obj.transform.localScale *= configOptions.getCurrentBlockConfig().itemsScale;
 
 
             if (i == 0)
@@ -139,7 +146,7 @@ public class OrientationTrials : MonoBehaviour
                 itemOrientation = RandLineOrientation(obj);
                 obj.GetComponent<Renderer>().material.color = normalColor;
             }
-            else if (i < configOptions.orientationDistractorObjects.Length + 1)
+            else if (i < configOptions.getCurrentBlockConfig().distractorObjects.Length + 1)
             {
                 RandLineOrientation(obj);
                 obj.GetComponent<Renderer>().material.color = distractorColor;
@@ -176,8 +183,8 @@ public class OrientationTrials : MonoBehaviour
         {
             Destroy(transform.gameObject);
         }
-
-        if (trials.numberOfTrials >= configOptions.numberOfTrials)
+        
+        if (trials.numberOfTrials >= configOptions.getCurrentBlockConfig().numberOfTrials)
         {
             TrialEnd(manager);
         }

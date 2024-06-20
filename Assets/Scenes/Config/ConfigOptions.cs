@@ -1,47 +1,29 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
-public enum ItemLocation
-{
-    OnTable,
-    InAir
-}
+
 
 [Serializable]
 [CreateAssetMenu(fileName = "ConfigOptions", menuName = "ScriptableObjects/ConfigOptions", order = 1)]
 public class ConfigOptions : ScriptableObject
 {
     public string configName;
-    public GameObject orientationTargetObject;
-    public GameObject[] orientationOtherObjects;
-    public GameObject[] orientationDistractorObjects;
-    public Color orientationDistracterItemColor;
-    public Color orientationRegularItemColor;
-    [Range(1, 6)]
-    public float orientationTimeToSpawnMin = 2;
-    [Range(1, 6)]
-    public float orientationTimeToSpawnMax = 5;
-    
-    public Color orientationBackgroundColor; 
-    public bool orientationRandomizeColors = false;
-    public bool orientation2DShapes = false;
-    [Range(0, 100)]
-    public int orientationPercentageOfDistractors = 50;
-    
-    public float radiusOfObjectsMeters;
-    public float distanceFromUserMeters;
-    public ItemLocation itemLocation;
-    public float itemsScale = 1;
-
-
-    public bool changeColor = true;
-    public bool changeItem = false;
-
-    public int numberOfTrials;
 
     public OrientationBlockConfig[] orientationBlocks;
+    public int currentBlock = 0;
+
+    public OrientationBlockConfig getNextBlockConfig(){
+        currentBlock++;
+
+        return orientationBlocks[currentBlock];
+    }
+
+    public OrientationBlockConfig getCurrentBlockConfig(){
+        return orientationBlocks[currentBlock];
+    }
 }
 
 
