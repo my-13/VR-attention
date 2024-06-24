@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Rendering.Universal;
 
 
@@ -46,18 +47,27 @@ public class GameManager : MonoBehaviour
     public GameObject checkmark;
     public Material verticalMaterial;
     public Material horizontalMaterial;
-    public Material objectMaterial;
 
 
     // VR Camera
     public Camera vrCamera;
 
     // List of objects to be spawned
-    [HideInInspector]
-    public GameObject[] objects;
+    
+    [SerializeField] public InputActionReference ViewEyeGaze;
 
-    [HideInInspector]
-    public Vector3[] shapePositions;
+    [SerializeField] private InputActionAsset ActionAsset;
+
+    private void OnEnable() 
+    {
+        if (ActionAsset != null) 
+        {
+            ActionAsset.Enable(); 
+
+        } 
+    } 
+
+    
 
     // Start is called before the first frame update
     void Start()
@@ -93,6 +103,8 @@ public class GameManager : MonoBehaviour
 
         stopwatch = new System.Diagnostics.Stopwatch();
         
+        
+
         // Get UI text
         GameObject[] uiText = GameObject.FindGameObjectsWithTag("StartUI");
         
@@ -106,12 +118,24 @@ public class GameManager : MonoBehaviour
 
         
         if (!configOptions.IsLastBlock()){
+            OrientationTrials.gameManager = this;
             OrientationTrials.TrialStart(this, configOptions.GetCurrentBlockConfig());
         }
         // Start the first trial
         
     }
 
+
+    void Update()
+    {
+        if (isTrialRunning && trial == Trial.Orientation)
+        {
+            Pose pose = ViewEyeGaze.action.ReadValue<Pose>();
+            OrientationTrials.trials.viewPoses.Add(pose);
+            OrientationTrials.trials.viewPosesTime.Add(stopwatch.ElapsedMilliseconds);
+        }
+  
+    }
 
     public (Vector3[], GameObject[], int) GenerateShapePoints(OrientationBlockConfig blockConfig)
     {

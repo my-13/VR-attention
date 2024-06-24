@@ -788,10 +788,9 @@ MonoBehaviour:
   checkmark: {fileID: 5921756293722336148, guid: aa27940eb6d320943ad532f3ec2968a9, type: 3}
   verticalMaterial: {fileID: 2100000, guid: f26f00cd29343d44090d75ae40a4c1b8, type: 2}
   horizontalMaterial: {fileID: 2100000, guid: a67da93913f8557449d50bc569907047, type: 2}
-  objectMaterial: {fileID: 0}
   vrCamera: {fileID: 452463683}
-  objects: []
-  shapePositions: []
+  ViewEyeGaze: {fileID: -1073395540140675372, guid: bfbb5f84333981b43a8a20bd63fdf009, type: 3}
+  ActionAsset: {fileID: -944628639613478452, guid: bfbb5f84333981b43a8a20bd63fdf009, type: 3}
 --- !u!114 &1175078478
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -905,6 +904,10 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: e153bd71-96bd-4428-8685-819aa01af5bf
     m_ActionName: Player/B
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: db7a5288-25dd-4e3b-ae66-ff51b9863b16
+    m_ActionName: Player/view
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
@@ -17,7 +18,8 @@ public class OrientationBlockData
     public List<LineOrientation> selectedOrientation = new();
 
     public List<LineOrientation> actualOrientation = new();
-    
+    public List<Pose> viewPoses = new();
+    public List<long> viewPosesTime = new();
     public List<bool> hadDistractor = new();
 }
 
@@ -36,7 +38,8 @@ public class OrientationTrials : MonoBehaviour
     private static LineOrientation itemOrientation;
     [HideInInspector]
     public static OrientationBlockData trials;
-    private static bool isTrialRunning = false;
+    public static bool isTrialRunning = false;
+    private static bool isLockedOut = false;
     private static bool trialHadDistractor = false;
     [HideInInspector]
     public static GameObject trialObjectsParent;
@@ -47,10 +50,17 @@ public class OrientationTrials : MonoBehaviour
     
     //private static float radius;
     private static GameObject[] objects;
+    public static GameManager gameManager;
+
+
 
 
     public static void TrialStart(GameManager manager, OrientationBlockConfig config)
     {
+        if (isLockedOut)
+        {
+            return;
+        }
         stopwatch = new System.Diagnostics.Stopwatch();
         stopwatch.Start();
 
@@ -74,6 +84,7 @@ public class OrientationTrials : MonoBehaviour
     }
 
 
+
     public static IEnumerator WaitForTrial(GameManager manager, bool wait, OrientationBlockConfig config)
     {   
         if (wait)
@@ -88,16 +99,23 @@ public class OrientationTrials : MonoBehaviour
     public static IEnumerator TimeoutBreak(GameManager manager, int waitTime, OrientationBlockConfig config)
     {
         // Put on text to wait
+        isLockedOut = true;
+        GameObject[] uiTextArr = GameObject.FindObjectsByType<GameObject>(FindObjectsInactive.Include, FindObjectsSortMode.None).Where(sr => sr.name == "StartText").ToArray();
+        GameObject uiText = uiTextArr[0];
 
+        uiText.SetActive(true);
+        uiText.GetComponent<TMPro.TextMeshProUGUI>().text = "Please take a break for " + waitTime + " seconds. Press Trigger Button after screen clears.";
         yield return new WaitForSeconds(waitTime);
+        uiText.SetActive(false);
 
-
+        isLockedOut = false;
+        
         // Remove text to wait
 
     }
     public static void RunOrientationTrial(GameManager manager, OrientationBlockConfig config)
     {
-        if (isTrialRunning == true)
+        if (isTrialRunning == true || isLockedOut == true)
         {
             // Wait until the trial is over before starting a new one
             return;
@@ -208,8 +226,19 @@ public class OrientationTrials : MonoBehaviour
         
         if (trials.numberOfTrials >= config.numberOfTrials)
         {
-            BlockEnd(manager, config);
+            if (manager.configOptions.IsLastBlock()){
+                
+                BlockEnd(manager, config);
+                manager.EndStudy();                
+            }
+            else
+            {
+                BlockEnd(manager, config);
+            
+                manager.StartCoroutine(TimeoutBreak(manager, 39, config));
+            }
         }
+        
         else
         {
             manager.StartCoroutine( WaitForTrial(manager, true, config));
@@ -250,7 +279,8 @@ public class OrientationTrials : MonoBehaviour
     {
         // Save the data to a file
         string json = JsonUtility.ToJson(OrientationTrials.trials);
-        System.IO.File.WriteAllText("orientation_trials.json", json);
+        System.IO.File.WriteAllText("orientation_trials_"+ OrientationTrials.trials.participantID + "_"+ OrientationTrials.trials.blockID + ".json", json);
+        OrientationTrials.trials = new();
 
         Vector3 cameraPos = vrCamera.transform.position;
         Vector3 cameraForward = vrCamera.transform.forward * config.distanceFromUserMeters;
@@ -260,7 +290,7 @@ public class OrientationTrials : MonoBehaviour
         
         manager.StartCoroutine(manager.ClearTrialObjects());
 
-        manager.EndStudy();
+
         manager.trial = Trial.NoTrial;
         manager.isTrialRunning = false;
     }
