@@ -35,7 +35,7 @@ public class GameManager : MonoBehaviour
     // Time taken to complete the game
     public bool isTrialRunning = false;
     private bool isStudyRunning = false;
-    public int currentBlockNumber = 0;
+    public bool isStartLockedOut = false;
     public ConfigOptions configOptions;
     public System.Diagnostics.Stopwatch stopwatch;
     
@@ -85,18 +85,19 @@ public class GameManager : MonoBehaviour
     {
         if (isStudyRunning == true)
         {
-            // We already have a study running, so we should end it before starting a new one
-            if (currentBlockNumber == 0)
+            if (isStartLockedOut == false)
             {
-                // This should never run
-                
-                //OrientationTrials.TrialStart(this, configOptions.GetCurrentBlockConfig());
-                return;
+
+                Debug.Log("Starting a new block");
+                if (configOptions.IsBlockAvailable())
+                {
+                    Debug.Log("This should be good");
+                    // Randomize the colors for orientation
+                    OrientationTrials.TrialStart(this, configOptions.GetCurrentBlockConfig());
+                }
             }
-            if (!configOptions.IsLastBlock()){
-                // Randomize the colors for orientation
-                OrientationTrials.TrialStart(this, configOptions.GetNextBlockConfig());
-            }
+            // We already have a study running, but we're not in a trial so start the next trial
+            
 
             return;
         }
@@ -116,13 +117,12 @@ public class GameManager : MonoBehaviour
 
         isStudyRunning = true;
 
-        
+
+        // Start the first trial
         if (!configOptions.IsLastBlock()){
             OrientationTrials.gameManager = this;
             OrientationTrials.TrialStart(this, configOptions.GetCurrentBlockConfig());
         }
-        // Start the first trial
-        
     }
 
 
@@ -152,7 +152,7 @@ public class GameManager : MonoBehaviour
 
         // Generating the points based on the polygon automatically, regardless of the number of points
         Vector3[] shapePositions = new Vector3[numPositionPoints];
-        int phaseShiftDeg = blockConfig.randomrotation ? UnityEngine.Random.Range(0, 180) : blockConfig.rotationDegrees;
+        int phaseShiftDeg = blockConfig.randomRotation ? UnityEngine.Random.Range(0, 180) : blockConfig.rotationDegrees;
         
         // Generating the points based on the polygon automatically, regardless of the number of points
         for (int i = 0; i < numPositionPoints; i++) 
@@ -201,6 +201,7 @@ public class GameManager : MonoBehaviour
 
     public void EndStudy()
     {
+        Debug.Log("End of study");
         isStudyRunning = false;
     }
 

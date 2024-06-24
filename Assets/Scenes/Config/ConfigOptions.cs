@@ -19,6 +19,11 @@ public class ConfigOptions : ScriptableObject
     public bool IsLastBlock(){
         return currentBlock == orientationBlocks.Length - 1;
     }
+
+    public bool IsBlockAvailable(){
+        return currentBlock < orientationBlocks.Length;
+    }
+
     public OrientationBlockConfig GetNextBlockConfig(){
         currentBlock++;
 

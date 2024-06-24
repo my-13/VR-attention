@@ -15,5 +15,5 @@ MonoBehaviour:
   configName: Config
   orientationBlocks:
   - {fileID: 11400000, guid: dc4a4657441efa84386723cdbd63f223, type: 2}
-  - {fileID: 11400000, guid: f90d65900484eab4f9e6efa1be673dec, type: 2}
+  - {fileID: 11400000, guid: 649e2a618271d2c4a9a898fc49eca275, type: 2}
   currentBlock: 0

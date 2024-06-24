@@ -12,12 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 018eddff1d53d954c9a5a3a7a4606cf7, type: 3}
   m_Name: Block2
   m_EditorClassIdentifier: 
-  configName: Block2
-  targetObject: {fileID: 0}
-  otherObjects: []
-  distractorObjects: []
-  distracterItemColor: {r: 1, g: 0, b: 0, a: 0}
-  regularItemColor: {r: 0, g: 0, b: 1, a: 0}
+  configName: Trial1
+  targetObject: {fileID: 1837642756708611309, guid: ca9f9f35a5cd81b4f94e589c0c4e7b7f, type: 3}
+  otherObjects:
+  - {fileID: 1837642756708611309, guid: e33be15daf3fd6441b2d427a161164a0, type: 3}
+  - {fileID: 1837642756708611309, guid: e33be15daf3fd6441b2d427a161164a0, type: 3}
+  - {fileID: 1837642756708611309, guid: e33be15daf3fd6441b2d427a161164a0, type: 3}
+  distractorObjects:
+  - {fileID: 1837642756708611309, guid: e33be15daf3fd6441b2d427a161164a0, type: 3}
+  distracterItemColor: {r: 0.8901961, g: 0, b: 0, a: 0}
+  regularItemColor: {r: 0, g: 0.14795828, b: 1, a: 0}
   timeToSpawnMin: 2
   timeToSpawnMax: 5
   backgroundColor: {r: 0, g: 0, b: 0, a: 1}
@@ -29,6 +33,6 @@ MonoBehaviour:
   itemLocation: 1
   itemsScale: 0.8
   changeItemPosition: 0
-  numberOfTrials: 10
+  numberOfTrials: 5
   rotationDegrees: 0
-  randomrotation: 0
+  randomRotation: 0

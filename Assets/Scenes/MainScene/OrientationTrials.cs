@@ -39,7 +39,6 @@ public class OrientationTrials : MonoBehaviour
     [HideInInspector]
     public static OrientationBlockData trials;
     public static bool isTrialRunning = false;
-    private static bool isLockedOut = false;
     private static bool trialHadDistractor = false;
     [HideInInspector]
     public static GameObject trialObjectsParent;
@@ -57,13 +56,14 @@ public class OrientationTrials : MonoBehaviour
 
     public static void TrialStart(GameManager manager, OrientationBlockConfig config)
     {
-        if (isLockedOut)
+        if (manager.isStartLockedOut)
         {
             return;
         }
         stopwatch = new System.Diagnostics.Stopwatch();
         stopwatch.Start();
 
+        manager.isStartLockedOut = true;
         manager.trial = Trial.Orientation;
         trials = new OrientationBlockData();
         vrCamera = manager.vrCamera;
@@ -99,7 +99,7 @@ public class OrientationTrials : MonoBehaviour
     public static IEnumerator TimeoutBreak(GameManager manager, int waitTime, OrientationBlockConfig config)
     {
         // Put on text to wait
-        isLockedOut = true;
+        manager.isStartLockedOut = true;
         GameObject[] uiTextArr = GameObject.FindObjectsByType<GameObject>(FindObjectsInactive.Include, FindObjectsSortMode.None).Where(sr => sr.name == "StartText").ToArray();
         GameObject uiText = uiTextArr[0];
 
@@ -108,14 +108,14 @@ public class OrientationTrials : MonoBehaviour
         yield return new WaitForSeconds(waitTime);
         uiText.SetActive(false);
 
-        isLockedOut = false;
-        
+        manager.isStartLockedOut = false;
+        manager.configOptions.GetNextBlockConfig();        
         // Remove text to wait
 
     }
     public static void RunOrientationTrial(GameManager manager, OrientationBlockConfig config)
     {
-        if (isTrialRunning == true || isLockedOut == true)
+        if (isTrialRunning == true)
         {
             // Wait until the trial is over before starting a new one
             return;
@@ -235,7 +235,7 @@ public class OrientationTrials : MonoBehaviour
             {
                 BlockEnd(manager, config);
             
-                manager.StartCoroutine(TimeoutBreak(manager, 39, config));
+                manager.StartCoroutine(TimeoutBreak(manager, 30, config));
             }
         }
         
@@ -290,7 +290,7 @@ public class OrientationTrials : MonoBehaviour
         
         manager.StartCoroutine(manager.ClearTrialObjects());
 
-
+        manager.isStartLockedOut = false;
         manager.trial = Trial.NoTrial;
         manager.isTrialRunning = false;
     }

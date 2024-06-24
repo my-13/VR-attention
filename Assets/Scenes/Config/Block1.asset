@@ -33,6 +33,6 @@ MonoBehaviour:
   itemLocation: 1
   itemsScale: 0.8
   changeItemPosition: 0
-  numberOfTrials: 10
+  numberOfTrials: 5
   rotationDegrees: 0
   randomrotation: 0
