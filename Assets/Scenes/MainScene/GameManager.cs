@@ -132,7 +132,7 @@ public class GameManager : MonoBehaviour
         {
             Pose pose = ViewEyeGaze.action.ReadValue<Pose>();
             OrientationTrials.trials.viewPoses.Add(pose);
-            OrientationTrials.trials.viewPosesTime.Add(stopwatch.ElapsedMilliseconds);
+            OrientationTrials.trials.viewPosesTime.Add(OrientationTrials.stopwatch.ElapsedMilliseconds);
         }
   
     }

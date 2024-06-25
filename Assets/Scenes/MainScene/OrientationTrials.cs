@@ -32,7 +32,7 @@ public enum LineOrientation
 public class OrientationTrials : MonoBehaviour
 {
 
-    private static System.Diagnostics.Stopwatch stopwatch;
+    public static System.Diagnostics.Stopwatch stopwatch;
     private static long time_ms = 0;
     private static long start_time_ms = 0;
     private static LineOrientation itemOrientation;
