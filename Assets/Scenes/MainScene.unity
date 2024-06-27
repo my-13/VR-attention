@@ -780,7 +780,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isTrialRunning: 0
-  currentBlockNumber: 0
+  isStartLockedOut: 0
   configOptions: {fileID: 11400000, guid: 085c8950d956c8842ba5a2d273a6c40e, type: 2}
   trial: 0
   linePrefab: {fileID: 4056634127491352500, guid: 76a916dc3aa02d44e8a8eefa370e4d4e, type: 3}

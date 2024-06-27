@@ -249,11 +249,13 @@ public class OrientationTrials : MonoBehaviour
     {
         LineOrientation orientation = (LineOrientation) UnityEngine.Random.Range(0, 2);
 
+
         if (orientation == LineOrientation.Horizontal)
         {
             obj.GetComponent<Renderer>().materials = new Material[] {obj.GetComponent<Renderer>().material, horizontalMaterial};
         }else{
             obj.GetComponent<Renderer>().materials = new Material[] {obj.GetComponent<Renderer>().material, verticalMaterial};
+            //obj.transform.Rotate(0, 0, 90);
         }
 
         return orientation;
