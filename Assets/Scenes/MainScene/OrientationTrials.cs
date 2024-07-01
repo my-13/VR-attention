@@ -254,10 +254,24 @@ public class OrientationTrials : MonoBehaviour
 
         if (orientation == LineOrientation.Horizontal)
         {
-            //obj.GetComponent<Renderer>().materials = new Material[] {obj.GetComponent<Renderer>().material, horizontalMaterial};
+            if (obj.GetComponent<LineRenderer>() != null)
+            {
+                Bounds bounds = obj.GetComponent<Renderer>().bounds;
+                Vector3 size = bounds.size;
+
+                obj.GetComponent<LineRenderer>().SetPosition(0, new Vector3(-1 * size.x / obj.gameObject.transform.localScale.x / 2.5f, 0, 0));
+                obj.GetComponent<LineRenderer>().SetPosition(1, new Vector3(size.x / obj.gameObject.transform.localScale.x / 2.5f, 0, 0));
+            }
+            
         }else{
-            //obj.GetComponent<Renderer>().materials = new Material[] {obj.GetComponent<Renderer>().material, verticalMaterial};
-            //obj.transform.Rotate(0, 0, 90);
+            if (obj.GetComponent<LineRenderer>() != null)
+            {
+                Bounds bounds = obj.GetComponent<Renderer>().bounds;
+                Vector3 size = bounds.size;
+
+                obj.GetComponent<LineRenderer>().SetPosition(0, new Vector3(0, size.y / obj.gameObject.transform.localScale.y / 2.5f, 0));
+                obj.GetComponent<LineRenderer>().SetPosition(1, new Vector3(0, -1 * size.y / obj.gameObject.transform.localScale.y / 2.5f, 0));
+            }
         }
 
         return orientation;
