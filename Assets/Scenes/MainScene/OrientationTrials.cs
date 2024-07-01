@@ -158,7 +158,6 @@ public class OrientationTrials : MonoBehaviour
             normalColor = colors[0];
             distractorColor = colors[1];
         }
-        
         // Summon The Objects
         for (int i = 0; i < objectPositions.Length; i++)
         {
@@ -170,7 +169,9 @@ public class OrientationTrials : MonoBehaviour
 
             if (i == 0)
             {
+                
                 obj.GetComponent<Renderer>().material.color = normalColor;
+                
                 itemOrientation = RandLineOrientation(obj, manager.verticalMaterial, manager.horizontalMaterial);
             }
             else if (i < config.distractorObjects.Length + 1)
@@ -192,6 +193,7 @@ public class OrientationTrials : MonoBehaviour
             else
             {
                 obj.GetComponent<Renderer>().material.color = normalColor;
+
                 RandLineOrientation(obj, manager.verticalMaterial, manager.horizontalMaterial);
             }
         }
@@ -252,9 +254,9 @@ public class OrientationTrials : MonoBehaviour
 
         if (orientation == LineOrientation.Horizontal)
         {
-            obj.GetComponent<Renderer>().materials = new Material[] {obj.GetComponent<Renderer>().material, horizontalMaterial};
+            //obj.GetComponent<Renderer>().materials = new Material[] {obj.GetComponent<Renderer>().material, horizontalMaterial};
         }else{
-            obj.GetComponent<Renderer>().materials = new Material[] {obj.GetComponent<Renderer>().material, verticalMaterial};
+            //obj.GetComponent<Renderer>().materials = new Material[] {obj.GetComponent<Renderer>().material, verticalMaterial};
             //obj.transform.Rotate(0, 0, 90);
         }
 
