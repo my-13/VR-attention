@@ -130,12 +130,14 @@ public class GameManager : MonoBehaviour
     {
         if (isTrialRunning && trial == Trial.Orientation)
         {
+            // Put this in a seperate thread
             Pose pose = ViewEyeGaze.action.ReadValue<Pose>();
             OrientationTrials.trials.viewPoses.Add(pose);
             OrientationTrials.trials.viewPosesTime.Add(OrientationTrials.stopwatch.ElapsedMilliseconds);
         }
   
     }
+
 
     public (Vector3[], GameObject[], int) GenerateShapePoints(OrientationBlockConfig blockConfig)
     {

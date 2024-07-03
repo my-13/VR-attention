@@ -200,6 +200,10 @@ public class OrientationTrials : MonoBehaviour
         
     }
 
+    public static void RecordTrialData(GameManager manager, bool wasCorrect){
+        
+    }
+    
     public static void StopOrientationTrial(GameManager manager, LineOrientation orientation, OrientationBlockConfig config)
     {   
         // Get the ending time
@@ -297,8 +301,11 @@ public class OrientationTrials : MonoBehaviour
     {
         // Save the data to a file
         string json = JsonUtility.ToJson(OrientationTrials.trials);
-        System.IO.File.WriteAllText("orientation_trials_"+ OrientationTrials.trials.participantID + "_"+ OrientationTrials.trials.blockID + ".json", json);
+        System.IO.File.WriteAllText("orientation_trials_"+ OrientationTrials.trials.participantID + "_"+ OrientationTrials.trials.blockID.ToString("00") + ".json", json);
         OrientationTrials.trials = new();
+        
+        // Format: orientation_trials_XXXX_YY.json where XXXX is the participant ID and YY is the block ID
+
 
         Vector3 cameraPos = vrCamera.transform.position;
         Vector3 cameraForward = vrCamera.transform.forward * config.distanceFromUserMeters;
