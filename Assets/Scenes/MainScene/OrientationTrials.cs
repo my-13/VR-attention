@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEditor;
@@ -13,7 +14,7 @@ public class OrientationBlockData
     public OrientationBlockConfig saveDataUsed;
     public string participantID = "0000";
     public int blockID = 0;
-    public int numberOfTrials = 0; // This should be equivalent to the number of trialTimes
+    public int trialCount = 0; // This should be equivalent to the number of trialTimes
     public List<float> trialTimesMiliseconds = new();
     public List<LineOrientation> selectedOrientation = new();
 
@@ -29,6 +30,13 @@ public enum LineOrientation
     Vertical
 }
 
+public enum TrialEvent
+{
+    Nothing,
+    TriggerPressed,
+    ButtonPressed, 
+}
+
 public class OrientationTrials : MonoBehaviour
 {
 
@@ -39,6 +47,7 @@ public class OrientationTrials : MonoBehaviour
     [HideInInspector]
     public static OrientationBlockData trials;
     public static bool isTrialRunning = false;
+    public static bool isDataRecording = false;
     private static bool trialHadDistractor = false;
     [HideInInspector]
     public static GameObject trialObjectsParent;
@@ -47,14 +56,21 @@ public class OrientationTrials : MonoBehaviour
     [HideInInspector]
     public static Camera vrCamera;
     
+    
     //private static float radius;
     private static GameObject[] objects;
     public static GameManager gameManager;
 
+    // (Miliseconds, Trial Events for if something happened, Hand Positions at that time) 50Hz
+    public static (List<long>, List<TrialEvent>, List<Vector3>) mainTrialData = (new(), new(), new());
+    // (Miliseconds, Eye Pose at that time) 120Hz
+    public static (List<long>, List<Pose>) viewTrialData = (new(), new());
 
 
 
-    public static void TrialStart(GameManager manager, OrientationBlockConfig config)
+
+
+    public static void BlockStart(GameManager manager, OrientationBlockConfig config)
     {
         if (manager.isStartLockedOut)
         {
@@ -70,7 +86,7 @@ public class OrientationTrials : MonoBehaviour
         trialObjectsParent = manager.trialObjectsParent;
 
         SetupBlock(manager, config);
-        
+
         manager.StartCoroutine( WaitForTrial(manager, true, config) );
 
     }
@@ -147,6 +163,11 @@ public class OrientationTrials : MonoBehaviour
         start_time_ms = stopwatch.ElapsedMilliseconds;
         
 
+        // Start capturing data
+        mainTrialData = (new(), new(), new());
+        viewTrialData = (new(), new());
+        isDataRecording = true;
+
         Color normalColor = config.regularItemColor;
         Color distractorColor = config.distracterItemColor;
 
@@ -200,8 +221,33 @@ public class OrientationTrials : MonoBehaviour
         
     }
 
-    public static void RecordTrialData(GameManager manager, bool wasCorrect){
+
+    public static void RecordTrialData(GameManager manager){
         
+        // Format for text main file:
+        // time, eventCode, Hand Position
+        // Ex. 000001, eventCode, (0,0,0)
+
+        // Format for text view file:
+        // Time, Eye Position, Eye Rotation?
+        // Ex. 000001, (0, 0, 0), (0,0,0)
+
+        string path = "./data/main_" + OrientationTrials.trials.participantID + "_" + OrientationTrials.trials.blockID + "_" + OrientationTrials.trials.trialCount + ".txt";
+        string mainTrialcontent = "";
+        string mainTrialInfo = (int)OrientationTrials.trials.selectedOrientation[OrientationTrials.trials.trialCount] + ", " + (int)OrientationTrials.trials.actualOrientation[OrientationTrials.trials.trialCount] + ", " + OrientationTrials.trials.hadDistractor[OrientationTrials.trials.trialCount] + "\n";
+
+        for (int i = 0; i < mainTrialData.Item1.Count; i++)
+        {
+            mainTrialcontent += mainTrialData.Item1[i] + ", " + mainTrialData.Item2[i] + ", " + mainTrialData.Item3[i] + "\n";
+        }
+
+        if (!File.Exists(path)) {
+            File.WriteAllText(path, mainTrialInfo);
+        }
+
+        File.AppendAllText(path, mainTrialcontent);
+        
+
     }
     
     public static void StopOrientationTrial(GameManager manager, LineOrientation orientation, OrientationBlockConfig config)
@@ -216,13 +262,18 @@ public class OrientationTrials : MonoBehaviour
         
         isTrialRunning = false;
         manager.isTrialRunning = false;
+        isDataRecording = false;
 
-        trials.numberOfTrials++;
+
         trials.trialTimesMiliseconds.Add(time_ms);
         bool wasCorrect = orientation == itemOrientation;
         trials.actualOrientation.Add(itemOrientation);
         trials.selectedOrientation.Add(orientation);
         trials.hadDistractor.Add(trialHadDistractor);
+        RecordTrialData(manager);
+        
+        trials.trialCount++;
+
 
         // Destroy all objects
         foreach (Transform transform in trialObjectsParent.transform)
@@ -230,7 +281,7 @@ public class OrientationTrials : MonoBehaviour
             Destroy(transform.gameObject);
         }
         
-        if (trials.numberOfTrials >= config.numberOfTrials)
+        if (trials.trialCount >= config.numberOfTrials)
         {
             if (manager.configOptions.IsLastBlock()){
                 

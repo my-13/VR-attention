@@ -37,9 +37,9 @@ public class GameManager : MonoBehaviour
     private bool isStudyRunning = false;
     public bool isStartLockedOut = false;
     public ConfigOptions configOptions;
-    public System.Diagnostics.Stopwatch stopwatch;
     
     public Trial trial = Trial.NoTrial;
+    public GameObject trackedPositionObject;
     
     // Objects referenced to be passed to the trials scripts
     public GameObject linePrefab;
@@ -93,7 +93,7 @@ public class GameManager : MonoBehaviour
                 {
                     Debug.Log("This should be good");
                     // Randomize the colors for orientation
-                    OrientationTrials.TrialStart(this, configOptions.GetCurrentBlockConfig());
+                    OrientationTrials.BlockStart(this, configOptions.GetCurrentBlockConfig());
                 }
             }
             // We already have a study running, but we're not in a trial so start the next trial
@@ -101,10 +101,6 @@ public class GameManager : MonoBehaviour
 
             return;
         }
-
-        stopwatch = new System.Diagnostics.Stopwatch();
-        
-        
 
         // Get UI text
         GameObject[] uiText = GameObject.FindGameObjectsWithTag("StartUI");
@@ -121,10 +117,37 @@ public class GameManager : MonoBehaviour
         // Start the first trial
         if (!configOptions.IsLastBlock()){
             OrientationTrials.gameManager = this;
-            OrientationTrials.TrialStart(this, configOptions.GetCurrentBlockConfig());
+            OrientationTrials.BlockStart(this, configOptions.GetCurrentBlockConfig());
         }
     }
 
+    void FixedUpdate() {
+        Debug.Log(OrientationTrials.isDataRecording);
+        if (OrientationTrials.isDataRecording){
+            long time_ms = OrientationTrials.stopwatch.ElapsedMilliseconds;
+            // Check what is happening, see if there's any input.
+            TrialEvent code = TrialEvent.Nothing;
+
+            if (Input.GetKeyDown("space"))
+            {
+                code = TrialEvent.TriggerPressed;
+            }
+
+            if (Input.GetKeyDown("up") || Input.GetKeyDown("down"))
+            {
+                code = TrialEvent.ButtonPressed;
+            }
+        
+
+            // Log the data
+            OrientationTrials.mainTrialData.Item1.Add(time_ms);
+            OrientationTrials.mainTrialData.Item2.Add(code);
+            OrientationTrials.mainTrialData.Item3.Add(trackedPositionObject.transform.position);
+
+
+            // Dequeue the eye tracking data
+        }
+    }
 
     void Update()
     {
@@ -213,28 +236,6 @@ public class GameManager : MonoBehaviour
         foreach (Transform transform in trialObjectsParent.transform)
         {
             Destroy(transform.gameObject);
-        }
-    }
-
-    private void FixedUpdate() {
-        // Get the time from the stopwatch
-        if (isTrialRunning)
-        {
-            //long time_ms = stopwatch.ElapsedMilliseconds;
-            // Check what is happening, see if there's any input.
-
-            if (Input.GetKeyDown("space"))
-            {
-                // Log that in the file that we just started the trial
-            }
-
-            if (Input.GetKeyDown("up") || Input.GetKeyDown("down"))
-            {
-                // Log that in the file that we just pressed a button
-            }
-            
-            
-            
         }
     }
 
