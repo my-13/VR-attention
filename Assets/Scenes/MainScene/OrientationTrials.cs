@@ -232,20 +232,37 @@ public class OrientationTrials : MonoBehaviour
         // Time, Eye Position, Eye Rotation?
         // Ex. 000001, (0, 0, 0), (0,0,0)
 
-        string path = "./data/main_" + OrientationTrials.trials.participantID + "_" + OrientationTrials.trials.blockID + "_" + OrientationTrials.trials.trialCount + ".txt";
+        string mainPath = "./data/main_" + OrientationTrials.trials.participantID + "_" + OrientationTrials.trials.blockID + "_" + OrientationTrials.trials.trialCount + ".txt";
         string mainTrialcontent = "";
         string mainTrialInfo = (int)OrientationTrials.trials.selectedOrientation[OrientationTrials.trials.trialCount] + ", " + (int)OrientationTrials.trials.actualOrientation[OrientationTrials.trials.trialCount] + ", " + OrientationTrials.trials.hadDistractor[OrientationTrials.trials.trialCount] + "\n";
+        string eyePath = "./data/eye_" + OrientationTrials.trials.participantID + "_" + OrientationTrials.trials.blockID + "_" + OrientationTrials.trials.trialCount + ".txt";
+        string eyeTrialContent = "";
 
         for (int i = 0; i < mainTrialData.Item1.Count; i++)
         {
             mainTrialcontent += mainTrialData.Item1[i] + ", " + mainTrialData.Item2[i] + ", " + mainTrialData.Item3[i] + "\n";
         }
 
-        if (!File.Exists(path)) {
-            File.WriteAllText(path, mainTrialInfo);
+        for (int i = 0; i < viewTrialData.Item1.Count; i++)
+        {
+            eyeTrialContent += viewTrialData.Item1[i] + ", " + viewTrialData.Item2[i].position + ", " + viewTrialData.Item2[i].rotation + "\n";
         }
 
-        File.AppendAllText(path, mainTrialcontent);
+        if (!File.Exists("./data")) {
+            Directory.CreateDirectory("./data");
+        }
+
+        if (!File.Exists(eyePath)) {
+            File.WriteAllText(eyePath, eyeTrialContent);
+        }else{
+            File.AppendAllText(eyePath, eyeTrialContent);
+        }
+
+        if (!File.Exists(mainPath)) {
+            File.WriteAllText(mainPath, mainTrialInfo);
+        }
+
+        File.AppendAllText(mainPath, mainTrialcontent);
         
 
     }

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -88,10 +89,8 @@ public class GameManager : MonoBehaviour
             if (isStartLockedOut == false)
             {
 
-                Debug.Log("Starting a new block");
                 if (configOptions.IsBlockAvailable())
                 {
-                    Debug.Log("This should be good");
                     // Randomize the colors for orientation
                     OrientationTrials.BlockStart(this, configOptions.GetCurrentBlockConfig());
                 }
@@ -112,7 +111,10 @@ public class GameManager : MonoBehaviour
         }
 
         isStudyRunning = true;
-
+        
+        StartCoroutine(RecordEyeData());
+        //Thread eyeThread = new(RecordEyeData);
+        //eyeThread.Start();
 
         // Start the first trial
         if (!configOptions.IsLastBlock()){
@@ -121,14 +123,27 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    IEnumerator RecordEyeData(){
+        
+        while (true){
+            if (OrientationTrials.isDataRecording){
+                Pose pose = ViewEyeGaze.action.ReadValue<Pose>();
+                OrientationTrials.viewTrialData.Item1.Add(OrientationTrials.stopwatch.ElapsedMilliseconds);
+                OrientationTrials.viewTrialData.Item2.Add(pose);
+            }
+            
+            yield return new WaitForSeconds(0.01f);
+        }
+        
+    }
+
     void FixedUpdate() {
-        Debug.Log(OrientationTrials.isDataRecording);
         if (OrientationTrials.isDataRecording){
             long time_ms = OrientationTrials.stopwatch.ElapsedMilliseconds;
             // Check what is happening, see if there's any input.
             TrialEvent code = TrialEvent.Nothing;
 
-            if (Input.GetKeyDown("space"))
+            if (new InputAction("Start").ReadValue<float>() > 0.5f)
             {
                 code = TrialEvent.TriggerPressed;
             }
