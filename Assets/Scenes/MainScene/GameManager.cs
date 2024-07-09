@@ -34,6 +34,7 @@ public enum Trial
 public class GameManager : MonoBehaviour
 {
     // Time taken to complete the game
+    public string participantID = "0000";
     public bool isTrialRunning = false;
     private bool isStudyRunning = false;
     public bool isStartLockedOut = false;
@@ -58,6 +59,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] public InputActionReference ViewEyeGaze;
 
     [SerializeField] private InputActionAsset ActionAsset;
+    public InputActionReference startAction;
+    public InputActionReference primaryAction;
+    public InputActionReference secondaryAction;
 
     private void OnEnable() 
     {
@@ -143,15 +147,17 @@ public class GameManager : MonoBehaviour
             // Check what is happening, see if there's any input.
             TrialEvent code = TrialEvent.Nothing;
 
-            if (new InputAction("Start").ReadValue<float>() > 0.5f)
+            //InputActionAsset
+            if ( startAction.action.triggered)
             {
                 code = TrialEvent.TriggerPressed;
             }
 
-            if (Input.GetKeyDown("up") || Input.GetKeyDown("down"))
+            if (primaryAction.action.triggered || secondaryAction.action.triggered)
             {
                 code = TrialEvent.ButtonPressed;
             }
+
         
 
             // Log the data

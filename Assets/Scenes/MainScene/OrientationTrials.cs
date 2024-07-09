@@ -82,6 +82,10 @@ public class OrientationTrials : MonoBehaviour
         manager.isStartLockedOut = true;
         manager.trial = Trial.Orientation;
         trials = new OrientationBlockData();
+
+        trials.participantID = manager.participantID;
+        
+
         vrCamera = manager.vrCamera;
         trialObjectsParent = manager.trialObjectsParent;
 
@@ -267,6 +271,11 @@ public class OrientationTrials : MonoBehaviour
 
     }
     
+    public static IEnumerator StopRecordingDataDelay(float delay){
+        yield return new WaitForSeconds(delay);
+        isDataRecording = false;
+    }
+
     public static void StopOrientationTrial(GameManager manager, LineOrientation orientation, OrientationBlockConfig config)
     {   
         // Get the ending time
@@ -279,7 +288,8 @@ public class OrientationTrials : MonoBehaviour
         
         isTrialRunning = false;
         manager.isTrialRunning = false;
-        isDataRecording = false;
+        manager.StartCoroutine(StopRecordingDataDelay(1f));
+        
 
 
         trials.trialTimesMiliseconds.Add(time_ms);

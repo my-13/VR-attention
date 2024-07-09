@@ -785,6 +785,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c24a42872c94f924698ccc385f4723ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  participantID: 0000
   isTrialRunning: 0
   isStartLockedOut: 0
   configOptions: {fileID: 11400000, guid: 085c8950d956c8842ba5a2d273a6c40e, type: 2}
@@ -798,6 +799,9 @@ MonoBehaviour:
   vrCamera: {fileID: 452463683}
   ViewEyeGaze: {fileID: -1073395540140675372, guid: bfbb5f84333981b43a8a20bd63fdf009, type: 3}
   ActionAsset: {fileID: -944628639613478452, guid: bfbb5f84333981b43a8a20bd63fdf009, type: 3}
+  startAction: {fileID: 6086349569046165721, guid: bfbb5f84333981b43a8a20bd63fdf009, type: 3}
+  primaryAction: {fileID: -289592092543240485, guid: bfbb5f84333981b43a8a20bd63fdf009, type: 3}
+  secondaryAction: {fileID: 1911538307374502818, guid: bfbb5f84333981b43a8a20bd63fdf009, type: 3}
 --- !u!114 &1175078478
 MonoBehaviour:
   m_ObjectHideFlags: 0
