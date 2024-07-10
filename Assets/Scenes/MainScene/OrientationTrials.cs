@@ -62,6 +62,8 @@ public class OrientationTrials : MonoBehaviour
     public static GameManager gameManager;
 
     // (Miliseconds, Trial Events for if something happened, Hand Positions at that time) 50Hz
+    public static (Queue<long>, Queue<Pose>) eyeViewTrialQueue = (new(), new());
+
     public static (List<long>, List<TrialEvent>, List<Vector3>) mainTrialData = (new(), new(), new());
     // (Miliseconds, Eye Pose at that time) 120Hz
     public static (List<long>, List<Pose>) viewTrialData = (new(), new());

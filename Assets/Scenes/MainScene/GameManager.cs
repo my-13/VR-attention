@@ -116,9 +116,9 @@ public class GameManager : MonoBehaviour
 
         isStudyRunning = true;
         
-        StartCoroutine(RecordEyeData());
-        //Thread eyeThread = new(RecordEyeData);
-        //eyeThread.Start();
+        //StartCoroutine(RecordEyeData());
+        Thread eyeThread = new( RecordEyeData);
+        eyeThread.Start();
 
         // Start the first trial
         if (!configOptions.IsLastBlock()){
@@ -127,18 +127,19 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    IEnumerator RecordEyeData(){
-        
+
+
+    void RecordEyeData(){
         while (true){
+            Debug.Log("Recording Eye Data");
             if (OrientationTrials.isDataRecording){
                 Pose pose = ViewEyeGaze.action.ReadValue<Pose>();
-                OrientationTrials.viewTrialData.Item1.Add(OrientationTrials.stopwatch.ElapsedMilliseconds);
-                OrientationTrials.viewTrialData.Item2.Add(pose);
+                
+                //OrientationTrials.viewTrialData.Item1.Add(OrientationTrials.stopwatch.ElapsedMilliseconds);
+                //OrientationTrials.viewTrialData.Item2.Add(pose);
             }
             
-            yield return new WaitForSeconds(0.01f);
         }
-        
     }
 
     void FixedUpdate() {
@@ -167,6 +168,9 @@ public class GameManager : MonoBehaviour
 
 
             // Dequeue the eye tracking data
+            
+            // Append the last item of the array
+
         }
     }
 
@@ -263,29 +267,7 @@ public class GameManager : MonoBehaviour
 
     // Helper functions
 
-    public static void WriteLargeFile(string path, string content)
-    {
-        int bufferSize = 4096;
-        byte[] buffer = new byte[bufferSize];
-
-        using (var stream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize, FileOptions.SequentialScan))
-        {
-            using (var writer = new StreamWriter(stream))
-            {
-                int offset = 0;
-                while (offset < content.Length)
-                {
-                    int bytesToWrite = Math.Min(bufferSize, content.Length - offset);
-                    var chunk = content.Substring(offset, bytesToWrite);
-                    writer.Write(chunk);
-                    writer.Flush();
-                    offset += bytesToWrite;
-                }
-            }
-        }
-    }
-
-    // Matt Howels
+    // Code By Matt Howels
     public static void Shuffle<T> (System.Random rng, T[] array)
     {
         int n = array.Length;
