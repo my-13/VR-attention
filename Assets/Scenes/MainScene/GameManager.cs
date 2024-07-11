@@ -40,6 +40,7 @@ public class GameManager : MonoBehaviour
     
     public Trial trial = Trial.NoTrial;
     public GameObject trackedPositionObject;
+    public GameObject secondTrackedPositionObject;
     
     // Objects referenced to be passed to the trials scripts
     public GameObject linePrefab;
@@ -143,6 +144,7 @@ public class GameManager : MonoBehaviour
             OrientationTrials.mainTrialData.Item1.Add(time_ms);
             OrientationTrials.mainTrialData.Item2.Add(code);
             OrientationTrials.mainTrialData.Item3.Add(trackedPositionObject.transform.position);
+            OrientationTrials.mainTrialData.Item4.Add(secondTrackedPositionObject.transform.position);
 
 
             // Dequeue the eye tracking data

@@ -62,7 +62,7 @@ public class OrientationTrials : MonoBehaviour
     public static GameManager gameManager;
 
     // (Miliseconds, Trial Events for if something happened, Hand Positions at that time) 50Hz
-    public static (List<long>, List<TrialEvent>, List<Vector3>) mainTrialData = (new(), new(), new());
+    public static (List<long>, List<TrialEvent>, List<Vector3>, List<Vector3>) mainTrialData = (new(), new(), new(), new());
     // (Miliseconds, Eye Pose at that time) 120Hz
     public static (List<long>, List<Pose>) viewTrialData = (new(), new());
 
@@ -164,7 +164,7 @@ public class OrientationTrials : MonoBehaviour
         
 
         // Start capturing data
-        mainTrialData = (new(), new(), new());
+        mainTrialData = (new(), new(), new(), new());
         viewTrialData = (new(), new());
         isDataRecording = true;
 
@@ -238,7 +238,7 @@ public class OrientationTrials : MonoBehaviour
 
         for (int i = 0; i < mainTrialData.Item1.Count; i++)
         {
-            mainTrialcontent += mainTrialData.Item1[i] + ", " + mainTrialData.Item2[i] + ", " + mainTrialData.Item3[i] + "\n";
+            mainTrialcontent += mainTrialData.Item1[i] + ", " + mainTrialData.Item2[i] + ", " + mainTrialData.Item3[i] + mainTrialData.Item4[i] + "\n";
         }
 
         if (!File.Exists(path)) {
