@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -33,6 +34,7 @@ public enum Trial
 public class GameManager : MonoBehaviour
 {
     // Time taken to complete the game
+    public string participantID = "0000";
     public bool isTrialRunning = false;
     private bool isStudyRunning = false;
     public bool isStartLockedOut = false;
@@ -58,6 +60,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] public InputActionReference ViewEyeGaze;
 
     [SerializeField] private InputActionAsset ActionAsset;
+    public InputActionReference startAction;
+    public InputActionReference primaryAction;
+    public InputActionReference secondaryAction;
 
     private void OnEnable() 
     {
@@ -89,10 +94,8 @@ public class GameManager : MonoBehaviour
             if (isStartLockedOut == false)
             {
 
-                Debug.Log("Starting a new block");
                 if (configOptions.IsBlockAvailable())
                 {
-                    Debug.Log("This should be good");
                     // Randomize the colors for orientation
                     OrientationTrials.BlockStart(this, configOptions.GetCurrentBlockConfig());
                 }
@@ -113,7 +116,10 @@ public class GameManager : MonoBehaviour
         }
 
         isStudyRunning = true;
-
+        
+        //StartCoroutine(RecordEyeData());
+        Thread eyeThread = new( RecordEyeData);
+        eyeThread.Start();
 
         // Start the first trial
         if (!configOptions.IsLastBlock()){
@@ -122,22 +128,38 @@ public class GameManager : MonoBehaviour
         }
     }
 
+
+
+    void RecordEyeData(){
+        while (true){
+            Debug.Log("Recording Eye Data");
+            if (OrientationTrials.isDataRecording){
+                Pose pose = ViewEyeGaze.action.ReadValue<Pose>();
+                
+                //OrientationTrials.viewTrialData.Item1.Add(OrientationTrials.stopwatch.ElapsedMilliseconds);
+                //OrientationTrials.viewTrialData.Item2.Add(pose);
+            }
+            
+        }
+    }
+
     void FixedUpdate() {
-        Debug.Log(OrientationTrials.isDataRecording);
         if (OrientationTrials.isDataRecording){
             long time_ms = OrientationTrials.stopwatch.ElapsedMilliseconds;
             // Check what is happening, see if there's any input.
             TrialEvent code = TrialEvent.Nothing;
 
-            if (Input.GetKeyDown("space"))
+            //InputActionAsset
+            if ( startAction.action.triggered)
             {
                 code = TrialEvent.TriggerPressed;
             }
 
-            if (Input.GetKeyDown("up") || Input.GetKeyDown("down"))
+            if (primaryAction.action.triggered || secondaryAction.action.triggered)
             {
                 code = TrialEvent.ButtonPressed;
             }
+
         
 
             // Log the data
@@ -148,6 +170,9 @@ public class GameManager : MonoBehaviour
 
 
             // Dequeue the eye tracking data
+            
+            // Append the last item of the array
+
         }
     }
 
@@ -244,29 +269,7 @@ public class GameManager : MonoBehaviour
 
     // Helper functions
 
-    public static void WriteLargeFile(string path, string content)
-    {
-        int bufferSize = 4096;
-        byte[] buffer = new byte[bufferSize];
-
-        using (var stream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize, FileOptions.SequentialScan))
-        {
-            using (var writer = new StreamWriter(stream))
-            {
-                int offset = 0;
-                while (offset < content.Length)
-                {
-                    int bytesToWrite = Math.Min(bufferSize, content.Length - offset);
-                    var chunk = content.Substring(offset, bytesToWrite);
-                    writer.Write(chunk);
-                    writer.Flush();
-                    offset += bytesToWrite;
-                }
-            }
-        }
-    }
-
-    // Matt Howels
+    // Code By Matt Howels
     public static void Shuffle<T> (System.Random rng, T[] array)
     {
         int n = array.Length;

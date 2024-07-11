@@ -62,6 +62,8 @@ public class OrientationTrials : MonoBehaviour
     public static GameManager gameManager;
 
     // (Miliseconds, Trial Events for if something happened, Hand Positions at that time) 50Hz
+    public static (Queue<long>, Queue<Pose>) eyeViewTrialQueue = (new(), new());
+
     public static (List<long>, List<TrialEvent>, List<Vector3>, List<Vector3>) mainTrialData = (new(), new(), new(), new());
     // (Miliseconds, Eye Pose at that time) 120Hz
     public static (List<long>, List<Pose>) viewTrialData = (new(), new());
@@ -82,6 +84,10 @@ public class OrientationTrials : MonoBehaviour
         manager.isStartLockedOut = true;
         manager.trial = Trial.Orientation;
         trials = new OrientationBlockData();
+
+        trials.participantID = manager.participantID;
+        
+
         vrCamera = manager.vrCamera;
         trialObjectsParent = manager.trialObjectsParent;
 
@@ -232,24 +238,46 @@ public class OrientationTrials : MonoBehaviour
         // Time, Eye Position, Eye Rotation?
         // Ex. 000001, (0, 0, 0), (0,0,0)
 
-        string path = "./data/main_" + OrientationTrials.trials.participantID + "_" + OrientationTrials.trials.blockID + "_" + OrientationTrials.trials.trialCount + ".txt";
+        string mainPath = "./data/main_" + OrientationTrials.trials.participantID + "_" + OrientationTrials.trials.blockID + "_" + OrientationTrials.trials.trialCount + ".txt";
         string mainTrialcontent = "";
         string mainTrialInfo = (int)OrientationTrials.trials.selectedOrientation[OrientationTrials.trials.trialCount] + ", " + (int)OrientationTrials.trials.actualOrientation[OrientationTrials.trials.trialCount] + ", " + OrientationTrials.trials.hadDistractor[OrientationTrials.trials.trialCount] + "\n";
+        string eyePath = "./data/eye_" + OrientationTrials.trials.participantID + "_" + OrientationTrials.trials.blockID + "_" + OrientationTrials.trials.trialCount + ".txt";
+        string eyeTrialContent = "";
 
         for (int i = 0; i < mainTrialData.Item1.Count; i++)
         {
             mainTrialcontent += mainTrialData.Item1[i] + ", " + mainTrialData.Item2[i] + ", " + mainTrialData.Item3[i] + mainTrialData.Item4[i] + "\n";
         }
 
-        if (!File.Exists(path)) {
-            File.WriteAllText(path, mainTrialInfo);
+        for (int i = 0; i < viewTrialData.Item1.Count; i++)
+        {
+            eyeTrialContent += viewTrialData.Item1[i] + ", " + viewTrialData.Item2[i].position + ", " + viewTrialData.Item2[i].rotation + "\n";
         }
 
-        File.AppendAllText(path, mainTrialcontent);
+        if (!File.Exists("./data")) {
+            Directory.CreateDirectory("./data");
+        }
+
+        if (!File.Exists(eyePath)) {
+            File.WriteAllText(eyePath, eyeTrialContent);
+        }else{
+            File.AppendAllText(eyePath, eyeTrialContent);
+        }
+
+        if (!File.Exists(mainPath)) {
+            File.WriteAllText(mainPath, mainTrialInfo);
+        }
+
+        File.AppendAllText(mainPath, mainTrialcontent);
         
 
     }
     
+    public static IEnumerator StopRecordingDataDelay(float delay){
+        yield return new WaitForSeconds(delay);
+        isDataRecording = false;
+    }
+
     public static void StopOrientationTrial(GameManager manager, LineOrientation orientation, OrientationBlockConfig config)
     {   
         // Get the ending time
@@ -262,7 +290,8 @@ public class OrientationTrials : MonoBehaviour
         
         isTrialRunning = false;
         manager.isTrialRunning = false;
-        isDataRecording = false;
+        manager.StartCoroutine(StopRecordingDataDelay(1f));
+        
 
 
         trials.trialTimesMiliseconds.Add(time_ms);
