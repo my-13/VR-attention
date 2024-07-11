@@ -132,12 +132,11 @@ public class GameManager : MonoBehaviour
 
     void RecordEyeData(){
         while (true){
-            Debug.Log("Recording Eye Data");
             if (OrientationTrials.isDataRecording){
                 Pose pose = ViewEyeGaze.action.ReadValue<Pose>();
                 
-                //OrientationTrials.viewTrialData.Item1.Add(OrientationTrials.stopwatch.ElapsedMilliseconds);
-                //OrientationTrials.viewTrialData.Item2.Add(pose);
+                OrientationTrials.viewTrialData.Item1.Add(OrientationTrials.stopwatch.ElapsedMilliseconds - OrientationTrials.start_time_ms);
+                OrientationTrials.viewTrialData.Item2.Add(pose);
             }
             
         }
@@ -163,7 +162,7 @@ public class GameManager : MonoBehaviour
         
 
             // Log the data
-            OrientationTrials.mainTrialData.Item1.Add(time_ms);
+            OrientationTrials.mainTrialData.Item1.Add(time_ms - OrientationTrials.start_time_ms);
             OrientationTrials.mainTrialData.Item2.Add(code);
             OrientationTrials.mainTrialData.Item3.Add(trackedPositionObject.transform.position);
             OrientationTrials.mainTrialData.Item4.Add(secondTrackedPositionObject.transform.position);
@@ -182,8 +181,8 @@ public class GameManager : MonoBehaviour
         {
             // Put this in a seperate thread
             Pose pose = ViewEyeGaze.action.ReadValue<Pose>();
-            OrientationTrials.trials.viewPoses.Add(pose);
-            OrientationTrials.trials.viewPosesTime.Add(OrientationTrials.stopwatch.ElapsedMilliseconds);
+            //OrientationTrials.trials.viewPoses.Add(pose);
+            //OrientationTrials.trials.viewPosesTime.Add(OrientationTrials.stopwatch.ElapsedMilliseconds);
         }
   
     }

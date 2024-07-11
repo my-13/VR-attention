@@ -30,6 +30,11 @@ public enum LineOrientation
     Vertical
 }
 
+public enum FeedbackType{
+    Reaching,
+    ButtonInput
+}
+
 public enum TrialEvent
 {
     Nothing,
@@ -42,7 +47,7 @@ public class OrientationTrials : MonoBehaviour
 
     public static System.Diagnostics.Stopwatch stopwatch;
     private static long time_ms = 0;
-    private static long start_time_ms = 0;
+    public static long start_time_ms = 0;
     private static LineOrientation itemOrientation;
     [HideInInspector]
     public static OrientationBlockData trials;
@@ -237,11 +242,28 @@ public class OrientationTrials : MonoBehaviour
         // Format for text view file:
         // Time, Eye Position, Eye Rotation?
         // Ex. 000001, (0, 0, 0), (0,0,0)
+        
+        // Year, Month, Day, Hour(24), Minute, Second
+        string dateTime = DateTime.Now.ToString("yyyyMMddHHmmss");
 
-        string mainPath = "./data/main_" + OrientationTrials.trials.participantID + "_" + OrientationTrials.trials.blockID + "_" + OrientationTrials.trials.trialCount + ".txt";
+
+        Debug.Log(OrientationTrials.trials.saveDataUsed);
+        int feedbackType = OrientationTrials.trials.saveDataUsed.feedbackType == FeedbackType.ButtonInput ? 1 : 0;
+        int distractorPresent = OrientationTrials.trials.hadDistractor[OrientationTrials.trials.trialCount] ? 1 : 0;
+        int colorVariability = OrientationTrials.trials.saveDataUsed.randomizeColors ? 1 : 0;
+        int objectType = 1;
+
+        
+        // feedbackType ^ (2^0) + distractorPresent ^ (2^1) + colorVariability ^ (2^2) + objectType ^ (2^3)
+        int category = 1 + feedbackType * 1 + distractorPresent * 2 + colorVariability * 4 + objectType * 8;
+        
+
+        
+
+        string mainPath = "./data/main_" + dateTime + "_" + category + "_" + OrientationTrials.trials.participantID + "_" + OrientationTrials.trials.blockID + "_" + OrientationTrials.trials.trialCount + ".txt";
         string mainTrialcontent = "";
         string mainTrialInfo = (int)OrientationTrials.trials.selectedOrientation[OrientationTrials.trials.trialCount] + ", " + (int)OrientationTrials.trials.actualOrientation[OrientationTrials.trials.trialCount] + ", " + OrientationTrials.trials.hadDistractor[OrientationTrials.trials.trialCount] + "\n";
-        string eyePath = "./data/eye_" + OrientationTrials.trials.participantID + "_" + OrientationTrials.trials.blockID + "_" + OrientationTrials.trials.trialCount + ".txt";
+        string eyePath = "./data/eye_" + dateTime + "_" + category + "_" + OrientationTrials.trials.participantID + "_" + OrientationTrials.trials.blockID + "_" + OrientationTrials.trials.trialCount + ".txt";
         string eyeTrialContent = "";
 
         for (int i = 0; i < mainTrialData.Item1.Count; i++)
@@ -269,8 +291,6 @@ public class OrientationTrials : MonoBehaviour
         }
 
         File.AppendAllText(mainPath, mainTrialcontent);
-        
-
     }
     
     public static IEnumerator StopRecordingDataDelay(float delay){
