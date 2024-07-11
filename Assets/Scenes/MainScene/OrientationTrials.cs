@@ -11,7 +11,7 @@ using UnityEngine;
 [Serializable]
 public class OrientationBlockData
 {
-    public OrientationBlockConfig saveDataUsed;
+    //public OrientationBlockConfig saveDataUsed;
     public string participantID = "0000";
     public int blockID = 0;
     public int trialCount = 0; // This should be equivalent to the number of trialTimes
@@ -56,8 +56,8 @@ public class OrientationTrials : MonoBehaviour
     private static bool trialHadDistractor = false;
     [HideInInspector]
     public static GameObject trialObjectsParent;
-    [HideInInspector]
-    public static ConfigOptions configOptions;
+    //[HideInInspector]
+    //public static ConfigOptions configOptions;
     [HideInInspector]
     public static Camera vrCamera;
     
@@ -246,11 +246,9 @@ public class OrientationTrials : MonoBehaviour
         // Year, Month, Day, Hour(24), Minute, Second
         string dateTime = DateTime.Now.ToString("yyyyMMddHHmmss");
 
-
-        Debug.Log(OrientationTrials.trials.saveDataUsed);
-        int feedbackType = OrientationTrials.trials.saveDataUsed.feedbackType == FeedbackType.ButtonInput ? 1 : 0;
+        int feedbackType = manager.configOptions.GetCurrentBlockConfig().feedbackType == FeedbackType.ButtonInput ? 1 : 0;
         int distractorPresent = OrientationTrials.trials.hadDistractor[OrientationTrials.trials.trialCount] ? 1 : 0;
-        int colorVariability = OrientationTrials.trials.saveDataUsed.randomizeColors ? 1 : 0;
+        int colorVariability = manager.configOptions.GetCurrentBlockConfig().randomizeColors ? 1 : 0;
         int objectType = 1;
 
         
@@ -268,7 +266,7 @@ public class OrientationTrials : MonoBehaviour
 
         for (int i = 0; i < mainTrialData.Item1.Count; i++)
         {
-            mainTrialcontent += mainTrialData.Item1[i] + ", " + mainTrialData.Item2[i] + ", " + mainTrialData.Item3[i] + mainTrialData.Item4[i] + "\n";
+            mainTrialcontent += mainTrialData.Item1[i] + ", " + mainTrialData.Item2[i] + ", " + mainTrialData.Item3[i].x + "," + mainTrialData.Item3[i].y + "," + mainTrialData.Item3[i].z + "," + mainTrialData.Item4[i].x + "," + mainTrialData.Item4[i].y + "," + mainTrialData.Item4[i].z + "\n";
         }
 
         for (int i = 0; i < viewTrialData.Item1.Count; i++)
