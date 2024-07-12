@@ -36,3 +36,5 @@ MonoBehaviour:
   numberOfTrials: 5
   rotationDegrees: 0
   randomRotation: 0
+  feedbackType: 1
+  isItemsRealistic: 0

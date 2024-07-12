@@ -209,6 +209,7 @@ public class OrientationTrials : MonoBehaviour
             normalColor = colors[0];
             distractorColor = colors[1];
         }
+
         // Summon The Objects
         for (int i = 0; i < objectPositions.Length; i++)
         {
@@ -371,7 +372,7 @@ public class OrientationTrials : MonoBehaviour
     public static LineOrientation RandLineOrientation(GameObject obj, Material verticalMaterial, Material horizontalMaterial)
     {
         LineOrientation orientation = (LineOrientation) UnityEngine.Random.Range(0, 2);
-
+        // Check to see if it's a grab trial, if so, then just don't generate the lines.
 
         if (orientation == LineOrientation.Horizontal)
         {
