@@ -37,4 +37,5 @@ public class OrientationBlockConfig: ScriptableObject
     public int rotationDegrees = 0;
     public bool randomRotation = false;
     public FeedbackType feedbackType = FeedbackType.ButtonInput;
+    public bool isItemsRealistic = false;
 }

@@ -95,12 +95,29 @@ public class OrientationTrials : MonoBehaviour
 
         vrCamera = manager.vrCamera;
         trialObjectsParent = manager.trialObjectsParent;
-
-        SetupBlock(manager, config);
-
-        manager.StartCoroutine( WaitForTrial(manager, true, config) );
+        ShowUI(manager, config);
 
     }
+
+    public static void ShowUI(GameManager manager, OrientationBlockConfig config)
+    {
+
+        
+        GameObject[] uiTextArr = GameObject.FindObjectsByType<GameObject>(FindObjectsInactive.Include, FindObjectsSortMode.None).Where(sr => sr.name == "StartText").ToArray();
+        GameObject uiText = uiTextArr[0];
+        manager.isUIShown = true;
+        uiText.SetActive(true);
+        if (config.feedbackType == FeedbackType.ButtonInput){
+            uiText.GetComponent<TMPro.TextMeshProUGUI>().fontSize = 0.15f;
+            uiText.GetComponent<TMPro.TextMeshProUGUI>().text = "In this next section, you will be asked to identify the orientation of the line as quickly as possible. \n If the line is horizontal, press the top button on the the controller (A/X).\n If the line is vertical, press the bottom button (B/Y). \n Press the right controller trigger button to start.";
+        }else if(config.feedbackType == FeedbackType.Reaching){
+            uiText.GetComponent<TMPro.TextMeshProUGUI>().fontSize = 0.15f;
+            uiText.GetComponent<TMPro.TextMeshProUGUI>().text = "In this next section, you will be asked to find an object as quickly as possible, shown below. \n Once you have found the object below, reach out and grab using the controller, with your dominant hand. \nThe object may change color, or may stay the same color through this section.\nAs soon as you grab the object, it will dissapear, and the trial will repeat. \nPress the right trigger button to start.";
+        }
+
+    }
+
+    
 
     public static void SetupBlock(GameManager manager, OrientationBlockConfig config) {
         GameObject[] walls = GameObject.FindGameObjectsWithTag("Wall");
@@ -114,6 +131,7 @@ public class OrientationTrials : MonoBehaviour
 
     public static IEnumerator WaitForTrial(GameManager manager, bool wait, OrientationBlockConfig config)
     {   
+        
         if (wait)
         {
             yield return new WaitForSeconds(UnityEngine.Random.Range(config.timeToSpawnMin, config.timeToSpawnMax));
@@ -131,7 +149,7 @@ public class OrientationTrials : MonoBehaviour
         GameObject uiText = uiTextArr[0];
 
         uiText.SetActive(true);
-        uiText.GetComponent<TMPro.TextMeshProUGUI>().text = "Please take a break for " + waitTime + " seconds. Press Trigger Button after screen clears.";
+        uiText.GetComponent<TMPro.TextMeshProUGUI>().text = "Please take a break for " + waitTime + " seconds. Press the left controller trigger button after screen clears.";
         yield return new WaitForSeconds(waitTime);
         uiText.SetActive(false);
 
@@ -169,6 +187,7 @@ public class OrientationTrials : MonoBehaviour
         // Shuffle the positions of the objects to randomize study
         var rng = new System.Random();
         GameManager.Shuffle(rng, objectPositions);
+
 
         // Get the starting time
         start_time_ms = stopwatch.ElapsedMilliseconds;
@@ -249,7 +268,7 @@ public class OrientationTrials : MonoBehaviour
         int feedbackType = manager.configOptions.GetCurrentBlockConfig().feedbackType == FeedbackType.ButtonInput ? 1 : 0;
         int distractorPresent = OrientationTrials.trials.hadDistractor[OrientationTrials.trials.trialCount] ? 1 : 0;
         int colorVariability = manager.configOptions.GetCurrentBlockConfig().randomizeColors ? 1 : 0;
-        int objectType = 1;
+        int objectType = manager.configOptions.GetCurrentBlockConfig().isItemsRealistic ? 1 : 0;
 
         
         // feedbackType ^ (2^0) + distractorPresent ^ (2^1) + colorVariability ^ (2^2) + objectType ^ (2^3)
@@ -379,6 +398,17 @@ public class OrientationTrials : MonoBehaviour
         return orientation;
     }
     
+    public static void UIStartPressed(GameManager manager, OrientationBlockConfig config)
+    {
+        GameObject[] uiTextArr = GameObject.FindObjectsByType<GameObject>(FindObjectsInactive.Include, FindObjectsSortMode.None).Where(sr => sr.name == "StartText").ToArray();
+        GameObject uiText = uiTextArr[0];
+        uiText.SetActive(false);
+        manager.isUIShown = false;
+
+        SetupBlock(manager, config);
+        manager.StartCoroutine(WaitForTrial(manager, true, config));
+    }
+
     public static void PrimaryButtonPressed(GameManager manager, OrientationBlockConfig config)
     {
         if (isTrialRunning)

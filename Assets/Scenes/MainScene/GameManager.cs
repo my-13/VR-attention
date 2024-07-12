@@ -6,6 +6,7 @@ using System.Threading;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
 
@@ -37,6 +38,7 @@ public class GameManager : MonoBehaviour
     public string participantID = "0000";
     public bool isTrialRunning = false;
     private bool isStudyRunning = false;
+    public bool isUIShown = false;
     public bool isStartLockedOut = false;
     public ConfigOptions configOptions;
     
@@ -114,12 +116,17 @@ public class GameManager : MonoBehaviour
         {
             text.SetActive(false);
         }
+        
+
+        //Show UI
+        isUIShown = true;
+
+        
 
         isStudyRunning = true;
         
-        //StartCoroutine(RecordEyeData());
-        Thread eyeThread = new( RecordEyeData);
-        eyeThread.Start();
+        Thread eyeThread = new( new ThreadStart(() => RecordEyeData()));
+        //eyeThread.Start();
 
         // Start the first trial
         if (!configOptions.IsLastBlock()){
@@ -131,7 +138,8 @@ public class GameManager : MonoBehaviour
 
 
     void RecordEyeData(){
-        while (true){
+        while(true){
+        //while (true){
             if (OrientationTrials.isDataRecording){
                 Pose pose = ViewEyeGaze.action.ReadValue<Pose>();
                 
@@ -175,18 +183,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void Update()
-    {
-        if (isTrialRunning && trial == Trial.Orientation)
-        {
-            // Put this in a seperate thread
-            Pose pose = ViewEyeGaze.action.ReadValue<Pose>();
-            //OrientationTrials.trials.viewPoses.Add(pose);
-            //OrientationTrials.trials.viewPosesTime.Add(OrientationTrials.stopwatch.ElapsedMilliseconds);
-        }
-  
-    }
-
 
     public (Vector3[], GameObject[], int) GenerateShapePoints(OrientationBlockConfig blockConfig)
     {
@@ -226,6 +222,16 @@ public class GameManager : MonoBehaviour
     public void StartButtonPressed()
     {
         StartGame();
+    }
+
+    public void UIStartButtonPressed()
+    {
+        
+        if (isUIShown && trial == Trial.Orientation)
+        {
+            OrientationTrials.UIStartPressed(this, configOptions.GetCurrentBlockConfig());
+            
+        }
     }
     
     public void PrimaryButtonPressed()

@@ -787,6 +787,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   participantID: 0000
   isTrialRunning: 0
+  isUIShown: 0
   isStartLockedOut: 0
   configOptions: {fileID: 11400000, guid: 085c8950d956c8842ba5a2d273a6c40e, type: 2}
   trial: 0
@@ -920,6 +921,22 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: db7a5288-25dd-4e3b-ae66-ff51b9863b16
     m_ActionName: Player/view
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1175078477}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+        m_MethodName: UIStartButtonPressed
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 845249ee-ef1a-4bed-9e2e-d84bca817458
+    m_ActionName: Player/UIAcceot[/Keyboard/enter]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player

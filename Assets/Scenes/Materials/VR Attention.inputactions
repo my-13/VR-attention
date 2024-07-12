@@ -40,6 +40,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "UIAcceot",
+                    "type": "Button",
+                    "id": "845249ee-ef1a-4bed-9e2e-d84bca817458",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -50,6 +59,17 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse;Gamepad",
+                    "action": "Start",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c7e7481d-0f65-4012-8366-8c259cf87cf9",
+                    "path": "<ViveController>{LeftHand}/triggerPressed",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
                     "action": "Start",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -128,6 +148,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "view",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e9a18daf-293a-4821-9020-6b8f3cb1751b",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "UIAcceot",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6c9ba51f-7b32-4cc5-a13c-ac5878e6dd6b",
+                    "path": "<ViveController>{RightHand}/triggerPressed",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "UIAcceot",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
