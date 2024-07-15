@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Threading;
 using Unity.VisualScripting;
@@ -41,8 +42,10 @@ public class GameManager : MonoBehaviour
     public bool isUIShown = false;
     public bool isStartLockedOut = false;
     public ConfigOptions configOptions;
+    public string[][] proceduresBlocks;
     
     public Trial trial = Trial.NoTrial;
+    public int trialsPerBlock = 48;
     public GameObject trackedPositionObject;
     public GameObject secondTrackedPositionObject;
     
@@ -52,7 +55,7 @@ public class GameManager : MonoBehaviour
     public GameObject checkmark;
     public Material verticalMaterial;
     public Material horizontalMaterial;
-
+    public Thread eyeThread;
 
     // VR Camera
     public Camera vrCamera;
@@ -85,11 +88,51 @@ public class GameManager : MonoBehaviour
 
         GameObject focusSphere = GameObject.FindGameObjectsWithTag("ItemSpawn")[0];
         focusSphere.transform.position = new Vector3(focusSphere.transform.position.x, vrCamera.transform.position.y, focusSphere.transform.position.z);
+        ReadProcedureFile();
     }
 
+    void ReadProcedureFile(){
+        string path = "procedure.txt";
+        StreamReader reader
+            = new StreamReader(path);
+        string file = reader.ReadToEnd();
+        string[] lines = file.Split(new char[] {'\n'});  
+        int count = lines.Length;
+        string[] blocks = file.Split(new char[] {'#'});
+        int numberOfBlocks = blocks.Length - 1;
 
+        List<string>[] tempProceduresBlocks = new List<string>[numberOfBlocks];
 
-    public void StartGame()
+        for (int i = 0; i < numberOfBlocks; i++)
+        {
+            tempProceduresBlocks[i] = new List<string>();
+        }
+
+        int currentBlock = -1;
+        for (int i = 0; i < count; i++)
+        {
+            var line = lines[i];
+            if (i == 0){
+                continue;
+            }
+            if (line[0] == '#')
+            {
+                currentBlock++;
+                continue;
+            }
+            tempProceduresBlocks[currentBlock].Add(line);
+        }
+        
+        proceduresBlocks = new string[numberOfBlocks][];
+        for (int i = 0; i < numberOfBlocks; i++)
+        {
+            proceduresBlocks[i] = tempProceduresBlocks[i].ToArray();
+        }
+
+        reader.Close();
+    }
+
+    public void StartRandomGame()
     {
         if (isStudyRunning == true)
         {
@@ -125,8 +168,8 @@ public class GameManager : MonoBehaviour
 
         isStudyRunning = true;
         
-        Thread eyeThread = new( new ThreadStart(() => RecordEyeData()));
-        //eyeThread.Start();
+        eyeThread = new( new ThreadStart(() => RecordEyeData()));
+        eyeThread.Start();
 
         // Start the first trial
         if (!configOptions.IsLastBlock()){
@@ -136,10 +179,17 @@ public class GameManager : MonoBehaviour
     }
 
 
+    void OnApplicationQuit()
+    {
+        if (eyeThread != null && eyeThread.IsAlive)
+        {
+            eyeThread.Abort(); // Or better, use a cancellation token for safe shutdown
+        }
+    }
+
 
     void RecordEyeData(){
         while(true){
-        //while (true){
             if (OrientationTrials.isDataRecording){
                 Pose pose = ViewEyeGaze.action.ReadValue<Pose>();
                 
@@ -221,7 +271,7 @@ public class GameManager : MonoBehaviour
 
     public void StartButtonPressed()
     {
-        StartGame();
+        StartRandomGame();
     }
 
     public void UIStartButtonPressed()

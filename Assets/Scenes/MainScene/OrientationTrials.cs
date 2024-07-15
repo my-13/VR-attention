@@ -96,7 +96,6 @@ public class OrientationTrials : MonoBehaviour
         vrCamera = manager.vrCamera;
         trialObjectsParent = manager.trialObjectsParent;
         ShowUI(manager, config);
-
     }
 
     public static void ShowUI(GameManager manager, OrientationBlockConfig config)
@@ -202,12 +201,22 @@ public class OrientationTrials : MonoBehaviour
         Color distractorColor = config.distracterItemColor;
 
 
-        if (config.randomizeColors)
+        if (false && config.randomizeColors)
         {
             Color[] colors = {normalColor, distractorColor};
             GameManager.Shuffle(rng, colors);
             normalColor = colors[0];
             distractorColor = colors[1];
+        }
+
+        if (config.procedureConfig.GetCurrentMainColor()){
+            Color[] colors = {normalColor, distractorColor};
+            normalColor = colors[0];
+            distractorColor = colors[1];
+        }else{
+            Color[] colors = {normalColor, distractorColor};
+            normalColor = colors[1];
+            distractorColor = colors[0];
         }
 
         // Summon The Objects
@@ -228,17 +237,17 @@ public class OrientationTrials : MonoBehaviour
             }
             else if (i < config.distractorObjects.Length + 1)
             {
-                if (UnityEngine.Random.Range(0, 100) < config.randomPercentageOfDistractor)
+                if (config.procedureConfig.GetCurrentDistractor()  /*UnityEngine.Random.Range(0, 100) < config.randomPercentageOfDistractor*/)
                 {
                     trialHadDistractor = true;
                     obj.GetComponent<Renderer>().material.color = distractorColor;
-                    RandLineOrientation(obj, manager.verticalMaterial, manager.horizontalMaterial);
+                    RandLineOrientation(obj, manager.verticalMaterial, manager.horizontalMaterial, config.procedureConfig.GetCurrentOrientation());
                 }
                 else
                 {
                     trialHadDistractor = false;
                     obj.GetComponent<Renderer>().material.color = normalColor;
-                    RandLineOrientation(obj, manager.verticalMaterial, manager.horizontalMaterial);
+                    RandLineOrientation(obj, manager.verticalMaterial, manager.horizontalMaterial, config.procedureConfig.GetCurrentOrientation());
                 }
 
             }
@@ -246,7 +255,7 @@ public class OrientationTrials : MonoBehaviour
             {
                 obj.GetComponent<Renderer>().material.color = normalColor;
 
-                RandLineOrientation(obj, manager.verticalMaterial, manager.horizontalMaterial);
+                RandLineOrientation(obj, manager.verticalMaterial, manager.horizontalMaterial, config.procedureConfig.GetCurrentOrientation());
             }
         }
         
@@ -264,6 +273,8 @@ public class OrientationTrials : MonoBehaviour
         // Ex. 000001, (0, 0, 0), (0,0,0)
         
         // Year, Month, Day, Hour(24), Minute, Second
+        if (isDataRecording) return;
+        
         string dateTime = DateTime.Now.ToString("yyyyMMddHHmmss");
 
         int feedbackType = manager.configOptions.GetCurrentBlockConfig().feedbackType == FeedbackType.ButtonInput ? 1 : 0;
@@ -277,12 +288,18 @@ public class OrientationTrials : MonoBehaviour
         
 
         
-
+        // Main File (Time, EventCode, Left Hand Position, Left Hand Rotation, Right Hand position, Right Hand Rotation, Head Position, Head Rotation, Filtered Eye Data)
         string mainPath = "./data/main_" + dateTime + "_" + category + "_" + OrientationTrials.trials.participantID + "_" + OrientationTrials.trials.blockID + "_" + OrientationTrials.trials.trialCount + ".txt";
         string mainTrialcontent = "";
-        string mainTrialInfo = (int)OrientationTrials.trials.selectedOrientation[OrientationTrials.trials.trialCount] + ", " + (int)OrientationTrials.trials.actualOrientation[OrientationTrials.trials.trialCount] + ", " + OrientationTrials.trials.hadDistractor[OrientationTrials.trials.trialCount] + "\n";
+        
+        // Raw Eye Data File (Time, Raw Eye Position, Raw Eye Rotation)
         string eyePath = "./data/eye_" + dateTime + "_" + category + "_" + OrientationTrials.trials.participantID + "_" + OrientationTrials.trials.blockID + "_" + OrientationTrials.trials.trialCount + ".txt";
         string eyeTrialContent = "";
+
+
+        // Summary File (Orientation, Selected, Actual, Had Distractor)
+        string mainTrialInfo = (int)OrientationTrials.trials.selectedOrientation[OrientationTrials.trials.trialCount] + ", " + (int)OrientationTrials.trials.actualOrientation[OrientationTrials.trials.trialCount] + ", " + OrientationTrials.trials.hadDistractor[OrientationTrials.trials.trialCount] + "\n";
+        // Write this into a summary file
 
         for (int i = 0; i < mainTrialData.Item1.Count; i++)
         {
@@ -305,15 +322,16 @@ public class OrientationTrials : MonoBehaviour
         }
 
         if (!File.Exists(mainPath)) {
-            File.WriteAllText(mainPath, mainTrialInfo);
+            File.WriteAllText(mainPath, mainTrialcontent);
         }
 
         File.AppendAllText(mainPath, mainTrialcontent);
     }
     
-    public static IEnumerator StopRecordingDataDelay(float delay){
+    public static IEnumerator StopRecordingDataDelay(float delay, GameManager manager){
         yield return new WaitForSeconds(delay);
         isDataRecording = false;
+        RecordTrialData(manager);
     }
 
     public static void StopOrientationTrial(GameManager manager, LineOrientation orientation, OrientationBlockConfig config)
@@ -328,7 +346,7 @@ public class OrientationTrials : MonoBehaviour
         
         isTrialRunning = false;
         manager.isTrialRunning = false;
-        manager.StartCoroutine(StopRecordingDataDelay(1f));
+        manager.StartCoroutine(StopRecordingDataDelay(1f, manager));
         
 
 
@@ -337,7 +355,7 @@ public class OrientationTrials : MonoBehaviour
         trials.actualOrientation.Add(itemOrientation);
         trials.selectedOrientation.Add(orientation);
         trials.hadDistractor.Add(trialHadDistractor);
-        RecordTrialData(manager);
+        
         
         trials.trialCount++;
 
@@ -372,6 +390,35 @@ public class OrientationTrials : MonoBehaviour
     public static LineOrientation RandLineOrientation(GameObject obj, Material verticalMaterial, Material horizontalMaterial)
     {
         LineOrientation orientation = (LineOrientation) UnityEngine.Random.Range(0, 2);
+        // Check to see if it's a grab trial, if so, then just don't generate the lines.
+
+        if (orientation == LineOrientation.Horizontal)
+        {
+            if (obj.GetComponent<LineRenderer>() != null)
+            {
+                Bounds bounds = obj.GetComponent<Renderer>().bounds;
+                Vector3 size = bounds.size;
+
+                obj.GetComponent<LineRenderer>().SetPosition(0, new Vector3(-1 * size.x / obj.gameObject.transform.localScale.x / 2.5f, 0, 0));
+                obj.GetComponent<LineRenderer>().SetPosition(1, new Vector3(size.x / obj.gameObject.transform.localScale.x / 2.5f, 0, 0));
+            }
+            
+        }else{
+            if (obj.GetComponent<LineRenderer>() != null)
+            {
+                Bounds bounds = obj.GetComponent<Renderer>().bounds;
+                Vector3 size = bounds.size;
+
+                obj.GetComponent<LineRenderer>().SetPosition(0, new Vector3(0, size.y / obj.gameObject.transform.localScale.y / 2.5f, 0));
+                obj.GetComponent<LineRenderer>().SetPosition(1, new Vector3(0, -1 * size.y / obj.gameObject.transform.localScale.y / 2.5f, 0));
+            }
+        }
+
+        return orientation;
+    }
+
+    public static LineOrientation RandLineOrientation(GameObject obj, Material verticalMaterial, Material horizontalMaterial, LineOrientation orientation)
+    {
         // Check to see if it's a grab trial, if so, then just don't generate the lines.
 
         if (orientation == LineOrientation.Horizontal)
