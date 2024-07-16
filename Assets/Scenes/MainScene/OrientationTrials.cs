@@ -232,8 +232,11 @@ public class OrientationTrials : MonoBehaviour
             {
                 
                 obj.GetComponent<Renderer>().material.color = normalColor;
+                if (manager.configOptions.procedureConfig.GetCurrentFeedbackType() == FeedbackType.ButtonInput)
+                {
+                    itemOrientation = RandLineOrientation(obj, manager.verticalMaterial, manager.horizontalMaterial,  manager.configOptions.procedureConfig.GetCurrentOrientation());
+                }
                 
-                itemOrientation = RandLineOrientation(obj, manager.verticalMaterial, manager.horizontalMaterial);
             }
             else if (i < config.distractorObjects.Length + 1)
             {
@@ -241,13 +244,20 @@ public class OrientationTrials : MonoBehaviour
                 {
                     trialHadDistractor = true;
                     obj.GetComponent<Renderer>().material.color = distractorColor;
-                    RandLineOrientation(obj, manager.verticalMaterial, manager.horizontalMaterial, manager.configOptions.procedureConfig.GetCurrentOrientation());
+                    if (manager.configOptions.procedureConfig.GetCurrentFeedbackType() == FeedbackType.ButtonInput)
+                    {
+                        RandLineOrientation(obj, manager.verticalMaterial, manager.horizontalMaterial, manager.configOptions.procedureConfig.GetCurrentOrientation());
+                    }
+                    
                 }
                 else
                 {
                     trialHadDistractor = false;
                     obj.GetComponent<Renderer>().material.color = normalColor;
-                    RandLineOrientation(obj, manager.verticalMaterial, manager.horizontalMaterial, manager.configOptions.procedureConfig.GetCurrentOrientation());
+                    if (manager.configOptions.procedureConfig.GetCurrentFeedbackType() == FeedbackType.ButtonInput)
+                    {
+                        RandLineOrientation(obj, manager.verticalMaterial, manager.horizontalMaterial, manager.configOptions.procedureConfig.GetCurrentOrientation());
+                    }
                 }
 
             }
@@ -255,7 +265,10 @@ public class OrientationTrials : MonoBehaviour
             {
                 obj.GetComponent<Renderer>().material.color = normalColor;
 
-                RandLineOrientation(obj, manager.verticalMaterial, manager.horizontalMaterial, manager.configOptions.procedureConfig.GetCurrentOrientation());
+                if (manager.configOptions.procedureConfig.GetCurrentFeedbackType() == FeedbackType.ButtonInput)
+                {
+                    RandLineOrientation(obj, manager.verticalMaterial, manager.horizontalMaterial, manager.configOptions.procedureConfig.GetCurrentOrientation());
+                }
             }
         }
         
