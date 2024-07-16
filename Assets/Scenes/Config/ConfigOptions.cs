@@ -14,7 +14,7 @@ public class ConfigOptions : ScriptableObject
 
     public OrientationBlockConfig[] orientationBlocks;
     public int currentBlock = 0;
-
+    public ProcedureConfig procedureConfig;
 
     public bool IsLastBlock(){
         return currentBlock == orientationBlocks.Length - 1;

@@ -3,7 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -42,7 +44,6 @@ public class GameManager : MonoBehaviour
     public bool isUIShown = false;
     public bool isStartLockedOut = false;
     public ConfigOptions configOptions;
-    public string[][] proceduresBlocks;
     
     public Trial trial = Trial.NoTrial;
     public int trialsPerBlock = 48;
@@ -88,49 +89,9 @@ public class GameManager : MonoBehaviour
 
         GameObject focusSphere = GameObject.FindGameObjectsWithTag("ItemSpawn")[0];
         focusSphere.transform.position = new Vector3(focusSphere.transform.position.x, vrCamera.transform.position.y, focusSphere.transform.position.z);
-        ReadProcedureFile();
-    }
-
-    void ReadProcedureFile(){
-        string path = "procedure.txt";
-        StreamReader reader
-            = new StreamReader(path);
-        string file = reader.ReadToEnd();
-        string[] lines = file.Split(new char[] {'\n'});  
-        int count = lines.Length;
-        string[] blocks = file.Split(new char[] {'#'});
-        int numberOfBlocks = blocks.Length - 1;
-
-        List<string>[] tempProceduresBlocks = new List<string>[numberOfBlocks];
-
-        for (int i = 0; i < numberOfBlocks; i++)
-        {
-            tempProceduresBlocks[i] = new List<string>();
         }
 
-        int currentBlock = -1;
-        for (int i = 0; i < count; i++)
-        {
-            var line = lines[i];
-            if (i == 0){
-                continue;
-            }
-            if (line[0] == '#')
-            {
-                currentBlock++;
-                continue;
-            }
-            tempProceduresBlocks[currentBlock].Add(line);
-        }
-        
-        proceduresBlocks = new string[numberOfBlocks][];
-        for (int i = 0; i < numberOfBlocks; i++)
-        {
-            proceduresBlocks[i] = tempProceduresBlocks[i].ToArray();
-        }
 
-        reader.Close();
-    }
 
     public void StartRandomGame()
     {
@@ -142,6 +103,7 @@ public class GameManager : MonoBehaviour
                 if (configOptions.IsBlockAvailable())
                 {
                     // Randomize the colors for orientation
+                    
                     OrientationTrials.BlockStart(this, configOptions.GetCurrentBlockConfig());
                 }
             }
@@ -164,7 +126,8 @@ public class GameManager : MonoBehaviour
         //Show UI
         isUIShown = true;
 
-        
+        configOptions.procedureConfig = new ProcedureConfig("procedure", "procedure.txt");
+    
 
         isStudyRunning = true;
         
@@ -188,13 +151,14 @@ public class GameManager : MonoBehaviour
     }
 
 
-    void RecordEyeData(){
+    async void RecordEyeData(){
         while(true){
             if (OrientationTrials.isDataRecording){
                 Pose pose = ViewEyeGaze.action.ReadValue<Pose>();
                 
                 OrientationTrials.viewTrialData.Item1.Add(OrientationTrials.stopwatch.ElapsedMilliseconds - OrientationTrials.start_time_ms);
-                OrientationTrials.viewTrialData.Item2.Add(pose);
+                OrientationTrials.viewTrialData.Item2.Enqueue(pose);
+                await Task.Delay(1);
             }
             
         }
@@ -224,6 +188,7 @@ public class GameManager : MonoBehaviour
             OrientationTrials.mainTrialData.Item2.Add(code);
             OrientationTrials.mainTrialData.Item3.Add(trackedPositionObject.transform.position);
             OrientationTrials.mainTrialData.Item4.Add(secondTrackedPositionObject.transform.position);
+            OrientationTrials.mainTrialData.Item5.Enqueue(OrientationTrials.viewTrialData.Item2.Peek());
 
 
             // Dequeue the eye tracking data
@@ -291,6 +256,16 @@ public class GameManager : MonoBehaviour
             if (trial == Trial.Orientation)
             {
                 OrientationTrials.PrimaryButtonPressed(this, configOptions.GetCurrentBlockConfig());
+            }
+        }
+    }
+
+    public void ObjectGrabbed(){
+        if (isTrialRunning)
+        {
+            if (trial == Trial.Orientation)
+            {
+                OrientationTrials.ObjectGrabbed(this, configOptions.GetCurrentBlockConfig());
             }
         }
     }

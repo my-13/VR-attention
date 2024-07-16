@@ -69,9 +69,9 @@ public class OrientationTrials : MonoBehaviour
     // (Miliseconds, Trial Events for if something happened, Hand Positions at that time) 50Hz
     public static (Queue<long>, Queue<Pose>) eyeViewTrialQueue = (new(), new());
 
-    public static (List<long>, List<TrialEvent>, List<Vector3>, List<Vector3>) mainTrialData = (new(), new(), new(), new());
+    public static (List<long>, List<TrialEvent>, List<Vector3>, List<Vector3>, Queue<Pose>) mainTrialData = (new(), new(), new(), new(), new());
     // (Miliseconds, Eye Pose at that time) 120Hz
-    public static (List<long>, List<Pose>) viewTrialData = (new(), new());
+    public static (List<long>, Queue<Pose>) viewTrialData = (new(), new());
 
 
 
@@ -193,7 +193,7 @@ public class OrientationTrials : MonoBehaviour
         
 
         // Start capturing data
-        mainTrialData = (new(), new(), new(), new());
+        mainTrialData = (new(), new(), new(), new(), new());
         viewTrialData = (new(), new());
         isDataRecording = true;
 
@@ -209,7 +209,7 @@ public class OrientationTrials : MonoBehaviour
             distractorColor = colors[1];
         }
 
-        if (config.procedureConfig.GetCurrentMainColor()){
+        if (manager.configOptions.procedureConfig.GetCurrentMainColor()){
             Color[] colors = {normalColor, distractorColor};
             normalColor = colors[0];
             distractorColor = colors[1];
@@ -237,17 +237,17 @@ public class OrientationTrials : MonoBehaviour
             }
             else if (i < config.distractorObjects.Length + 1)
             {
-                if (config.procedureConfig.GetCurrentDistractor()  /*UnityEngine.Random.Range(0, 100) < config.randomPercentageOfDistractor*/)
+                if (manager.configOptions.procedureConfig.GetCurrentDistractor()  /*UnityEngine.Random.Range(0, 100) < config.randomPercentageOfDistractor*/)
                 {
                     trialHadDistractor = true;
                     obj.GetComponent<Renderer>().material.color = distractorColor;
-                    RandLineOrientation(obj, manager.verticalMaterial, manager.horizontalMaterial, config.procedureConfig.GetCurrentOrientation());
+                    RandLineOrientation(obj, manager.verticalMaterial, manager.horizontalMaterial, manager.configOptions.procedureConfig.GetCurrentOrientation());
                 }
                 else
                 {
                     trialHadDistractor = false;
                     obj.GetComponent<Renderer>().material.color = normalColor;
-                    RandLineOrientation(obj, manager.verticalMaterial, manager.horizontalMaterial, config.procedureConfig.GetCurrentOrientation());
+                    RandLineOrientation(obj, manager.verticalMaterial, manager.horizontalMaterial, manager.configOptions.procedureConfig.GetCurrentOrientation());
                 }
 
             }
@@ -255,7 +255,7 @@ public class OrientationTrials : MonoBehaviour
             {
                 obj.GetComponent<Renderer>().material.color = normalColor;
 
-                RandLineOrientation(obj, manager.verticalMaterial, manager.horizontalMaterial, config.procedureConfig.GetCurrentOrientation());
+                RandLineOrientation(obj, manager.verticalMaterial, manager.horizontalMaterial, manager.configOptions.procedureConfig.GetCurrentOrientation());
             }
         }
         
@@ -278,7 +278,7 @@ public class OrientationTrials : MonoBehaviour
         string dateTime = DateTime.Now.ToString("yyyyMMddHHmmss");
 
         int feedbackType = manager.configOptions.GetCurrentBlockConfig().feedbackType == FeedbackType.ButtonInput ? 1 : 0;
-        int distractorPresent = OrientationTrials.trials.hadDistractor[OrientationTrials.trials.trialCount] ? 1 : 0;
+        int distractorPresent = OrientationTrials.trials.hadDistractor[OrientationTrials.trials.trialCount - 1] ? 1 : 0;
         int colorVariability = manager.configOptions.GetCurrentBlockConfig().randomizeColors ? 1 : 0;
         int objectType = manager.configOptions.GetCurrentBlockConfig().isItemsRealistic ? 1 : 0;
 
@@ -298,17 +298,17 @@ public class OrientationTrials : MonoBehaviour
 
 
         // Summary File (Orientation, Selected, Actual, Had Distractor)
-        string mainTrialInfo = (int)OrientationTrials.trials.selectedOrientation[OrientationTrials.trials.trialCount] + ", " + (int)OrientationTrials.trials.actualOrientation[OrientationTrials.trials.trialCount] + ", " + OrientationTrials.trials.hadDistractor[OrientationTrials.trials.trialCount] + "\n";
+        string mainTrialInfo = (int)OrientationTrials.trials.selectedOrientation[OrientationTrials.trials.trialCount - 1 ] + ", " + (int)OrientationTrials.trials.actualOrientation[OrientationTrials.trials.trialCount - 1] + ", " + OrientationTrials.trials.hadDistractor[OrientationTrials.trials.trialCount - 1] + "\n";
         // Write this into a summary file
 
         for (int i = 0; i < mainTrialData.Item1.Count; i++)
         {
-            mainTrialcontent += mainTrialData.Item1[i] + ", " + mainTrialData.Item2[i] + ", " + mainTrialData.Item3[i].x + "," + mainTrialData.Item3[i].y + "," + mainTrialData.Item3[i].z + "," + mainTrialData.Item4[i].x + "," + mainTrialData.Item4[i].y + "," + mainTrialData.Item4[i].z + "\n";
+            mainTrialcontent += mainTrialData.Item1[i] + ", " + mainTrialData.Item2[i] + ", " + mainTrialData.Item3[i].x + "," + mainTrialData.Item3[i].y + "," + mainTrialData.Item3[i].z + "," + mainTrialData.Item4[i].x + "," + mainTrialData.Item4[i].y + "," + mainTrialData.Item4[i].z + "," + mainTrialData.Item5.Peek().position.x + "," + mainTrialData.Item5.Peek().position.y + "," + mainTrialData.Item5.Peek().position.z + "\n";
         }
 
         for (int i = 0; i < viewTrialData.Item1.Count; i++)
         {
-            eyeTrialContent += viewTrialData.Item1[i] + ", " + viewTrialData.Item2[i].position + ", " + viewTrialData.Item2[i].rotation + "\n";
+            eyeTrialContent += viewTrialData.Item1[i] + ", " + viewTrialData.Item2.Peek().position + ", " + viewTrialData.Item2.Peek().rotation + "\n";
         }
 
         if (!File.Exists("./data")) {
@@ -332,6 +332,55 @@ public class OrientationTrials : MonoBehaviour
         yield return new WaitForSeconds(delay);
         isDataRecording = false;
         RecordTrialData(manager);
+    }
+
+    public static void StopOrientationTrial(GameManager manager, OrientationBlockConfig config)
+    {   
+        // Get the ending time
+        long end_time_ms = stopwatch.ElapsedMilliseconds;
+        // Calculate the time taken
+        time_ms = end_time_ms - start_time_ms;
+
+        // Print the time taken
+        Debug.Log("Time taken: " + time_ms + "ms");
+        
+        isTrialRunning = false;
+        manager.isTrialRunning = false;
+        manager.StartCoroutine(StopRecordingDataDelay(1f, manager));
+        
+
+
+        trials.trialTimesMiliseconds.Add(time_ms);
+        trials.hadDistractor.Add(trialHadDistractor);
+        
+        trials.trialCount++;
+
+
+        // Destroy all objects
+        foreach (Transform transform in trialObjectsParent.transform)
+        {
+            Destroy(transform.gameObject);
+        }
+        
+        if (trials.trialCount >= config.numberOfTrials)
+        {
+            if (manager.configOptions.IsLastBlock()){
+                
+                BlockEnd(manager, config);
+                manager.EndStudy();                
+            }
+            else
+            {
+                BlockEnd(manager, config);
+            
+                manager.StartCoroutine(TimeoutBreak(manager, 30, config));
+            }
+        }
+        
+        else
+        {
+            manager.StartCoroutine( WaitForTrial(manager, true, config));
+        }
     }
 
     public static void StopOrientationTrial(GameManager manager, LineOrientation orientation, OrientationBlockConfig config)
@@ -455,6 +504,14 @@ public class OrientationTrials : MonoBehaviour
 
         SetupBlock(manager, config);
         manager.StartCoroutine(WaitForTrial(manager, true, config));
+    }
+
+    public static void ObjectGrabbed(GameManager manager, OrientationBlockConfig config)
+    {
+        if (isTrialRunning)
+        {
+            StopOrientationTrial(manager, config);
+        }
     }
 
     public static void PrimaryButtonPressed(GameManager manager, OrientationBlockConfig config)

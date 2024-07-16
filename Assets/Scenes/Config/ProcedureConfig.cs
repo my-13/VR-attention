@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
@@ -19,6 +20,55 @@ public class ProcedureConfig : ScriptableObject
     public bool IsLastTrial() { return currentTrial == procedureBlocks[currentBlock].Length - 1; }
     public bool IsBlockAvailable() { return currentBlock < procedureBlocks.Length; }
     public bool IsTrialAvailable() { return currentTrial < procedureBlocks[currentBlock].Length; }
+
+    // Construct ProcedureConfig object
+    public ProcedureConfig(string configName, string path)
+    {
+        this.configName = configName;
+        ReadProcedureFile(path);
+        this.currentBlock = 0;
+        this.currentTrial = 0;
+    }
+
+    void ReadProcedureFile(string path){
+        StreamReader reader
+            = new StreamReader(path);
+        string file = reader.ReadToEnd();
+        string[] lines = file.Split(new char[] {'\n'});  
+        int count = lines.Length;
+        string[] blocks = file.Split(new char[] {'#'});
+        int numberOfBlocks = blocks.Length - 1;
+
+        List<string>[] tempProceduresBlocks = new List<string>[numberOfBlocks];
+
+        for (int i = 0; i < numberOfBlocks; i++)
+        {
+            tempProceduresBlocks[i] = new List<string>();
+        }
+
+        int currentBlock = -1;
+        for (int i = 0; i < count; i++)
+        {
+            var line = lines[i];
+            if (i == 0){
+                continue;
+            }
+            if (line[0] == '#')
+            {
+                currentBlock++;
+                continue;
+            }
+            tempProceduresBlocks[currentBlock].Add(line);
+        }
+        
+        procedureBlocks = new string[numberOfBlocks][];
+        for (int i = 0; i < numberOfBlocks; i++)
+        {
+            procedureBlocks[i] = tempProceduresBlocks[i].ToArray();
+        }
+
+        reader.Close();
+    }
 
     public string GetNextTrialString()
     {
