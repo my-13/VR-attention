@@ -89,7 +89,7 @@ public class GameManager : MonoBehaviour
 
         GameObject focusSphere = GameObject.FindGameObjectsWithTag("ItemSpawn")[0];
         focusSphere.transform.position = new Vector3(focusSphere.transform.position.x, vrCamera.transform.position.y, focusSphere.transform.position.z);
-        }
+    }
 
 
 

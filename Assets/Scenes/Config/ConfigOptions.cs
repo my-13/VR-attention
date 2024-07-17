@@ -20,8 +20,24 @@ public class ConfigOptions : ScriptableObject
         return currentBlock == orientationBlocks.Length - 1;
     }
 
+    public void SetButtonBlockConfigData(ProcedureConfig procedureConfig){
+        GetButtonPressBlockConfig().numberOfTrials = procedureConfig.procedureBlocks[procedureConfig.currentBlock].Length;
+    }
+
+    public void SetReachingBlockConfigData(ProcedureConfig procedureConfig){
+        GetReachingBlockConfig().numberOfTrials = procedureConfig.procedureBlocks[procedureConfig.currentBlock].Length;
+    }
+
     public bool IsBlockAvailable(){
         return currentBlock < orientationBlocks.Length;
+    }
+
+    public OrientationBlockConfig GetButtonPressBlockConfig(){
+        return orientationBlocks[0];
+    }
+
+    public OrientationBlockConfig GetReachingBlockConfig(){
+        return orientationBlocks[1];
     }
 
     public OrientationBlockConfig GetNextBlockConfig(){

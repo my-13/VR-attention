@@ -7,6 +7,7 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit;
 
 [Serializable]
 public class OrientationBlockData
@@ -232,6 +233,7 @@ public class OrientationTrials : MonoBehaviour
             {
                 
                 obj.GetComponent<Renderer>().material.color = normalColor;
+                obj.GetComponent<XRGrabInteractable>().selectEntered.AddListener((interactor) => ObjectGrabbed(manager, config));
                 if (manager.configOptions.procedureConfig.GetCurrentFeedbackType() == FeedbackType.ButtonInput)
                 {
                     itemOrientation = RandLineOrientation(obj, manager.verticalMaterial, manager.horizontalMaterial,  manager.configOptions.procedureConfig.GetCurrentOrientation());
