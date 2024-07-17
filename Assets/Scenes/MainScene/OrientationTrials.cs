@@ -234,8 +234,12 @@ public class OrientationTrials : MonoBehaviour
             {
                 
                 obj.GetComponent<Renderer>().material.color = normalColor;
-                obj.GetComponent<XRGrabInteractable>().enabled = true;
-                obj.GetComponent<XRGrabInteractable>().selectEntered.AddListener((interactor) => ObjectGrabbed(manager, config, obj.GetComponent<XRGrabInteractable>() ));
+                if (manager.configOptions.procedureConfig.GetCurrentFeedbackType() == FeedbackType.Grabbing)
+                {
+                    obj.GetComponent<XRGrabInteractable>().enabled = true;
+                    obj.GetComponent<XRGrabInteractable>().selectEntered.AddListener((interactor) => ObjectGrabbed(manager, config, obj.GetComponent<XRGrabInteractable>() ));
+                }
+                
                 if (manager.configOptions.procedureConfig.GetCurrentFeedbackType() == FeedbackType.ButtonInput)
                 {
                     itemOrientation = RandLineOrientation(obj, manager.verticalMaterial, manager.horizontalMaterial,  manager.configOptions.procedureConfig.GetCurrentOrientation());

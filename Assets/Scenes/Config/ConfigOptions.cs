@@ -16,6 +16,13 @@ public class ConfigOptions : ScriptableObject
     public int currentBlock = 0;
     public ProcedureConfig procedureConfig;
 
+    private void Start() {
+        foreach (var block in orientationBlocks)
+        {
+            block.configOptions = this;
+        }    
+    }
+
     public bool IsLastBlock(){
         return currentBlock == procedureConfig.procedureBlocks.Length - 1;
     }

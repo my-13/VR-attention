@@ -11,6 +11,7 @@ public enum ItemLocation
 [CreateAssetMenu(fileName = "OrientationBlockConfig", menuName = "ScriptableObjects/OrientationBlockConfig", order = 2)]
 public class OrientationBlockConfig: ScriptableObject
 {
+    public ConfigOptions configOptions;
     public string configName;
     public GameObject targetObject;
     public GameObject[] otherObjects;

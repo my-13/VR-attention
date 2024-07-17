@@ -244,7 +244,6 @@ public class GameManager : MonoBehaviour
         if (isUIShown && trial == Trial.Orientation)
         {
             OrientationTrials.UIStartPressed(this, configOptions.GetCurrentBlockConfig());
-            
         }
     }
     
@@ -264,7 +263,7 @@ public class GameManager : MonoBehaviour
         {
             if (trial == Trial.Orientation)
             {
-                OrientationTrials.ObjectGrabbed(this, configOptions.GetCurrentBlockConfig());
+                //OrientationTrials.ObjectGrabbed(this, configOptions.GetCurrentBlockConfig());
             }
         }
     }
