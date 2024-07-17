@@ -17,7 +17,7 @@ public class ConfigOptions : ScriptableObject
     public ProcedureConfig procedureConfig;
 
     public bool IsLastBlock(){
-        return currentBlock == orientationBlocks.Length - 1;
+        return currentBlock == procedureConfig.procedureBlocks.Length - 1;
     }
 
     public void SetButtonBlockConfigData(ProcedureConfig procedureConfig){
@@ -29,7 +29,7 @@ public class ConfigOptions : ScriptableObject
     }
 
     public bool IsBlockAvailable(){
-        return currentBlock < orientationBlocks.Length;
+        return currentBlock < procedureConfig.procedureBlocks.Length ;
     }
 
     public OrientationBlockConfig GetButtonPressBlockConfig(){
@@ -43,11 +43,16 @@ public class ConfigOptions : ScriptableObject
     public OrientationBlockConfig GetNextBlockConfig(){
         currentBlock++;
 
-        return orientationBlocks[currentBlock];
+        return GetCurrentBlockConfig();
     }
 
     public OrientationBlockConfig GetCurrentBlockConfig(){
-        return orientationBlocks[currentBlock];
+        OrientationBlockConfig currentBlockConfig = orientationBlocks[currentBlock];
+        currentBlockConfig.numberOfTrials = procedureConfig.procedureBlocks[currentBlock].Length;
+        currentBlockConfig.feedbackType = procedureConfig.procedureBlocks[currentBlock][0][0] == '0' ? FeedbackType.ButtonInput : FeedbackType.Reaching;
+        currentBlockConfig.isItemsRealistic = procedureConfig.procedureBlocks[currentBlock][0][1] == '0' ? false : true;
+        
+        return currentBlockConfig;
     }
 }
 

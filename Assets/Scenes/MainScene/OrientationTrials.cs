@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Unity.VisualScripting;
+using Unity.VRTemplate;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
@@ -233,7 +234,8 @@ public class OrientationTrials : MonoBehaviour
             {
                 
                 obj.GetComponent<Renderer>().material.color = normalColor;
-                obj.GetComponent<XRGrabInteractable>().selectEntered.AddListener((interactor) => ObjectGrabbed(manager, config));
+                obj.GetComponent<XRGrabInteractable>().enabled = true;
+                obj.GetComponent<XRGrabInteractable>().selectEntered.AddListener((interactor) => ObjectGrabbed(manager, config, obj.GetComponent<XRGrabInteractable>() ));
                 if (manager.configOptions.procedureConfig.GetCurrentFeedbackType() == FeedbackType.ButtonInput)
                 {
                     itemOrientation = RandLineOrientation(obj, manager.verticalMaterial, manager.horizontalMaterial,  manager.configOptions.procedureConfig.GetCurrentOrientation());
@@ -377,6 +379,7 @@ public class OrientationTrials : MonoBehaviour
             Destroy(transform.gameObject);
         }
         
+
         if (trials.trialCount >= config.numberOfTrials)
         {
             if (manager.configOptions.IsLastBlock()){
@@ -521,11 +524,19 @@ public class OrientationTrials : MonoBehaviour
         manager.StartCoroutine(WaitForTrial(manager, true, config));
     }
 
-    public static void ObjectGrabbed(GameManager manager, OrientationBlockConfig config)
-    {
+    public static void ObjectGrabbed(GameManager manager, OrientationBlockConfig config, XRGrabInteractable interactable)
+    {   
+        if (interactable.isSelected){
+            XRBaseInteractor interactor = interactable.selectingInteractor;
+            if (interactor != null){
+                GameObject heldObject = interactor.selectTarget.gameObject;
+                Destroy(heldObject);
+            }
+        }
         if (isTrialRunning)
         {
             StopOrientationTrial(manager, config);
+        
         }
     }
 

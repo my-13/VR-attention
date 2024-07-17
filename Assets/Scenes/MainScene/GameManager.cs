@@ -46,7 +46,6 @@ public class GameManager : MonoBehaviour
     public ConfigOptions configOptions;
     
     public Trial trial = Trial.NoTrial;
-    public int trialsPerBlock = 48;
     public GameObject trackedPositionObject;
     public GameObject secondTrackedPositionObject;
     
@@ -188,12 +187,12 @@ public class GameManager : MonoBehaviour
             OrientationTrials.mainTrialData.Item2.Add(code);
             OrientationTrials.mainTrialData.Item3.Add(trackedPositionObject.transform.position);
             OrientationTrials.mainTrialData.Item4.Add(secondTrackedPositionObject.transform.position);
-            OrientationTrials.mainTrialData.Item5.Enqueue(OrientationTrials.viewTrialData.Item2.Peek());
-
-
-            // Dequeue the eye tracking data
             
-            // Append the last item of the array
+            // Dequeue the eye tracking data
+            OrientationTrials.mainTrialData.Item5.Enqueue(OrientationTrials.viewTrialData.Item2.Peek() != null ? OrientationTrials.viewTrialData.Item2.Peek() : new Pose());
+
+
+            
 
         }
     }

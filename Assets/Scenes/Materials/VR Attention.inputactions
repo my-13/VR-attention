@@ -66,7 +66,7 @@
                 {
                     "name": "",
                     "id": "c7e7481d-0f65-4012-8366-8c259cf87cf9",
-                    "path": "<XRController>{LeftHand}/{PrimaryTrigger}",
+                    "path": "<XRController>{LeftHand}/{TriggerButton}",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -77,10 +77,10 @@
                 {
                     "name": "",
                     "id": "d64f42b8-6763-4f03-89b7-f3d1bcd9abde",
-                    "path": "<ViveController>{RightHand}/{PrimaryButton}",
+                    "path": "<XRController>{LeftHand}/primaryButton",
                     "interactions": "",
                     "processors": "",
-                    "groups": "XR;Keyboard&Mouse",
+                    "groups": "",
                     "action": "A",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -88,10 +88,10 @@
                 {
                     "name": "",
                     "id": "16aae2b3-e958-4bd4-bff4-1b6c5402ce14",
-                    "path": "<ViveController>{LeftHand}/{PrimaryButton}",
+                    "path": "<XRController>{RightHand}/primaryButton",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse;XR",
+                    "groups": "",
                     "action": "A",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -102,7 +102,7 @@
                     "path": "<Keyboard>/upArrow",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse;XR",
+                    "groups": "",
                     "action": "A",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -110,10 +110,10 @@
                 {
                     "name": "",
                     "id": "e291eaef-9c65-410e-a2e7-ec008e274616",
-                    "path": "<ViveController>{RightHand}/{SecondaryButton}",
+                    "path": "<XRController>{RightHand}/secondaryButton",
                     "interactions": "",
                     "processors": "",
-                    "groups": "XR;Keyboard&Mouse",
+                    "groups": "",
                     "action": "B",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -121,10 +121,10 @@
                 {
                     "name": "",
                     "id": "1016b7e1-dbe3-41eb-ab53-fa90be9ede7b",
-                    "path": "<ViveController>{LeftHand}/{SecondaryButton}",
+                    "path": "<XRController>{LeftHand}/secondaryButton",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse;XR",
+                    "groups": "",
                     "action": "B",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -135,7 +135,7 @@
                     "path": "<Keyboard>/rightArrow",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse;XR",
+                    "groups": "",
                     "action": "B",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -165,7 +165,7 @@
                 {
                     "name": "",
                     "id": "6c9ba51f-7b32-4cc5-a13c-ac5878e6dd6b",
-                    "path": "<ViveController>{RightHand}/triggerPressed",
+                    "path": "<XRController>{LeftHand}/{TriggerButton}",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
