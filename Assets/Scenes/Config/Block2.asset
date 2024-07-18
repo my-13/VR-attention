@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 018eddff1d53d954c9a5a3a7a4606cf7, type: 3}
   m_Name: Block2
   m_EditorClassIdentifier: 
+  configOptions: {fileID: 0}
   configName: Trial1
   targetObject: {fileID: 3270275367774631146, guid: 1475ea4413b4e8b4bb4c6fbfb156ac8d, type: 3}
   otherObjects:
-  - {fileID: 1837642756708611309, guid: e33be15daf3fd6441b2d427a161164a0, type: 3}
+  - {fileID: 4738884146677316936, guid: 00b25e9ac6f14a142abe3c68f7075302, type: 3}
   - {fileID: 1837642756708611309, guid: e33be15daf3fd6441b2d427a161164a0, type: 3}
   - {fileID: 1837642756708611309, guid: e33be15daf3fd6441b2d427a161164a0, type: 3}
   distractorObjects:
@@ -36,3 +37,5 @@ MonoBehaviour:
   numberOfTrials: 5
   rotationDegrees: 0
   randomRotation: 0
+  feedbackType: 1
+  isItemsRealistic: 0
