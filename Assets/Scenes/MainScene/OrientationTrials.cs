@@ -249,6 +249,7 @@ public class OrientationTrials : MonoBehaviour
             }
             else if (i < config.distractorObjects.Length + 1)
             {
+                Debug.Log(manager.configOptions.procedureConfig.GetCurrentDistractor() );
                 if (manager.configOptions.procedureConfig.GetCurrentDistractor()  /*UnityEngine.Random.Range(0, 100) < config.randomPercentageOfDistractor*/)
                 {
                     trialHadDistractor = true;
@@ -387,7 +388,7 @@ public class OrientationTrials : MonoBehaviour
         if (manager.configOptions.procedureConfig.IsLastTrial())
         {
 
-            if (manager.configOptions.IsLastBlock()){
+            if (manager.configOptions.procedureConfig.IsLastBlock()){
                 
                 BlockEnd(manager, config);
                 manager.EndStudy();                
@@ -396,15 +397,16 @@ public class OrientationTrials : MonoBehaviour
             {
                 BlockEnd(manager, config);
                 
-                manager.configOptions.procedureConfig.GetNextTrialString();
+                string trialString = manager.configOptions.procedureConfig.GetNextTrialString();
+
                 manager.StartCoroutine(TimeoutBreak(manager, 30, config));
             }
         }
-        
         else
         {
             
-            manager.configOptions.procedureConfig.GetNextTrialString();   
+            string trialString = manager.configOptions.procedureConfig.GetNextTrialString();
+
             manager.StartCoroutine( WaitForTrial(manager, true, config));
         }
     }
@@ -451,13 +453,15 @@ public class OrientationTrials : MonoBehaviour
             else
             {
                 BlockEnd(manager, config);
-            
+                string trialString = manager.configOptions.procedureConfig.GetNextTrialString();
                 manager.StartCoroutine(TimeoutBreak(manager, 30, config));
             }
         }
         
         else
         {
+            string trialString = manager.configOptions.procedureConfig.GetNextTrialString();
+                
             manager.StartCoroutine( WaitForTrial(manager, true, config));
         }
     }

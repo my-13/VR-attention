@@ -5,11 +5,12 @@ using System.IO;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using System.Linq;
+using Unity.VisualScripting;
 
 
 [Serializable]
 [CreateAssetMenu(fileName = "ProcedureConfig", menuName = "ScriptableObjects/ProcedureConfig", order = 2)]
-public class ProcedureConfig : ScriptableObject
+public class ProcedureConfig
 {
     public string configName;
     public int currentBlock;
@@ -83,14 +84,18 @@ public class ProcedureConfig : ScriptableObject
 
     public string GetNextTrialString()
     {
-        currentBlock++;
-        currentTrial = 0;
+        currentTrial++;
+        if (currentTrial >= procedureBlocks[currentBlock].Length)
+        {
+            currentTrial = 0;
+            currentBlock++;
+        }
         return procedureBlocks[currentBlock][currentTrial];
     }
 
     public string GetCurrentTrialString()
     {
-        return procedureBlocks[currentBlock][currentTrial];
+        return new string(procedureBlocks[currentBlock][currentTrial].Where(c => !Char.IsWhiteSpace(c)).ToArray());
     }
 
     public string[] GetCurrentTrialArray()
