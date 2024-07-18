@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-
+using System.Linq;
 
 
 [Serializable]
@@ -26,9 +26,20 @@ public class ProcedureConfig : ScriptableObject
     {
         this.configName = configName;
         ReadProcedureFile(path);
+
+        System.Random rng = new();
+        for (int i = 0; i < procedureBlocks.Length; i++)
+        {
+            procedureBlocks[i] = procedureBlocks[i].OrderBy(a => rng.Next()).ToArray();
+        }
+
+        procedureBlocks.OrderBy(a => rng.Next());
+        
         this.currentBlock = 0;
         this.currentTrial = 0;
     }
+
+
 
     void ReadProcedureFile(string path){
         StreamReader reader

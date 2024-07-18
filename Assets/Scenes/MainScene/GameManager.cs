@@ -157,7 +157,7 @@ public class GameManager : MonoBehaviour
                 
                 OrientationTrials.viewTrialData.Item1.Add(OrientationTrials.stopwatch.ElapsedMilliseconds - OrientationTrials.start_time_ms);
                 OrientationTrials.viewTrialData.Item2.Enqueue(pose);
-                await Task.Delay(1);
+                await Task.Delay(8);
             }
             
         }

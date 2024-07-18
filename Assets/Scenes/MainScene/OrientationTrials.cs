@@ -168,6 +168,7 @@ public class OrientationTrials : MonoBehaviour
         }
         isTrialRunning = true;
         manager.isTrialRunning = true;
+        
 
         // Get the camera position and forward vector
         Vector3 cameraPos = manager.vrCamera.transform.position;
@@ -234,7 +235,7 @@ public class OrientationTrials : MonoBehaviour
             {
                 
                 obj.GetComponent<Renderer>().material.color = normalColor;
-                if (manager.configOptions.procedureConfig.GetCurrentFeedbackType() == FeedbackType.Grabbing)
+                if (manager.configOptions.procedureConfig.GetCurrentFeedbackType() == FeedbackType.Reaching)
                 {
                     obj.GetComponent<XRGrabInteractable>().enabled = true;
                     obj.GetComponent<XRGrabInteractable>().selectEntered.AddListener((interactor) => ObjectGrabbed(manager, config, obj.GetComponent<XRGrabInteractable>() ));
@@ -370,7 +371,6 @@ public class OrientationTrials : MonoBehaviour
         manager.StartCoroutine(StopRecordingDataDelay(1f, manager));
         
 
-
         trials.trialTimesMiliseconds.Add(time_ms);
         trials.hadDistractor.Add(trialHadDistractor);
         
@@ -384,8 +384,9 @@ public class OrientationTrials : MonoBehaviour
         }
         
 
-        if (trials.trialCount >= config.numberOfTrials)
+        if (manager.configOptions.procedureConfig.IsLastTrial())
         {
+
             if (manager.configOptions.IsLastBlock()){
                 
                 BlockEnd(manager, config);
@@ -394,13 +395,16 @@ public class OrientationTrials : MonoBehaviour
             else
             {
                 BlockEnd(manager, config);
-            
+                
+                manager.configOptions.procedureConfig.GetNextTrialString();
                 manager.StartCoroutine(TimeoutBreak(manager, 30, config));
             }
         }
         
         else
         {
+            
+            manager.configOptions.procedureConfig.GetNextTrialString();   
             manager.StartCoroutine( WaitForTrial(manager, true, config));
         }
     }
@@ -531,10 +535,13 @@ public class OrientationTrials : MonoBehaviour
     public static void ObjectGrabbed(GameManager manager, OrientationBlockConfig config, XRGrabInteractable interactable)
     {   
         if (interactable.isSelected){
-            XRBaseInteractor interactor = interactable.selectingInteractor;
-            if (interactor != null){
-                GameObject heldObject = interactor.selectTarget.gameObject;
-                Destroy(heldObject);
+            List<IXRSelectInteractor> interactor = interactable.interactorsSelecting;
+            if (interactor[0] != null){
+                IXRSelectInteractable heldObject = interactor[0].interactablesSelected[0];
+                if (heldObject != null){
+                    Destroy(heldObject.transform.gameObject);
+                }
+                
             }
         }
         if (isTrialRunning)
