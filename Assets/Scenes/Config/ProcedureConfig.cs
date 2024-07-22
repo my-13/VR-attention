@@ -13,8 +13,8 @@ using Unity.VisualScripting;
 public class ProcedureConfig
 {
     public string configName;
-    public int currentBlock;
-    public int currentTrial;
+    public int currentBlock = 0;
+    public int currentTrial = 0;
     public string[][] procedureBlocks;
 
     public bool IsLastBlock() { return currentBlock == procedureBlocks.Length - 1; }
@@ -34,7 +34,7 @@ public class ProcedureConfig
             procedureBlocks[i] = procedureBlocks[i].OrderBy(a => rng.Next()).ToArray();
         }
 
-        procedureBlocks.OrderBy(a => rng.Next());
+        procedureBlocks = procedureBlocks.OrderBy(a => rng.Next()).ToArray();
         
         this.currentBlock = 0;
         this.currentTrial = 0;

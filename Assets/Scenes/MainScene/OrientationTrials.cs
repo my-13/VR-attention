@@ -320,7 +320,13 @@ public class OrientationTrials : MonoBehaviour
 
 
         // Summary File (Orientation, Selected, Actual, Had Distractor)
-        string mainTrialInfo = (int)OrientationTrials.trials.selectedOrientation[OrientationTrials.gameManager.configOptions.procedureConfig.currentTrial - 1 ] + ", " + (int)OrientationTrials.trials.actualOrientation[OrientationTrials.gameManager.configOptions.procedureConfig.currentTrial - 1] + ", " + OrientationTrials.trials.hadDistractor[OrientationTrials.gameManager.configOptions.procedureConfig.currentTrial - 1] + "\n";
+        int currentTrialNumber = OrientationTrials.gameManager.configOptions.procedureConfig.currentTrial - 1;
+        Debug.Log(currentTrialNumber);
+        
+        int selectedOrientation = (int)OrientationTrials.trials.selectedOrientation[currentTrialNumber ];
+        int actualOrientation = (int)OrientationTrials.trials.actualOrientation[currentTrialNumber ];
+        int hadDistractor = OrientationTrials.trials.hadDistractor[currentTrialNumber ] ? 1 : 0;
+        string mainTrialInfo = selectedOrientation + ", " + actualOrientation + ", " + hadDistractor + "\n";
         // Write this into a summary file
 
         for (int i = 0; i < mainTrialData.Item1.Count; i++)
@@ -382,11 +388,11 @@ public class OrientationTrials : MonoBehaviour
         {
             Destroy(transform.gameObject);
         }
-        
+        string trialString = manager.configOptions.procedureConfig.GetNextTrialString();
 
         if (manager.configOptions.procedureConfig.IsLastTrial())
         {
-
+            
             if (manager.configOptions.procedureConfig.IsLastBlock()){
                 
                 BlockEnd(manager, config);
@@ -395,8 +401,6 @@ public class OrientationTrials : MonoBehaviour
             else
             {
                 BlockEnd(manager, config);
-                
-                string trialString = manager.configOptions.procedureConfig.GetNextTrialString();
 
                 manager.StartCoroutine(TimeoutBreak(manager, 30, config));
             }
@@ -404,8 +408,7 @@ public class OrientationTrials : MonoBehaviour
         else
         {
             
-            string trialString = manager.configOptions.procedureConfig.GetNextTrialString();
-
+            
             manager.StartCoroutine( WaitForTrial(manager, true, config));
         }
     }
@@ -442,6 +445,8 @@ public class OrientationTrials : MonoBehaviour
             Destroy(transform.gameObject);
         }
         
+        string trialString = manager.configOptions.procedureConfig.GetNextTrialString();
+
         if (manager.configOptions.procedureConfig.currentTrial >= config.numberOfTrials)
         {
             if (manager.configOptions.IsLastBlock()){
@@ -452,14 +457,12 @@ public class OrientationTrials : MonoBehaviour
             else
             {
                 BlockEnd(manager, config);
-                string trialString = manager.configOptions.procedureConfig.GetNextTrialString();
                 manager.StartCoroutine(TimeoutBreak(manager, 30, config));
             }
         }
         
         else
         {
-            string trialString = manager.configOptions.procedureConfig.GetNextTrialString();
                 
             manager.StartCoroutine( WaitForTrial(manager, true, config));
         }
