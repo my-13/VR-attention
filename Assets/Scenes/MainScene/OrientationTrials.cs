@@ -71,7 +71,8 @@ public class OrientationTrials : MonoBehaviour
     public static (List<long>, List<TrialEvent>, List<Vector3>, List<Vector3>, Queue<Pose>, List<Vector3>, List<Quaternion>) mainTrialData = (new(), new(), new(), new(), new(), new(), new());
     // (Miliseconds, Eye Pose at that time) 120Hz
     public static (List<long>, Queue<Pose>) viewTrialData = (new(), new());
-
+    public static Vector3 distractorObjPosition = Vector3.zero;
+    public static Vector3 targetObjPosition = Vector3.zero;
 
 
 
@@ -242,14 +243,15 @@ public class OrientationTrials : MonoBehaviour
                 {
                     itemOrientation = RandLineOrientation(obj, manager.verticalMaterial, manager.horizontalMaterial,  manager.configOptions.procedureConfig.GetCurrentOrientation());
                 }
-                
+                targetObjPosition = obj.transform.position;
             }
             else if (i < config.distractorObjects.Length + 1)
             {
-                Debug.Log(manager.configOptions.procedureConfig.GetCurrentDistractor() );
-                if (manager.configOptions.procedureConfig.GetCurrentDistractor()  /*UnityEngine.Random.Range(0, 100) < config.randomPercentageOfDistractor*/)
+                
+                if (manager.configOptions.procedureConfig.GetCurrentDistractor() )
                 {
                     trialHadDistractor = true;
+                    distractorObjPosition = obj.transform.position;
                     obj.GetComponent<Renderer>().material.color = distractorColor;
                     if (manager.configOptions.procedureConfig.GetCurrentFeedbackType() == FeedbackType.ButtonInput)
                     {
@@ -260,6 +262,7 @@ public class OrientationTrials : MonoBehaviour
                 else
                 {
                     trialHadDistractor = false;
+                    distractorObjPosition = Vector3.zero;
                     obj.GetComponent<Renderer>().material.color = normalColor;
                     if (manager.configOptions.procedureConfig.GetCurrentFeedbackType() == FeedbackType.ButtonInput)
                     {

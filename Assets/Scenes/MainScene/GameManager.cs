@@ -131,6 +131,7 @@ public class GameManager : MonoBehaviour
         isStudyRunning = true;
         
         eyeThread = new( new ThreadStart(() => RecordEyeData()));
+        ViewEyeGaze.action.Enable();
         eyeThread.Start();
 
         // Start the first trial
@@ -153,8 +154,9 @@ public class GameManager : MonoBehaviour
     async void RecordEyeData(){
         while(true){
             if (OrientationTrials.isDataRecording){
+                
                 Pose pose = ViewEyeGaze.action.ReadValue<Pose>();
-                Debug.Log("Eye data collecting");
+                Debug.Log(pose.position.x + " " + pose.position.y + " " + pose.position.z);
                 OrientationTrials.viewTrialData.Item1.Add(OrientationTrials.stopwatch.ElapsedMilliseconds - OrientationTrials.start_time_ms);
                 OrientationTrials.viewTrialData.Item2.Enqueue(pose);
                 await Task.Delay(8);
