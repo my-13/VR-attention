@@ -309,16 +309,26 @@ public class OrientationTrials : MonoBehaviour
         // feedbackType ^ (2^0) + distractorPresent ^ (2^1) + colorVariability ^ (2^2) + objectType ^ (2^3)
         int category = 1 + feedbackType * 1 + distractorPresent * 2 + colorVariability * 4 + objectType * 8;
         
+        string participantID = OrientationTrials.trials.participantID;
+        int currentTrialID = OrientationTrials.gameManager.configOptions.procedureConfig.currentTrial;
+        int currentBlockID = manager.configOptions.procedureConfig.currentBlock;
 
-        
         // Main File (Time, EventCode, Left Hand Position, Left Hand Rotation, Right Hand position, Right Hand Rotation, Head Position, Head Rotation, Filtered Eye Data)
-        string mainPath = "./data/main_" + dateTime + "_" + category + "_" + OrientationTrials.trials.participantID + "_" + OrientationTrials.trials.blockID + "_" + manager.configOptions.procedureConfig.currentTrial + ".txt";
+        string mainPath = "./data/main_" + dateTime + "_" + category + "_" + participantID + "_" + currentBlockID + "_" + currentTrialID + ".txt";
         string mainTrialcontent = "";
 
-        string trialPath = "./data/trial_" + dateTime + "_" + category + "_" + OrientationTrials.trials.participantID + "_" + OrientationTrials.trials.blockID + "_" + manager.configOptions.procedureConfig.currentTrial + ".txt";
+        string trialInfoPath = "./data/trial_" + "_" + category + "_" + participantID + "_" + currentBlockID + ".txt";
+        if (manager.configOptions.procedureConfig.GetCurrentFeedbackType() == FeedbackType.Reaching){
+            string trialInfoContent = "" + OrientationTrials.trials.hadDistractor[currentTrialID] + "," + OrientationTrials.trials.trialTimesMiliseconds + "," + OrientationTrials.targetObjPosition.x + "," + OrientationTrials.targetObjPosition.y + ","+ OrientationTrials.targetObjPosition.z + "," + OrientationTrials.distractorObjPosition.x + "," + OrientationTrials.distractorObjPosition.y + "," + OrientationTrials.distractorObjPosition.z + "\n";
+        }
+        else if(manager.configOptions.procedureConfig.GetCurrentFeedbackType() == FeedbackType.ButtonInput){
+            string trialInfoContent = "" +  OrientationTrials.trials.selectedOrientation[currentTrialID] + "," + OrientationTrials.trials.actualOrientation[currentTrialID] +"," +OrientationTrials.trials.hadDistractor[currentTrialID] + OrientationTrials.trials.trialTimesMiliseconds[currentTrialID]+  ","+ OrientationTrials.targetObjPosition.x + "," + OrientationTrials.targetObjPosition.y + ","+ OrientationTrials.targetObjPosition.z + "," + OrientationTrials.distractorObjPosition.x + "," + OrientationTrials.distractorObjPosition.y + "," + OrientationTrials.distractorObjPosition.z + "\n";
+        }
+        //trialTimesMiliseconds
         
+
         // Raw Eye Data File (Time, Raw Eye Position, Raw Eye Rotation)
-        string eyePath = "./data/eye_" + dateTime + "_" + category + "_" + OrientationTrials.trials.participantID + "_" + OrientationTrials.trials.blockID + "_" + manager.configOptions.procedureConfig.currentTrial + ".txt";
+        string eyePath = "./data/eye_" + dateTime + "_" + category + "_" + participantID + "_" + currentBlockID + "_" + currentTrialID + ".txt";
         string eyeTrialContent = "";
 
 
@@ -345,17 +355,27 @@ public class OrientationTrials : MonoBehaviour
             Directory.CreateDirectory("./data");
         }
 
+        // Writing General Trial Data on if it's right or wrong
+        if (!File.Exists(trialInfoPath)) {
+            File.WriteAllText(trialInfoPath, trialInfoContent);
+        }else{
+            File.AppendAllText(trialInfoPath, trialInfoContent);
+        }
+
+        // Writing Eye Tracking Data
         if (!File.Exists(eyePath)) {
             File.WriteAllText(eyePath, eyeTrialContent);
         }else{
             File.AppendAllText(eyePath, eyeTrialContent);
         }
 
+        // Writing Main Trial Tracking Data
         if (!File.Exists(mainPath)) {
             File.WriteAllText(mainPath, mainTrialcontent);
+        }else{
+            File.AppendAllText(mainPath, mainTrialcontent);    
         }
 
-        File.AppendAllText(mainPath, mainTrialcontent);
     }
     
     public static IEnumerator StopRecordingDataDelay(float delay, GameManager manager){

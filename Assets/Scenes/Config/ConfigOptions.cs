@@ -24,7 +24,7 @@ public class ConfigOptions : ScriptableObject
     }
 
     public bool IsLastBlock(){
-        return currentBlock == procedureConfig.procedureBlocks.Length - 1;
+        return procedureConfig.currentTrial == procedureConfig.procedureBlocks.Length - 1;
     }
 
     public void SetButtonBlockConfigData(ProcedureConfig procedureConfig){
