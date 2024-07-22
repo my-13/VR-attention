@@ -153,6 +153,7 @@ public class GameManager : MonoBehaviour
 
     async void RecordEyeData(){
         while(true){
+            Debug.Log(OrientationTrials.isDataRecording);
             if (OrientationTrials.isDataRecording){
                 
                 Pose pose = ViewEyeGaze.action.ReadValue<Pose>();
@@ -193,7 +194,7 @@ public class GameManager : MonoBehaviour
             OrientationTrials.mainTrialData.Item7.Add(vrCamera.transform.rotation);
             
             // Dequeue the eye tracking data
-            OrientationTrials.mainTrialData.Item5.Enqueue(OrientationTrials.viewTrialData.Item2.Peek() != null ? OrientationTrials.viewTrialData.Item2.Peek() : new Pose());
+            OrientationTrials.mainTrialData.Item5.Enqueue(OrientationTrials.viewTrialData.Item2.Count != 0 ? OrientationTrials.viewTrialData.Item2.Peek() : new Pose());
 
 
             

@@ -312,19 +312,18 @@ public class OrientationTrials : MonoBehaviour
 
         
         // Main File (Time, EventCode, Left Hand Position, Left Hand Rotation, Right Hand position, Right Hand Rotation, Head Position, Head Rotation, Filtered Eye Data)
-        string mainPath = "./data/main_" + dateTime + "_" + category + "_" + OrientationTrials.trials.participantID + "_" + OrientationTrials.trials.blockID + "_" + OrientationTrials.gameManager.configOptions.procedureConfig.currentTrial + ".txt";
+        string mainPath = "./data/main_" + dateTime + "_" + category + "_" + OrientationTrials.trials.participantID + "_" + OrientationTrials.trials.blockID + "_" + manager.configOptions.procedureConfig.currentTrial + ".txt";
         string mainTrialcontent = "";
 
-        string trialPath = "./data/trial_" + dateTime + "_" + category + "_" + OrientationTrials.trials.participantID + "_" + OrientationTrials.trials.blockID + "_" + OrientationTrials.gameManager.configOptions.procedureConfig.currentTrial + ".txt";
+        string trialPath = "./data/trial_" + dateTime + "_" + category + "_" + OrientationTrials.trials.participantID + "_" + OrientationTrials.trials.blockID + "_" + manager.configOptions.procedureConfig.currentTrial + ".txt";
         
         // Raw Eye Data File (Time, Raw Eye Position, Raw Eye Rotation)
-        string eyePath = "./data/eye_" + dateTime + "_" + category + "_" + OrientationTrials.trials.participantID + "_" + OrientationTrials.trials.blockID + "_" + OrientationTrials.gameManager.configOptions.procedureConfig.currentTrial + ".txt";
+        string eyePath = "./data/eye_" + dateTime + "_" + category + "_" + OrientationTrials.trials.participantID + "_" + OrientationTrials.trials.blockID + "_" + manager.configOptions.procedureConfig.currentTrial + ".txt";
         string eyeTrialContent = "";
 
 
         // Summary File (Orientation, Selected, Actual, Had Distractor)
         int currentTrialNumber = OrientationTrials.gameManager.configOptions.procedureConfig.currentTrial - 1;
-        Debug.Log(currentTrialNumber);
         
         int selectedOrientation = (int)OrientationTrials.trials.selectedOrientation[currentTrialNumber ];
         int actualOrientation = (int)OrientationTrials.trials.actualOrientation[currentTrialNumber ];
@@ -377,14 +376,12 @@ public class OrientationTrials : MonoBehaviour
         
         isTrialRunning = false;
         manager.isTrialRunning = false;
-        manager.StartCoroutine(StopRecordingDataDelay(1f, manager));
+        manager.StartCoroutine(StopRecordingDataDelay(0.5f, manager));
         
 
         trials.trialTimesMiliseconds.Add(time_ms);
         trials.hadDistractor.Add(trialHadDistractor);
         
-        OrientationTrials.gameManager.configOptions.procedureConfig.currentTrial++;
-
 
         // Destroy all objects
         foreach (Transform transform in trialObjectsParent.transform)
@@ -437,10 +434,6 @@ public class OrientationTrials : MonoBehaviour
         trials.actualOrientation.Add(itemOrientation);
         trials.selectedOrientation.Add(orientation);
         trials.hadDistractor.Add(trialHadDistractor);
-        
-        
-        OrientationTrials.gameManager.configOptions.procedureConfig.currentTrial++;
-
 
         // Destroy all objects
         foreach (Transform transform in trialObjectsParent.transform)
