@@ -154,7 +154,7 @@ public class GameManager : MonoBehaviour
         while(true){
             if (OrientationTrials.isDataRecording){
                 Pose pose = ViewEyeGaze.action.ReadValue<Pose>();
-                
+                Debug.Log("Eye data collecting");
                 OrientationTrials.viewTrialData.Item1.Add(OrientationTrials.stopwatch.ElapsedMilliseconds - OrientationTrials.start_time_ms);
                 OrientationTrials.viewTrialData.Item2.Enqueue(pose);
                 await Task.Delay(8);

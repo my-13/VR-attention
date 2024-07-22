@@ -574,7 +574,8 @@ public class OrientationTrials : MonoBehaviour
     {
         // Save the data to a file
         string json = JsonUtility.ToJson(OrientationTrials.trials);
-        System.IO.File.WriteAllText("orientation_trials_"+ OrientationTrials.trials.participantID + "_"+ OrientationTrials.trials.blockID.ToString("00") + ".json", json);
+        System.IO.File.WriteAllText("/data/data_"+ OrientationTrials.trials.participantID + "_"+ OrientationTrials.trials.blockID.ToString("00") + ".json", json);
+
         OrientationTrials.trials = new();
         manager.configOptions.procedureConfig.currentTrial = 0;
         // Format: orientation_trials_XXXX_YY.json where XXXX is the participant ID and YY is the block ID
