@@ -187,6 +187,8 @@ public class GameManager : MonoBehaviour
             OrientationTrials.mainTrialData.Item2.Add(code);
             OrientationTrials.mainTrialData.Item3.Add(trackedPositionObject.transform.position);
             OrientationTrials.mainTrialData.Item4.Add(secondTrackedPositionObject.transform.position);
+            OrientationTrials.mainTrialData.Item6.Add(vrCamera.transform.position);
+            OrientationTrials.mainTrialData.Item7.Add(vrCamera.transform.rotation);
             
             // Dequeue the eye tracking data
             OrientationTrials.mainTrialData.Item5.Enqueue(OrientationTrials.viewTrialData.Item2.Peek() != null ? OrientationTrials.viewTrialData.Item2.Peek() : new Pose());

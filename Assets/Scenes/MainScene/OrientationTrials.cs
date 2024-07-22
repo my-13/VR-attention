@@ -67,10 +67,8 @@ public class OrientationTrials : MonoBehaviour
     private static GameObject[] objects;
     public static GameManager gameManager;
 
-    // (Miliseconds, Trial Events for if something happened, Hand Positions at that time) 50Hz
-    public static (Queue<long>, Queue<Pose>) eyeViewTrialQueue = (new(), new());
-
-    public static (List<long>, List<TrialEvent>, List<Vector3>, List<Vector3>, Queue<Pose>) mainTrialData = (new(), new(), new(), new(), new());
+    // (Miliseconds, EventCode, Left Hand, Right Hand, Eye Queue, Head Position, Head Rotation) 50Hz
+    public static (List<long>, List<TrialEvent>, List<Vector3>, List<Vector3>, Queue<Pose>, List<Vector3>, List<Quaternion>) mainTrialData = (new(), new(), new(), new(), new(), new(), new());
     // (Miliseconds, Eye Pose at that time) 120Hz
     public static (List<long>, Queue<Pose>) viewTrialData = (new(), new());
 
@@ -195,7 +193,7 @@ public class OrientationTrials : MonoBehaviour
         
 
         // Start capturing data
-        mainTrialData = (new(), new(), new(), new(), new());
+        mainTrialData = (new(), new(), new(), new(), new(), new(), new());
         viewTrialData = (new(), new());
         isDataRecording = true;
 
@@ -313,6 +311,8 @@ public class OrientationTrials : MonoBehaviour
         // Main File (Time, EventCode, Left Hand Position, Left Hand Rotation, Right Hand position, Right Hand Rotation, Head Position, Head Rotation, Filtered Eye Data)
         string mainPath = "./data/main_" + dateTime + "_" + category + "_" + OrientationTrials.trials.participantID + "_" + OrientationTrials.trials.blockID + "_" + OrientationTrials.gameManager.configOptions.procedureConfig.currentTrial + ".txt";
         string mainTrialcontent = "";
+
+        string trialPath = "./data/trial_" + dateTime + "_" + category + "_" + OrientationTrials.trials.participantID + "_" + OrientationTrials.trials.blockID + "_" + OrientationTrials.gameManager.configOptions.procedureConfig.currentTrial + ".txt";
         
         // Raw Eye Data File (Time, Raw Eye Position, Raw Eye Rotation)
         string eyePath = "./data/eye_" + dateTime + "_" + category + "_" + OrientationTrials.trials.participantID + "_" + OrientationTrials.trials.blockID + "_" + OrientationTrials.gameManager.configOptions.procedureConfig.currentTrial + ".txt";
@@ -325,7 +325,7 @@ public class OrientationTrials : MonoBehaviour
 
         for (int i = 0; i < mainTrialData.Item1.Count; i++)
         {
-            mainTrialcontent += mainTrialData.Item1[i] + ", " + mainTrialData.Item2[i] + ", " + mainTrialData.Item3[i].x + "," + mainTrialData.Item3[i].y + "," + mainTrialData.Item3[i].z + "," + mainTrialData.Item4[i].x + "," + mainTrialData.Item4[i].y + "," + mainTrialData.Item4[i].z + "," + mainTrialData.Item5.Peek().position.x + "," + mainTrialData.Item5.Peek().position.y + "," + mainTrialData.Item5.Peek().position.z + "\n";
+            mainTrialcontent += mainTrialData.Item1[i] + ", " + mainTrialData.Item2[i] + ", " + mainTrialData.Item3[i].x + "," + mainTrialData.Item3[i].y + "," + mainTrialData.Item3[i].z + "," + mainTrialData.Item4[i].x + "," + mainTrialData.Item4[i].y + "," + mainTrialData.Item4[i].z + "," + mainTrialData.Item5.Peek().position.x + "," + mainTrialData.Item5.Peek().position.y + "," + mainTrialData.Item5.Peek().position.z + "," + mainTrialData.Item6[i].x + "," + mainTrialData.Item6[i].y + "," + mainTrialData.Item6[i].z + ","+ mainTrialData.Item7[i].x + "," + mainTrialData.Item7[i].y + "," + mainTrialData.Item7[i].z +"\n";
         }
 
         for (int i = 0; i < viewTrialData.Item1.Count; i++)
