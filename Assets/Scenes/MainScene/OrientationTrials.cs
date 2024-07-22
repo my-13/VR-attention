@@ -16,7 +16,6 @@ public class OrientationBlockData
     //public OrientationBlockConfig saveDataUsed;
     public string participantID = "0000";
     public int blockID = 0;
-    public int trialCount = 0; // This should be equivalent to the number of trialTimes
     public List<float> trialTimesMiliseconds = new();
     public List<LineOrientation> selectedOrientation = new();
 
@@ -300,9 +299,9 @@ public class OrientationTrials : MonoBehaviour
         
         string dateTime = DateTime.Now.ToString("yyyyMMddHHmmss");
 
-        int feedbackType = manager.configOptions.GetCurrentBlockConfig().feedbackType == FeedbackType.ButtonInput ? 1 : 0;
-        int distractorPresent = OrientationTrials.trials.hadDistractor[OrientationTrials.trials.trialCount - 1] ? 1 : 0;
-        int colorVariability = manager.configOptions.GetCurrentBlockConfig().randomizeColors ? 1 : 0;
+        int feedbackType = manager.configOptions.procedureConfig.GetCurrentFeedbackType() == FeedbackType.ButtonInput ? 1 : 0;
+        int distractorPresent = manager.configOptions.procedureConfig.GetCurrentDistractor() ? 1 : 0;
+        int colorVariability = manager.configOptions.GetCurrentBlockConfig().isMainColorSwapped ? 1 : 0;
         int objectType = manager.configOptions.GetCurrentBlockConfig().isItemsRealistic ? 1 : 0;
 
         
@@ -312,16 +311,16 @@ public class OrientationTrials : MonoBehaviour
 
         
         // Main File (Time, EventCode, Left Hand Position, Left Hand Rotation, Right Hand position, Right Hand Rotation, Head Position, Head Rotation, Filtered Eye Data)
-        string mainPath = "./data/main_" + dateTime + "_" + category + "_" + OrientationTrials.trials.participantID + "_" + OrientationTrials.trials.blockID + "_" + OrientationTrials.trials.trialCount + ".txt";
+        string mainPath = "./data/main_" + dateTime + "_" + category + "_" + OrientationTrials.trials.participantID + "_" + OrientationTrials.trials.blockID + "_" + OrientationTrials.gameManager.configOptions.procedureConfig.currentTrial + ".txt";
         string mainTrialcontent = "";
         
         // Raw Eye Data File (Time, Raw Eye Position, Raw Eye Rotation)
-        string eyePath = "./data/eye_" + dateTime + "_" + category + "_" + OrientationTrials.trials.participantID + "_" + OrientationTrials.trials.blockID + "_" + OrientationTrials.trials.trialCount + ".txt";
+        string eyePath = "./data/eye_" + dateTime + "_" + category + "_" + OrientationTrials.trials.participantID + "_" + OrientationTrials.trials.blockID + "_" + OrientationTrials.gameManager.configOptions.procedureConfig.currentTrial + ".txt";
         string eyeTrialContent = "";
 
 
         // Summary File (Orientation, Selected, Actual, Had Distractor)
-        string mainTrialInfo = (int)OrientationTrials.trials.selectedOrientation[OrientationTrials.trials.trialCount - 1 ] + ", " + (int)OrientationTrials.trials.actualOrientation[OrientationTrials.trials.trialCount - 1] + ", " + OrientationTrials.trials.hadDistractor[OrientationTrials.trials.trialCount - 1] + "\n";
+        string mainTrialInfo = (int)OrientationTrials.trials.selectedOrientation[OrientationTrials.gameManager.configOptions.procedureConfig.currentTrial - 1 ] + ", " + (int)OrientationTrials.trials.actualOrientation[OrientationTrials.gameManager.configOptions.procedureConfig.currentTrial - 1] + ", " + OrientationTrials.trials.hadDistractor[OrientationTrials.gameManager.configOptions.procedureConfig.currentTrial - 1] + "\n";
         // Write this into a summary file
 
         for (int i = 0; i < mainTrialData.Item1.Count; i++)
@@ -375,7 +374,7 @@ public class OrientationTrials : MonoBehaviour
         trials.trialTimesMiliseconds.Add(time_ms);
         trials.hadDistractor.Add(trialHadDistractor);
         
-        trials.trialCount++;
+        OrientationTrials.gameManager.configOptions.procedureConfig.currentTrial++;
 
 
         // Destroy all objects
@@ -434,7 +433,7 @@ public class OrientationTrials : MonoBehaviour
         trials.hadDistractor.Add(trialHadDistractor);
         
         
-        trials.trialCount++;
+        OrientationTrials.gameManager.configOptions.procedureConfig.currentTrial++;
 
 
         // Destroy all objects
@@ -443,7 +442,7 @@ public class OrientationTrials : MonoBehaviour
             Destroy(transform.gameObject);
         }
         
-        if (trials.trialCount >= config.numberOfTrials)
+        if (manager.configOptions.procedureConfig.currentTrial >= config.numberOfTrials)
         {
             if (manager.configOptions.IsLastBlock()){
                 
@@ -577,7 +576,7 @@ public class OrientationTrials : MonoBehaviour
         string json = JsonUtility.ToJson(OrientationTrials.trials);
         System.IO.File.WriteAllText("orientation_trials_"+ OrientationTrials.trials.participantID + "_"+ OrientationTrials.trials.blockID.ToString("00") + ".json", json);
         OrientationTrials.trials = new();
-        
+        manager.configOptions.procedureConfig.currentTrial = 0;
         // Format: orientation_trials_XXXX_YY.json where XXXX is the participant ID and YY is the block ID
 
 

@@ -56,6 +56,7 @@ public class ConfigOptions : ScriptableObject
     public OrientationBlockConfig GetCurrentBlockConfig(){
         OrientationBlockConfig currentBlockConfig = orientationBlocks[currentBlock];
         currentBlockConfig.numberOfTrials = procedureConfig.procedureBlocks[currentBlock].Length;
+        currentBlockConfig.isMainColorSwapped = procedureConfig.procedureBlocks[currentBlock][0][2] == '0' ? false : true;
         currentBlockConfig.feedbackType = procedureConfig.procedureBlocks[currentBlock][0][0] == '0' ? FeedbackType.ButtonInput : FeedbackType.Reaching;
         currentBlockConfig.isItemsRealistic = procedureConfig.procedureBlocks[currentBlock][0][1] == '0' ? false : true;
         
