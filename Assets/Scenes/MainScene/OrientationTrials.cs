@@ -318,11 +318,12 @@ public class OrientationTrials : MonoBehaviour
         string mainTrialcontent = "";
 
         string trialInfoPath = "./data/trial_" + "_" + category + "_" + participantID + "_" + currentBlockID + ".txt";
+        string trialInfoContent = "";
         if (manager.configOptions.procedureConfig.GetCurrentFeedbackType() == FeedbackType.Reaching){
-            string trialInfoContent = "" + OrientationTrials.trials.hadDistractor[currentTrialID] + "," + OrientationTrials.trials.trialTimesMiliseconds + "," + OrientationTrials.targetObjPosition.x + "," + OrientationTrials.targetObjPosition.y + ","+ OrientationTrials.targetObjPosition.z + "," + OrientationTrials.distractorObjPosition.x + "," + OrientationTrials.distractorObjPosition.y + "," + OrientationTrials.distractorObjPosition.z + "\n";
+            trialInfoContent = "" + OrientationTrials.trials.hadDistractor[currentTrialID] + "," + OrientationTrials.trials.trialTimesMiliseconds + "," + OrientationTrials.targetObjPosition.x + "," + OrientationTrials.targetObjPosition.y + ","+ OrientationTrials.targetObjPosition.z + "," + OrientationTrials.distractorObjPosition.x + "," + OrientationTrials.distractorObjPosition.y + "," + OrientationTrials.distractorObjPosition.z + "\n";
         }
         else if(manager.configOptions.procedureConfig.GetCurrentFeedbackType() == FeedbackType.ButtonInput){
-            string trialInfoContent = "" +  OrientationTrials.trials.selectedOrientation[currentTrialID] + "," + OrientationTrials.trials.actualOrientation[currentTrialID] +"," +OrientationTrials.trials.hadDistractor[currentTrialID] + OrientationTrials.trials.trialTimesMiliseconds[currentTrialID]+  ","+ OrientationTrials.targetObjPosition.x + "," + OrientationTrials.targetObjPosition.y + ","+ OrientationTrials.targetObjPosition.z + "," + OrientationTrials.distractorObjPosition.x + "," + OrientationTrials.distractorObjPosition.y + "," + OrientationTrials.distractorObjPosition.z + "\n";
+            trialInfoContent = "" +  OrientationTrials.trials.selectedOrientation[currentTrialID] + "," + OrientationTrials.trials.actualOrientation[currentTrialID] +"," +OrientationTrials.trials.hadDistractor[currentTrialID] + OrientationTrials.trials.trialTimesMiliseconds[currentTrialID]+  ","+ OrientationTrials.targetObjPosition.x + "," + OrientationTrials.targetObjPosition.y + ","+ OrientationTrials.targetObjPosition.z + "," + OrientationTrials.distractorObjPosition.x + "," + OrientationTrials.distractorObjPosition.y + "," + OrientationTrials.distractorObjPosition.z + "\n";
         }
         //trialTimesMiliseconds
         
