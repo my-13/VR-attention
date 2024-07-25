@@ -17,7 +17,7 @@ MonoBehaviour:
   targetObject: {fileID: 3270275367774631146, guid: 1475ea4413b4e8b4bb4c6fbfb156ac8d, type: 3}
   otherObjects:
   - {fileID: 4738884146677316936, guid: 00b25e9ac6f14a142abe3c68f7075302, type: 3}
-  - {fileID: 1837642756708611309, guid: e33be15daf3fd6441b2d427a161164a0, type: 3}
+  - {fileID: 1336360365455971465, guid: 5b117de6c97729d43913c972ab5e5405, type: 3}
   - {fileID: 1837642756708611309, guid: e33be15daf3fd6441b2d427a161164a0, type: 3}
   distractorObjects:
   - {fileID: 1837642756708611309, guid: e33be15daf3fd6441b2d427a161164a0, type: 3}
@@ -39,3 +39,4 @@ MonoBehaviour:
   randomRotation: 0
   feedbackType: 1
   isItemsRealistic: 0
+  isMainColorSwapped: 0

@@ -31,15 +31,25 @@ public class ProcedureConfig
         System.Random rng = new();
         for (int i = 0; i < procedureBlocks.Length; i++)
         {
-            procedureBlocks[i] = procedureBlocks[i].OrderBy(a => rng.Next()).ToArray();
+            ProcedureConfig.Shuffle(rng, procedureBlocks[i]);
+            //procedureBlocks[i] = procedureBlocks[i].OrderBy(a => rng.Next()).ToArray();
         }
 
-        procedureBlocks = procedureBlocks.OrderBy(a => rng.Next()).ToArray();
-        
+        //procedureBlocks = procedureBlocks.OrderBy(a => rng.Next()).ToArray();
+        ProcedureConfig.Shuffle(rng, procedureBlocks);
         this.currentBlock = 0;
         this.currentTrial = 0;
     }
-
+    
+    public static void Shuffle<T> (System.Random rng, T[] array)
+    {
+        int n = array.Length;
+        while (n > 1) 
+        {
+            int k = rng.Next(n--);
+            (array[k], array[n]) = (array[n], array[k]);
+        }
+    }
 
 
     void ReadProcedureFile(string path){
