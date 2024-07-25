@@ -17,8 +17,11 @@ public class ProcedureConfig
     public int currentTrial = 0;
     public string[][] procedureBlocks;
 
-    public bool IsLastBlock() { return currentBlock == procedureBlocks.Length - 1; }
-    public bool IsLastTrial() { return currentTrial == procedureBlocks[currentBlock].Length - 1; }
+    public bool IsLastBlock() { return currentBlock >= procedureBlocks.Length - 1; }
+    public bool IsLastTrial() { return currentTrial >= procedureBlocks[currentBlock].Length - 1; }
+    public bool IsOverBlock() { return currentBlock >= procedureBlocks.Length; }
+    public bool IsOverTrial() { return currentTrial >= procedureBlocks[currentBlock].Length; }
+    
     public bool IsBlockAvailable() { return currentBlock < procedureBlocks.Length; }
     public bool IsTrialAvailable() { return currentTrial < procedureBlocks[currentBlock].Length; }
 
@@ -68,7 +71,7 @@ public class ProcedureConfig
             tempProceduresBlocks[i] = new List<string>();
         }
 
-        int currentBlock = -1;
+        int tempCurrent = -1;
         for (int i = 0; i < count; i++)
         {
             var line = lines[i];
@@ -77,10 +80,10 @@ public class ProcedureConfig
             }
             if (line[0] == '#')
             {
-                currentBlock++;
+                tempCurrent++;
                 continue;
             }
-            tempProceduresBlocks[currentBlock].Add(line);
+            tempProceduresBlocks[tempCurrent].Add(line);
         }
         
         procedureBlocks = new string[numberOfBlocks][];

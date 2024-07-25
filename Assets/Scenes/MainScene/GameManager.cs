@@ -153,7 +153,6 @@ public class GameManager : MonoBehaviour
 
     async void RecordEyeData(){
         while(true){
-            Debug.Log(OrientationTrials.isDataRecording);
             if (OrientationTrials.isDataRecording){
                 Pose pose = ViewEyeGaze.action.ReadValue<Pose>();
                 

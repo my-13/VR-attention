@@ -319,6 +319,8 @@ public class OrientationTrials : MonoBehaviour
 
         string trialInfoPath = "./data/trial_" + "_" + category + "_" + participantID + "_" + currentBlockID + ".txt";
         string trialInfoContent = "";
+        
+        Debug.Log(currentTrialID);
         if (manager.configOptions.procedureConfig.GetCurrentFeedbackType() == FeedbackType.Reaching){
             trialInfoContent = "" + OrientationTrials.trials.hadDistractor[currentTrialID] + "," + OrientationTrials.trials.trialTimesMiliseconds + "," + OrientationTrials.targetObjPosition.x + "," + OrientationTrials.targetObjPosition.y + ","+ OrientationTrials.targetObjPosition.z + "," + OrientationTrials.distractorObjPosition.x + "," + OrientationTrials.distractorObjPosition.y + "," + OrientationTrials.distractorObjPosition.z + "\n";
         }
@@ -411,7 +413,7 @@ public class OrientationTrials : MonoBehaviour
         }
         string trialString = manager.configOptions.procedureConfig.GetNextTrialString();
 
-        if (manager.configOptions.procedureConfig.IsLastTrial())
+        if (manager.configOptions.procedureConfig.IsOverTrial())
         {
             
             if (manager.configOptions.procedureConfig.IsLastBlock()){
@@ -428,8 +430,6 @@ public class OrientationTrials : MonoBehaviour
         }
         else
         {
-            
-            
             manager.StartCoroutine( WaitForTrial(manager, true, config));
         }
     }
@@ -594,8 +594,15 @@ public class OrientationTrials : MonoBehaviour
     {
         // Save the data to a file
         string json = JsonUtility.ToJson(OrientationTrials.trials);
-        System.IO.File.WriteAllText("/data/data_"+ OrientationTrials.trials.participantID + "_"+ OrientationTrials.trials.blockID.ToString("00") + ".json", json);
+        string dateTime = DateTime.Now.ToString("yyyyMMddHHmmss");
+        string dataPath = "./data/data_"+ dateTime + "_" + OrientationTrials.trials.participantID + "_" + OrientationTrials.trials.blockID.ToString("00") + ".json";
 
+        if (!File.Exists(dataPath)) {
+            File.WriteAllText(dataPath, json);
+        }else{
+            File.AppendAllText(dataPath, json);
+        }
+        
         OrientationTrials.trials = new();
         manager.configOptions.procedureConfig.currentTrial = 0;
         // Format: orientation_trials_XXXX_YY.json where XXXX is the participant ID and YY is the block ID
