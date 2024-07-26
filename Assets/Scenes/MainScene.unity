@@ -825,7 +825,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c24a42872c94f924698ccc385f4723ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  participantID: 0000
+  participantID: 0001
   isTrialRunning: 0
   isUIShown: 0
   isStartLockedOut: 0
