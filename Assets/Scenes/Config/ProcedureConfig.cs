@@ -18,9 +18,9 @@ public class ProcedureConfig
     public string[][] procedureBlocks;
 
     public bool IsLastBlock() { 
-        return currentBlock >= procedureBlocks.Length ; }
+        return currentBlock >= procedureBlocks.Length - 1; }
     public bool IsLastTrial() { 
-        return currentTrial >= procedureBlocks[currentBlock].Length; }
+        return currentTrial >= procedureBlocks[currentBlock].Length - 1; }
     public bool IsOverBlock() { return currentBlock >= procedureBlocks.Length; }
     public bool IsOverTrial() { return currentTrial >= procedureBlocks[currentBlock].Length; }
     
@@ -108,6 +108,7 @@ public class ProcedureConfig
         }
         return procedureBlocks[currentBlock][currentTrial];
     }
+
 
     public string GetCurrentTrialString()
     {

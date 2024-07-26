@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8267023972684469390}
   - component: {fileID: 5484255445257353455}
   - component: {fileID: 7565732036299998150}
+  - component: {fileID: 5946937517367865444}
   m_Layer: 0
   m_Name: knife2
   m_TagString: Untagged
@@ -264,3 +265,25 @@ MonoBehaviour:
   m_StartingSingleGrabTransformers: []
   m_StartingMultipleGrabTransformers: []
   m_AddDefaultGrabTransformers: 1
+--- !u!64 &5946937517367865444
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 712017872843657796}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 8932166026425825430, guid: 010c86eddb0ed7c47ac26d91ed60e038, type: 3}

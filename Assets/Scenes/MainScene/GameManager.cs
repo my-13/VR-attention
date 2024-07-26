@@ -254,7 +254,7 @@ public class GameManager : MonoBehaviour
     {
         if (isTrialRunning)
         {
-            if (trial == Trial.Orientation)
+            if (trial == Trial.Orientation && configOptions.procedureConfig.GetCurrentFeedbackType() == FeedbackType.ButtonInput)
             {
                 OrientationTrials.PrimaryButtonPressed(this, configOptions.GetCurrentBlockConfig());
             }
@@ -275,7 +275,7 @@ public class GameManager : MonoBehaviour
     {
         if (isTrialRunning)
         {
-            if (trial == Trial.Orientation)
+            if (trial == Trial.Orientation && configOptions.procedureConfig.GetCurrentFeedbackType() == FeedbackType.ButtonInput)
             {
                 OrientationTrials.SecondaryButtonPressed(this, configOptions.GetCurrentBlockConfig());
             }
