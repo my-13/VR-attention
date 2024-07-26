@@ -30,7 +30,7 @@ MonoBehaviour:
   has2DShapes: 0
   randomPercentageOfDistractor: 50
   radiusOfObjectsMeters: 0.25
-  distanceFromUserMeters: 0.7
+  distanceFromUserMeters: 0.5
   itemLocation: 1
   itemsScale: 0.8
   changeItemPosition: 0
