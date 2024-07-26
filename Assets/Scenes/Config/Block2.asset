@@ -14,13 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   configOptions: {fileID: 0}
   configName: Trial1
-  targetObject: {fileID: 3270275367774631146, guid: 1475ea4413b4e8b4bb4c6fbfb156ac8d, type: 3}
+  targetObject: {fileID: 4738884146677316936, guid: 00b25e9ac6f14a142abe3c68f7075302, type: 3}
   otherObjects:
-  - {fileID: 4738884146677316936, guid: 00b25e9ac6f14a142abe3c68f7075302, type: 3}
+  - {fileID: 712017872843657796, guid: 4e678fdfbcdbedc408eaf53335cd081d, type: 3}
   - {fileID: 1336360365455971465, guid: 5b117de6c97729d43913c972ab5e5405, type: 3}
-  - {fileID: 1837642756708611309, guid: e33be15daf3fd6441b2d427a161164a0, type: 3}
+  - {fileID: 6903831718991961272, guid: 768f8c9ed278f6343a376e968e30fcf7, type: 3}
   distractorObjects:
-  - {fileID: 1837642756708611309, guid: e33be15daf3fd6441b2d427a161164a0, type: 3}
+  - {fileID: 8654528346439485169, guid: 65e85d938b3fb7d4f8ea2bbb572bd306, type: 3}
   distracterItemColor: {r: 0.8901961, g: 0, b: 0, a: 0}
   regularItemColor: {r: 0, g: 0.14795828, b: 1, a: 0}
   timeToSpawnMin: 2
@@ -34,9 +34,9 @@ MonoBehaviour:
   itemLocation: 1
   itemsScale: 0.8
   changeItemPosition: 0
-  numberOfTrials: 5
+  numberOfTrials: 10
   rotationDegrees: 0
   randomRotation: 0
-  feedbackType: 1
-  isItemsRealistic: 0
-  isMainColorSwapped: 0
+  feedbackType: 0
+  isItemsRealistic: 1
+  isMainColorSwapped: 1
