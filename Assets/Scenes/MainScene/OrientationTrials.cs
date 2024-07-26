@@ -153,7 +153,7 @@ public class OrientationTrials : MonoBehaviour
         uiText.SetActive(false);
 
         manager.isStartLockedOut = false;
-        manager.configOptions.GetNextBlockConfig();        
+        manager.configOptions.GetCurrentBlockConfig();  
         // Remove text to wait
 
     }
@@ -164,6 +164,8 @@ public class OrientationTrials : MonoBehaviour
             // Wait until the trial is over before starting a new one
             return;
         }
+
+        string nextString = manager.configOptions.procedureConfig.GetNextTrialString();
         isTrialRunning = true;
         manager.isTrialRunning = true;
         
@@ -310,7 +312,11 @@ public class OrientationTrials : MonoBehaviour
         int category = 1 + feedbackType * 1 + distractorPresent * 2 + colorVariability * 4 + objectType * 8;
         
         string participantID = OrientationTrials.trials.participantID;
-        int currentTrialID = OrientationTrials.gameManager.configOptions.procedureConfig.currentTrial;
+        int currentTrialID = OrientationTrials.gameManager.configOptions.procedureConfig.currentTrial - 1;
+        
+        // I don't wanna talk about it... (actually hour 8 of development)
+        if (currentTrialID < 0) currentTrialID = 0;
+
         int currentBlockID = manager.configOptions.procedureConfig.currentBlock;
 
         // Main File (Time, EventCode, Left Hand Position, Left Hand Rotation, Right Hand position, Right Hand Rotation, Head Position, Head Rotation, Filtered Eye Data)
@@ -336,11 +342,9 @@ public class OrientationTrials : MonoBehaviour
 
 
         // Summary File (Orientation, Selected, Actual, Had Distractor)
-        int currentTrialNumber = OrientationTrials.gameManager.configOptions.procedureConfig.currentTrial - 1;
-        
-        int selectedOrientation = (int)OrientationTrials.trials.selectedOrientation[currentTrialNumber ];
-        int actualOrientation = (int)OrientationTrials.trials.actualOrientation[currentTrialNumber ];
-        int hadDistractor = OrientationTrials.trials.hadDistractor[currentTrialNumber ] ? 1 : 0;
+        int selectedOrientation = (int)OrientationTrials.trials.selectedOrientation[currentTrialID ];
+        int actualOrientation = (int)OrientationTrials.trials.actualOrientation[currentTrialID ];
+        int hadDistractor = OrientationTrials.trials.hadDistractor[currentTrialID ] ? 1 : 0;
         string mainTrialInfo = selectedOrientation + ", " + actualOrientation + ", " + hadDistractor + "\n";
         // Write this into a summary file
 
@@ -404,16 +408,15 @@ public class OrientationTrials : MonoBehaviour
 
         trials.trialTimesMiliseconds.Add(time_ms);
         trials.hadDistractor.Add(trialHadDistractor);
-        
+        Debug.Log("hi");
 
         // Destroy all objects
         foreach (Transform transform in trialObjectsParent.transform)
         {
             Destroy(transform.gameObject);
         }
-        string trialString = manager.configOptions.procedureConfig.GetNextTrialString();
 
-        if (manager.configOptions.procedureConfig.IsOverTrial())
+        if (manager.configOptions.procedureConfig.IsLastTrial())
         {
             
             if (manager.configOptions.procedureConfig.IsLastBlock()){
@@ -462,11 +465,10 @@ public class OrientationTrials : MonoBehaviour
             Destroy(transform.gameObject);
         }
         
-        string trialString = manager.configOptions.procedureConfig.GetNextTrialString();
-
-        if (manager.configOptions.procedureConfig.currentTrial >= config.numberOfTrials)
+        if (manager.configOptions.procedureConfig.IsLastTrial())
         {
-            if (manager.configOptions.IsLastBlock()){
+            
+            if (manager.configOptions.procedureConfig.IsLastBlock()){
                 
                 BlockEnd(manager, config);
                 manager.EndStudy();                
@@ -474,10 +476,10 @@ public class OrientationTrials : MonoBehaviour
             else
             {
                 BlockEnd(manager, config);
+
                 manager.StartCoroutine(TimeoutBreak(manager, 30, config));
             }
         }
-        
         else
         {
                 
@@ -603,8 +605,7 @@ public class OrientationTrials : MonoBehaviour
             File.AppendAllText(dataPath, json);
         }
         
-        OrientationTrials.trials = new();
-        manager.configOptions.procedureConfig.currentTrial = 0;
+        //manager.configOptions.procedureConfig.currentTrial = 0;
         // Format: orientation_trials_XXXX_YY.json where XXXX is the participant ID and YY is the block ID
 
 

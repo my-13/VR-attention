@@ -13,7 +13,6 @@ public class ConfigOptions : ScriptableObject
     public string configName;
 
     public OrientationBlockConfig[] orientationBlocks;
-    public int currentBlock = 0;
     public ProcedureConfig procedureConfig;
 
     private void Start() {
@@ -36,7 +35,7 @@ public class ConfigOptions : ScriptableObject
     }
 
     public bool IsBlockAvailable(){
-        return currentBlock < procedureConfig.procedureBlocks.Length ;
+        return procedureConfig.currentBlock < procedureConfig.procedureBlocks.Length ;
     }
 
     public OrientationBlockConfig GetButtonPressBlockConfig(){
@@ -48,14 +47,14 @@ public class ConfigOptions : ScriptableObject
     }
 
     public OrientationBlockConfig GetNextBlockConfig(){
-        currentBlock++;
+        procedureConfig.currentBlock++;
 
         return GetCurrentBlockConfig();
     }
 
     public OrientationBlockConfig GetCurrentBlockConfig(){
         // Never ever let me cook again
-        OrientationBlockConfig currentBlockConfig = orientationBlocks[currentBlock];
+        OrientationBlockConfig currentBlockConfig = GetButtonPressBlockConfig();
 
         if (procedureConfig.GetCurrentFeedbackType() == FeedbackType.ButtonInput) {
             currentBlockConfig =  GetButtonPressBlockConfig();
@@ -64,10 +63,10 @@ public class ConfigOptions : ScriptableObject
         }
 
 
-        currentBlockConfig.numberOfTrials = procedureConfig.procedureBlocks[currentBlock].Length;
-        currentBlockConfig.isMainColorSwapped = procedureConfig.procedureBlocks[currentBlock][0][2] == '0' ? false : true;
-        currentBlockConfig.feedbackType = procedureConfig.procedureBlocks[currentBlock][0][0] == '0' ? FeedbackType.ButtonInput : FeedbackType.Reaching;
-        currentBlockConfig.isItemsRealistic = procedureConfig.procedureBlocks[currentBlock][0][1] == '0' ? false : true;
+        currentBlockConfig.numberOfTrials = procedureConfig.procedureBlocks[procedureConfig.currentBlock].Length;
+        currentBlockConfig.isMainColorSwapped = procedureConfig.procedureBlocks[procedureConfig.currentBlock][0][2] == '0' ? false : true;
+        currentBlockConfig.feedbackType = procedureConfig.procedureBlocks[procedureConfig.currentBlock][0][0] == '0' ? FeedbackType.ButtonInput : FeedbackType.Reaching;
+        currentBlockConfig.isItemsRealistic = procedureConfig.procedureBlocks[procedureConfig.currentBlock][0][1] == '0' ? false : true;
         
         return currentBlockConfig;
     }

@@ -264,7 +264,7 @@ public class GameManager : MonoBehaviour
     public void ObjectGrabbed(){
         if (isTrialRunning)
         {
-            if (trial == Trial.Orientation)
+            if (configOptions.procedureConfig.GetCurrentFeedbackType() == FeedbackType.Reaching)
             {
                 //OrientationTrials.ObjectGrabbed(this, configOptions.GetCurrentBlockConfig());
             }

@@ -14,11 +14,13 @@ public class ProcedureConfig
 {
     public string configName;
     public int currentBlock = 0;
-    public int currentTrial = 0;
+    public int currentTrial = -1;
     public string[][] procedureBlocks;
 
-    public bool IsLastBlock() { return currentBlock >= procedureBlocks.Length - 1; }
-    public bool IsLastTrial() { return currentTrial >= procedureBlocks[currentBlock].Length - 1; }
+    public bool IsLastBlock() { 
+        return currentBlock >= procedureBlocks.Length ; }
+    public bool IsLastTrial() { 
+        return currentTrial >= procedureBlocks[currentBlock].Length; }
     public bool IsOverBlock() { return currentBlock >= procedureBlocks.Length; }
     public bool IsOverTrial() { return currentTrial >= procedureBlocks[currentBlock].Length; }
     
@@ -40,6 +42,7 @@ public class ProcedureConfig
 
         //procedureBlocks = procedureBlocks.OrderBy(a => rng.Next()).ToArray();
         ProcedureConfig.Shuffle(rng, procedureBlocks);
+        
         this.currentBlock = 0;
         this.currentTrial = 0;
     }
@@ -100,7 +103,7 @@ public class ProcedureConfig
         currentTrial++;
         if (currentTrial >= procedureBlocks[currentBlock].Length)
         {
-            currentTrial = 0;
+            currentTrial = 1;
             currentBlock++;
         }
         return procedureBlocks[currentBlock][currentTrial];
