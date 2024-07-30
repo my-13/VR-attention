@@ -1,6 +1,8 @@
 # VR Attention
 
 A virtual reality platform developed to record the effect of visual distractors on visuokinematic data. 
+If I had more time, I would rewrite a codebase
+
 
 ## Table of Contents
 
@@ -26,7 +28,7 @@ Plug in Eye Tracking module to headset using short cable
 ## File Explination
 
 GameManager.cs - Handles the entire "game" and globally just manages the world. Passes interactions towards trials
-OrientationTrials.cs - A static class that handles all the logic and variables for the trials.
+OrientationTrials.cs - A static class that handles all the logic and variables for the trials. It does not only handle with line orientation, but also grabbing input
 
 ## License
 

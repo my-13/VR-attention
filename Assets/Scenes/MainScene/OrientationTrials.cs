@@ -76,36 +76,47 @@ public class OrientationTrials : MonoBehaviour
 
 
 
-
+    /**
+        Generates static data for each block
+    */
     public static void BlockStart(GameManager manager, OrientationBlockConfig config)
     {
+
         if (manager.isStartLockedOut)
         {
             return;
         }
+        // Global Stopwatch used for timing
         stopwatch = new System.Diagnostics.Stopwatch();
         stopwatch.Start();
 
+        // Lock out the start button, until the block is over, and setting global data
         manager.isStartLockedOut = true;
         manager.trial = Trial.Orientation;
         trials = new OrientationBlockData();
-
         trials.participantID = manager.participantID;
         
-
+        // Saving the GameObjects for the trial to be used. 
+        // TODO: replace all times that I use vrCamera with the manager.vrCamera
         vrCamera = manager.vrCamera;
         trialObjectsParent = manager.trialObjectsParent;
+
+        // Show block instructions to the participant
         ShowUI(manager, config);
     }
 
+    /** 
+        Show the block instructions for the particpant.
+        This requires the Right controller trigger to be pressed to start the trial
+    */
     public static void ShowUI(GameManager manager, OrientationBlockConfig config)
     {
 
-        
+        // Grab the UI text object, rewrite text for the block instructions, and then show text
         GameObject[] uiTextArr = GameObject.FindObjectsByType<GameObject>(FindObjectsInactive.Include, FindObjectsSortMode.None).Where(sr => sr.name == "StartText").ToArray();
         GameObject uiText = uiTextArr[0];
+
         manager.isUIShown = true;
-        uiText.SetActive(true);
         if (config.feedbackType == FeedbackType.ButtonInput){
             uiText.GetComponent<TMPro.TextMeshProUGUI>().fontSize = 0.15f;
             uiText.GetComponent<TMPro.TextMeshProUGUI>().text = "In this next section, you will be asked to identify the orientation of the line for the Diamond shape as quickly as possible. \n If the line is vertical, press the top button on the the controller (A/X).\n If the line is horizontal, press the bottom button (B/Y). \n Press the right controller trigger button to start.";
@@ -113,12 +124,16 @@ public class OrientationTrials : MonoBehaviour
             uiText.GetComponent<TMPro.TextMeshProUGUI>().fontSize = 0.15f;
             uiText.GetComponent<TMPro.TextMeshProUGUI>().text = "In this next section, you will be asked to find the milk carton as quickly as possible, shown below. \n Once you have found the object below, reach out and grab using the controller, with your dominant hand. \nThe object may change color, or may stay the same color through this section.\nAs soon as you grab the object, it will dissapear, and the trial will repeat. Please keep your arm up, centered in between the objects if possible. \nPress the right trigger button to start.";
         }
-
+        uiText.SetActive(true);
     }
 
     
-
+    /** 
+        Setup the block for the participant
+    */
     public static void SetupBlock(GameManager manager, OrientationBlockConfig config) {
+
+        // All that is Coded is to change the wall color to the background color
         GameObject[] walls = GameObject.FindGameObjectsWithTag("Wall");
         foreach (GameObject wall in walls)
         {
@@ -127,7 +142,9 @@ public class OrientationTrials : MonoBehaviour
     }
 
 
-
+    /**
+        Waits for a random amount of time (seconds) between the pre-defined ranges before starting the trial
+    */
     public static IEnumerator WaitForTrial(GameManager manager, bool wait, OrientationBlockConfig config)
     {   
         
