@@ -424,7 +424,6 @@ public class OrientationTrials : MonoBehaviour
 
         trials.trialTimesMiliseconds.Add(time_ms);
         trials.hadDistractor.Add(trialHadDistractor);
-        Debug.Log("hi");
 
         // Destroy all objects
         foreach (Transform transform in trialObjectsParent.transform)
@@ -455,52 +454,11 @@ public class OrientationTrials : MonoBehaviour
 
     public static void StopOrientationTrial(GameManager manager, LineOrientation orientation, OrientationBlockConfig config)
     {   
-        // Get the ending time
-        long end_time_ms = stopwatch.ElapsedMilliseconds;
-        // Calculate the time taken
-        time_ms = end_time_ms - start_time_ms;
-
-        // Print the time taken
-        Debug.Log("Time taken: " + time_ms + "ms");
-        
-        isTrialRunning = false;
-        manager.isTrialRunning = false;
-        manager.StartCoroutine(StopRecordingDataDelay(1f, manager));
-        
-
-
-        trials.trialTimesMiliseconds.Add(time_ms);
         bool wasCorrect = orientation == itemOrientation;
         trials.actualOrientation.Add(itemOrientation);
         trials.selectedOrientation.Add(orientation);
-        trials.hadDistractor.Add(trialHadDistractor);
-
-        // Destroy all objects
-        foreach (Transform transform in trialObjectsParent.transform)
-        {
-            Destroy(transform.gameObject);
-        }
         
-        if (manager.configOptions.procedureConfig.IsLastTrial())
-        {
-            
-            if (manager.configOptions.procedureConfig.IsLastBlock()){
-                
-                BlockEnd(manager, config);
-                manager.EndStudy();                
-            }
-            else
-            {
-                BlockEnd(manager, config);
-
-                manager.StartCoroutine(TimeoutBreak(manager, 30, config));
-            }
-        }
-        else
-        {
-                
-            manager.StartCoroutine( WaitForTrial(manager, true, config));
-        }
+        StopOrientationTrial(manager, config);
     }
 
     public static LineOrientation RandLineOrientation(GameObject obj, Material verticalMaterial, Material horizontalMaterial)
