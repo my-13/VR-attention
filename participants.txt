@@ -1,3 +1,0 @@
-Do NOT under any circumstances, place personal or medical information in this folder. This is supposed to link the first 2 trial data ONLY
-PID: 0001 Tony
-PID: 0002 Stephen
