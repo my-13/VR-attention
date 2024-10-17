@@ -7,23 +7,12 @@ using System.Linq;
 
 
 [Serializable]
-[CreateAssetMenu(fileName = "ProcedureConfig", menuName = "ScriptableObjects/ProcedureConfig", order = 2)]
 public class ProcedureConfig
 {
     public string configName;
-    public int currentBlock = 0;
-    public int currentTrial = -1;
-    public string[][] procedureBlocks;
-
-    public bool IsLastBlock() { 
-        return currentBlock >= procedureBlocks.Length - 1; }
-    public bool IsLastTrial() { 
-        return currentTrial >= procedureBlocks[currentBlock].Length - 1; }
-    public bool IsOverBlock() { return currentBlock >= procedureBlocks.Length; }
-    public bool IsOverTrial() { return currentTrial >= procedureBlocks[currentBlock].Length; }
-    
-    public bool IsBlockAvailable() { return currentBlock < procedureBlocks.Length; }
-    public bool IsTrialAvailable() { return currentTrial < procedureBlocks[currentBlock].Length; }
+    private int currentBlock = 0;
+    private int currentTrial = -1;
+    private string[][] procedureBlocks;
 
     // Construct ProcedureConfig object
     public ProcedureConfig(string configName, string path)
@@ -35,15 +24,18 @@ public class ProcedureConfig
         for (int i = 0; i < procedureBlocks.Length; i++)
         {
             ProcedureConfig.Shuffle(rng, procedureBlocks[i]);
-            //procedureBlocks[i] = procedureBlocks[i].OrderBy(a => rng.Next()).ToArray();
         }
 
-        //procedureBlocks = procedureBlocks.OrderBy(a => rng.Next()).ToArray();
         ProcedureConfig.Shuffle(rng, procedureBlocks);
         
         this.currentBlock = 0;
         this.currentTrial = 0;
     }
+    
+    public bool IsLastBlock() { return currentBlock >= procedureBlocks.Length - 1; }
+    public bool IsLastTrial() { return currentTrial >= procedureBlocks[currentBlock].Length - 1; }
+    public bool IsBlockAvailable() { return currentBlock < procedureBlocks.Length; }
+    public bool IsTrialAvailable() { return currentTrial < procedureBlocks[currentBlock].Length; }
     
     public static void Shuffle<T> (System.Random rng, T[] array)
     {
@@ -53,47 +45,6 @@ public class ProcedureConfig
             int k = rng.Next(n--);
             (array[k], array[n]) = (array[n], array[k]);
         }
-    }
-
-
-    void ReadProcedureFile(string path){
-        StreamReader reader
-            = new StreamReader(path);
-        string file = reader.ReadToEnd();
-        string[] lines = file.Split(new char[] {'\n'});  
-        int count = lines.Length;
-        string[] blocks = file.Split(new char[] {'#'});
-        int numberOfBlocks = blocks.Length - 1;
-
-        List<string>[] tempProceduresBlocks = new List<string>[numberOfBlocks];
-
-        for (int i = 0; i < numberOfBlocks; i++)
-        {
-            tempProceduresBlocks[i] = new List<string>();
-        }
-
-        int tempCurrent = -1;
-        for (int i = 0; i < count; i++)
-        {
-            var line = lines[i];
-            if (i == 0){
-                continue;
-            }
-            if (line[0] == '#')
-            {
-                tempCurrent++;
-                continue;
-            }
-            tempProceduresBlocks[tempCurrent].Add(line);
-        }
-        
-        procedureBlocks = new string[numberOfBlocks][];
-        for (int i = 0; i < numberOfBlocks; i++)
-        {
-            procedureBlocks[i] = tempProceduresBlocks[i].ToArray();
-        }
-
-        reader.Close();
     }
 
     public string GetNextTrialString()
@@ -137,7 +88,44 @@ public class ProcedureConfig
 
 
 
+    private void ReadProcedureFile(string path){
+        StreamReader reader = new StreamReader(path);
+        string file = reader.ReadToEnd();
+        string[] lines = file.Split(new char[] {'\n'});  
+        int count = lines.Length;
+        string[] blocks = file.Split(new char[] {'#'});
+        int numberOfBlocks = blocks.Length - 1;
 
+        List<string>[] tempProceduresBlocks = new List<string>[numberOfBlocks];
+
+        for (int i = 0; i < numberOfBlocks; i++)
+        {
+            tempProceduresBlocks[i] = new List<string>();
+        }
+
+        int tempCurrent = -1;
+        for (int i = 0; i < count; i++)
+        {
+            var line = lines[i];
+            if (i == 0){
+                continue;
+            }
+            if (line[0] == '#')
+            {
+                tempCurrent++;
+                continue;
+            }
+            tempProceduresBlocks[tempCurrent].Add(line.Trim());
+        }
+        
+        procedureBlocks = new string[numberOfBlocks][];
+        for (int i = 0; i < numberOfBlocks; i++)
+        {
+            procedureBlocks[i] = tempProceduresBlocks[i].ToArray();
+        }
+
+        reader.Close();
+    }
 }
 
 

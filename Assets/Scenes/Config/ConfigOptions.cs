@@ -60,8 +60,6 @@ public class ConfigOptions : ScriptableObject
         } else {
             currentBlockConfig =  GetReachingBlockConfig();
         }
-
-
         currentBlockConfig.numberOfTrials = procedureConfig.procedureBlocks[procedureConfig.currentBlock].Length;
         currentBlockConfig.isMainColorSwapped = procedureConfig.procedureBlocks[procedureConfig.currentBlock][0][2] == '0' ? false : true;
         currentBlockConfig.feedbackType = procedureConfig.procedureBlocks[procedureConfig.currentBlock][0][0] == '0' ? FeedbackType.ButtonInput : FeedbackType.Reaching;

@@ -12,28 +12,12 @@ using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
-
-
-// [Deprecated]
-// Used in QuickColorMemory.cs, which is unused, and should be rewritten
-[Serializable]
-public class SaveData
-{
-    public int numberOfPoints;
-    public float polygonRadius;
-    public float distanceToPolygon;
-    public string objectTypes;
-    public int numberOfDistractions;
-    public int numberOfTrials;
-}
-
 // The different types of trials that can be run
-// Only Orientation is currently implemented
 public enum Trial 
 {
     NoTrial,
     Orientation,
-    ColorMemory,
+    ColorMemory, // [Deprecated]
 }
 
 
@@ -46,12 +30,13 @@ public class GameManager : MonoBehaviour
     private bool isStudyRunning = false;
     public bool isUIShown = false;
     public bool isStartLockedOut = false;
+    
     public ConfigOptions configOptions;
     public Trial trial = Trial.NoTrial;
 
     // Objects that are recorded for trial data. Left and right hand positions
-    public GameObject trackedPositionObject;
-    public GameObject secondTrackedPositionObject;
+    public GameObject rightHandObject;
+    public GameObject leftHandObject;
     
     // Objects referenced to be passed to the trials scripts
     public GameObject linePrefab;
@@ -62,7 +47,6 @@ public class GameManager : MonoBehaviour
 
     // Eye tracking thread. Runs the RecordEyeData function
     public Thread eyeThread;
-
 
     public Camera vrCamera;
 
@@ -78,9 +62,9 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {   
-
         // Spawning a grey sphere at the center of the screen. This is used to focus the user's attention
         GameObject focusSphere = GameObject.FindGameObjectsWithTag("ItemSpawn")[0];
+        // Spawns at eye level with VR headset
         focusSphere.transform.position = new Vector3(focusSphere.transform.position.x, vrCamera.transform.position.y, focusSphere.transform.position.z);
     }
 
@@ -97,8 +81,6 @@ public class GameManager : MonoBehaviour
 
                 if (configOptions.IsBlockAvailable())
                 {
-                    // Randomize the colors for orientation
-                    
                     OrientationTrials.BlockStart(this, configOptions.GetCurrentBlockConfig());
                 }
             }
@@ -177,17 +159,13 @@ public class GameManager : MonoBehaviour
             // Log the data
             OrientationTrials.mainTrialData.Item1.Add(time_ms - OrientationTrials.start_time_ms);
             OrientationTrials.mainTrialData.Item2.Add(code);
-            OrientationTrials.mainTrialData.Item3.Add(trackedPositionObject.transform.position);
-            OrientationTrials.mainTrialData.Item4.Add(secondTrackedPositionObject.transform.position);
+            OrientationTrials.mainTrialData.Item3.Add(rightHandObject.transform.position);
+            OrientationTrials.mainTrialData.Item4.Add(leftHandObject.transform.position);
             OrientationTrials.mainTrialData.Item6.Add(vrCamera.transform.position);
             OrientationTrials.mainTrialData.Item7.Add(vrCamera.transform.rotation);
             
             // Dequeue the eye tracking data
             OrientationTrials.mainTrialData.Item5.Enqueue(OrientationTrials.viewTrialData.Item2.Count != 0 ? OrientationTrials.viewTrialData.Item2.Peek() : new Pose());
-
-
-            
-
         }
     }
 
