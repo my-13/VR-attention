@@ -168,8 +168,7 @@ public class OrientationTrials : MonoBehaviour
         yield return new WaitForSeconds(waitTime);
         uiText.SetActive(false);
 
-        manager.isStartLockedOut = false;
-        manager.configOptions.GetCurrentBlockConfig();  
+        manager.isStartLockedOut = false;  
         // Remove text to wait
 
     }
@@ -228,7 +227,7 @@ public class OrientationTrials : MonoBehaviour
             distractorColor = colors[1];
         }
 
-        if (manager.configOptions.GetCurrentMainColor()){
+        if (manager.configOptions.GetTrialMainColor(manager.configOptions.GetCurrentBlockNumber(), manager.configOptions.GetCurrentTrialNumber())){
             Color[] colors = {normalColor, distractorColor};
             normalColor = colors[0];
             distractorColor = colors[1];
@@ -246,18 +245,22 @@ public class OrientationTrials : MonoBehaviour
             obj.transform.SetParent(trialObjectsParent.transform);
             obj.transform.localScale *= config.itemsScale;
 
+            int currentBlock = manager.configOptions.GetCurrentBlockNumber();
+            int currentTrial = manager.configOptions.GetCurrentTrialNumber();
+
+            bool distractor = manager.configOptions.GetTrialDistractor(currentBlock, currentTrial);
+            FeedbackType feedbackType = manager.configOptions.GetCurrentFeedbackType();
 
             if (i == 0)
             {
-                
                 obj.GetComponent<Renderer>().material.color = normalColor;
-                if (manager.configOptions.GetCurrentFeedbackType() == FeedbackType.Reaching)
+                if (feedbackType == FeedbackType.Reaching)
                 {
                     obj.GetComponent<XRGrabInteractable>().enabled = true;
                     obj.GetComponent<XRGrabInteractable>().selectEntered.AddListener((interactor) => ObjectGrabbed(manager, config, obj.GetComponent<XRGrabInteractable>() ));
                 }
                 
-                if (manager.configOptions.GetCurrentFeedbackType() == FeedbackType.ButtonInput)
+                if (feedbackType == FeedbackType.ButtonInput)
                 {
                     itemOrientation = RandLineOrientation(obj, manager.verticalMaterial, manager.horizontalMaterial,  manager.configOptions.GetCurrentOrientation());
                 }
@@ -266,12 +269,13 @@ public class OrientationTrials : MonoBehaviour
             else if (i < config.distractorObjects.Length + 1)
             {
                 
-                if (manager.configOptions.GetCurrentDistractor() )
+
+                if (distractor)
                 {
                     trialHadDistractor = true;
                     distractorObjPosition = obj.transform.position;
                     obj.GetComponent<Renderer>().material.color = distractorColor;
-                    if (manager.configOptions.GetCurrentFeedbackType() == FeedbackType.ButtonInput)
+                    if (feedbackType == FeedbackType.ButtonInput)
                     {
                         RandLineOrientation(obj, manager.verticalMaterial, manager.horizontalMaterial);
                     }
@@ -282,7 +286,7 @@ public class OrientationTrials : MonoBehaviour
                     trialHadDistractor = false;
                     distractorObjPosition = Vector3.zero;
                     obj.GetComponent<Renderer>().material.color = normalColor;
-                    if (manager.configOptions.GetCurrentFeedbackType() == FeedbackType.ButtonInput)
+                    if (feedbackType == FeedbackType.ButtonInput)
                     {
                         RandLineOrientation(obj, manager.verticalMaterial, manager.horizontalMaterial);
                     }
@@ -293,7 +297,7 @@ public class OrientationTrials : MonoBehaviour
             {
                 obj.GetComponent<Renderer>().material.color = normalColor;
 
-                if (manager.configOptions.GetCurrentFeedbackType() == FeedbackType.ButtonInput)
+                if (feedbackType == FeedbackType.ButtonInput)
                 {
                     RandLineOrientation(obj, manager.verticalMaterial, manager.horizontalMaterial);
                 }
@@ -318,49 +322,47 @@ public class OrientationTrials : MonoBehaviour
         
         string dateTime = DateTime.Now.ToString("yyyyMMddHHmmss");
 
-        int feedbackType = manager.configOptions.GetCurrentFeedbackType() == FeedbackType.ButtonInput ? 1 : 0;
-        int distractorPresent = manager.configOptions.GetCurrentDistractor() ? 1 : 0;
-        int colorVariability = manager.configOptions.GetCurrentBlockConfig().isMainColorSwapped ? 1 : 0;
-        int objectType = manager.configOptions.GetCurrentBlockConfig().isItemsRealistic ? 1 : 0;
+        int trialID = OrientationTrials.gameManager.configOptions.GetCurrentTrialNumber();
+        int blockID = manager.configOptions.GetCurrentBlockNumber();
+
+        // I don't wanna talk about it... (actually hour 8 of development)
+        if (trialID < 0) trialID = 0;
+
+
+        int feedbackType = manager.configOptions.GetTrialFeedbackType(blockID, trialID) == FeedbackType.ButtonInput ? 1 : 0;
+        int distractorPresent = manager.configOptions.GetTrialDistractor(blockID, trialID) ? 1 : 0;
+        int colorVariability = manager.configOptions.GetTrialMainColor(blockID, trialID) ? 1 : 0;
+        int objectType = manager.configOptions.GetOrientationBlockConfig().isItemsRealistic ? 1 : 0;
 
         
         // feedbackType ^ (2^0) + distractorPresent ^ (2^1) + colorVariability ^ (2^2) + objectType ^ (2^3)
         int category = 1 + feedbackType * 1 + distractorPresent * 2 + colorVariability * 4 + objectType * 8;
         
         string participantID = OrientationTrials.trials.participantID;
-        int currentTrialID = OrientationTrials.gameManager.configOptions.GetCurrentTrialNumber() - 1;
-        
-        // I don't wanna talk about it... (actually hour 8 of development)
-        if (currentTrialID < 0) currentTrialID = 0;
-
-        int currentBlockID = manager.configOptions.GetCurrentBlockNumber();
 
         // Main File (Time, EventCode, Left Hand Position, Left Hand Rotation, Right Hand position, Right Hand Rotation, Head Position, Head Rotation, Filtered Eye Data)
-        string mainPath = "./data/main_" + dateTime + "_" + category + "_" + participantID + "_" + currentBlockID + "_" + currentTrialID + ".txt";
+        string mainPath = "./data/main_" + dateTime + "_" + category + "_" + participantID + "_" + blockID + "_" + trialID + ".txt";
         string mainTrialcontent = "";
 
-        string trialInfoPath = "./data/trial_" + "_" + category + "_" + participantID + "_" + currentBlockID + ".txt";
+        string trialInfoPath = "./data/trial_" + "_" + category + "_" + participantID + "_" + blockID + ".txt";
         string trialInfoContent = "";
         
-        Debug.Log(currentTrialID);
-        if (manager.configOptions.GetCurrentFeedbackType() == FeedbackType.Reaching){
-            trialInfoContent = "" + OrientationTrials.trials.hadDistractor[currentTrialID] + "," + OrientationTrials.trials.trialTimesMiliseconds + "," + OrientationTrials.targetObjPosition.x + "," + OrientationTrials.targetObjPosition.y + ","+ OrientationTrials.targetObjPosition.z + "," + OrientationTrials.distractorObjPosition.x + "," + OrientationTrials.distractorObjPosition.y + "," + OrientationTrials.distractorObjPosition.z + "\n";
+        if (manager.configOptions.GetTrialFeedbackType(blockID, trialID) == FeedbackType.Reaching){
+            trialInfoContent = "" + OrientationTrials.trials.hadDistractor[trialID] + "," + OrientationTrials.trials.trialTimesMiliseconds + "," + OrientationTrials.targetObjPosition.x + "," + OrientationTrials.targetObjPosition.y + ","+ OrientationTrials.targetObjPosition.z + "," + OrientationTrials.distractorObjPosition.x + "," + OrientationTrials.distractorObjPosition.y + "," + OrientationTrials.distractorObjPosition.z + "\n";
         }
-        else if(manager.configOptions.GetCurrentFeedbackType() == FeedbackType.ButtonInput){
-            trialInfoContent = "" +  OrientationTrials.trials.selectedOrientation[currentTrialID] + "," + OrientationTrials.trials.actualOrientation[currentTrialID] +"," +OrientationTrials.trials.hadDistractor[currentTrialID] + OrientationTrials.trials.trialTimesMiliseconds[currentTrialID]+  ","+ OrientationTrials.targetObjPosition.x + "," + OrientationTrials.targetObjPosition.y + ","+ OrientationTrials.targetObjPosition.z + "," + OrientationTrials.distractorObjPosition.x + "," + OrientationTrials.distractorObjPosition.y + "," + OrientationTrials.distractorObjPosition.z + "\n";
+        else if(manager.configOptions.GetTrialFeedbackType(blockID, trialID) == FeedbackType.ButtonInput){
+            trialInfoContent = "" +  OrientationTrials.trials.selectedOrientation[trialID] + "," + OrientationTrials.trials.actualOrientation[trialID] +"," +OrientationTrials.trials.hadDistractor[trialID] + OrientationTrials.trials.trialTimesMiliseconds[trialID]+  ","+ OrientationTrials.targetObjPosition.x + "," + OrientationTrials.targetObjPosition.y + ","+ OrientationTrials.targetObjPosition.z + "," + OrientationTrials.distractorObjPosition.x + "," + OrientationTrials.distractorObjPosition.y + "," + OrientationTrials.distractorObjPosition.z + "\n";
         }
-        //trialTimesMiliseconds
         
-
         // Raw Eye Data File (Time, Raw Eye Position, Raw Eye Rotation)
-        string eyePath = "./data/eye_" + dateTime + "_" + category + "_" + participantID + "_" + currentBlockID + "_" + currentTrialID + ".txt";
+        string eyePath = "./data/eye_" + dateTime + "_" + category + "_" + participantID + "_" + blockID + "_" + trialID + ".txt";
         string eyeTrialContent = "";
 
 
         // Summary File (Orientation, Selected, Actual, Had Distractor)
-        int selectedOrientation = (int)OrientationTrials.trials.selectedOrientation[currentTrialID ];
-        int actualOrientation = (int)OrientationTrials.trials.actualOrientation[currentTrialID ];
-        int hadDistractor = OrientationTrials.trials.hadDistractor[currentTrialID ] ? 1 : 0;
+        int selectedOrientation = (int)OrientationTrials.trials.selectedOrientation[trialID];
+        int actualOrientation = (int)OrientationTrials.trials.actualOrientation[trialID];
+        int hadDistractor = OrientationTrials.trials.hadDistractor[blockID] ? 1 : 0;
         string mainTrialInfo = selectedOrientation + ", " + actualOrientation + ", " + hadDistractor + "\n";
         // Write this into a summary file
 

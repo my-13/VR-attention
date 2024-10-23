@@ -81,7 +81,7 @@ public class GameManager : MonoBehaviour
 
                 if (configOptions.IsBlockAvailable())
                 {
-                    OrientationTrials.BlockStart(this, configOptions.GetCurrentBlockConfig());
+                    OrientationTrials.BlockStart(this, configOptions.GetOrientationBlockConfig());
                 }
             }
             return;
@@ -110,7 +110,7 @@ public class GameManager : MonoBehaviour
         // Start the first trial
         if (!configOptions.IsLastBlock()){
             OrientationTrials.gameManager = this;
-            OrientationTrials.BlockStart(this, configOptions.GetCurrentBlockConfig());
+            OrientationTrials.BlockStart(this, configOptions.GetOrientationBlockConfig());
         }
     }
 
@@ -215,7 +215,7 @@ public class GameManager : MonoBehaviour
         
         if (isUIShown && trial == Trial.Orientation)
         {
-            OrientationTrials.UIStartPressed(this, configOptions.GetCurrentBlockConfig());
+            OrientationTrials.UIStartPressed(this, configOptions.GetOrientationBlockConfig());
         }
     }
     
@@ -225,7 +225,7 @@ public class GameManager : MonoBehaviour
         {
             if (trial == Trial.Orientation && configOptions.GetCurrentFeedbackType() == FeedbackType.ButtonInput)
             {
-                OrientationTrials.PrimaryButtonPressed(this, configOptions.GetCurrentBlockConfig());
+                OrientationTrials.PrimaryButtonPressed(this, configOptions.GetOrientationBlockConfig());
             }
         }
     }
@@ -246,7 +246,7 @@ public class GameManager : MonoBehaviour
         {
             if (trial == Trial.Orientation && configOptions.GetCurrentFeedbackType() == FeedbackType.ButtonInput)
             {
-                OrientationTrials.SecondaryButtonPressed(this, configOptions.GetCurrentBlockConfig());
+                OrientationTrials.SecondaryButtonPressed(this, configOptions.GetOrientationBlockConfig());
             }
         }
     }
