@@ -24,6 +24,7 @@ public class ProcedureConfig
     public ProcedureConfig(string configName, string path, OrientationBlockConfig orientationBlockConfig)
     {
         this.configName = configName;
+        this.orientationBlockConfig = orientationBlockConfig;
         this.ReadProcedureFile(path);
 
         System.Random rng = new();
