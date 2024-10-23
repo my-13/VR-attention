@@ -190,10 +190,10 @@ public class OrientationTrials : MonoBehaviour
         Vector3 spawnPos = GameObject.FindGameObjectsWithTag("ItemSpawn")[0].transform.position;
         
         // Calculate the vector from the camera to the center of the spawn point
-        Vector3 cameraForward = (spawnPos - cameraPos).normalized * config.distanceFromUserMeters;
+        Vector3 cameraForward = (spawnPos - cameraPos).normalized * config.GetOrientationBlockConfig().distanceFromUserMeters;
         Vector3 shapeCenter = cameraPos + cameraForward;
 
-        (Vector3[], GameObject[], int) pointsData = manager.GenerateShapePoints(config);
+        (Vector3[], GameObject[], int) pointsData = manager.GenerateShapePoints(config.GetOrientationBlockConfig());
         // Extracting points Data
         Vector3[] objectPositions = pointsData.Item1;
         GameObject[] trialObjects = pointsData.Item2;
@@ -215,11 +215,11 @@ public class OrientationTrials : MonoBehaviour
         viewTrialData = (new(), new());
         isDataRecording = true;
 
-        Color normalColor = config.regularItemColor;
-        Color distractorColor = config.distracterItemColor;
+        Color normalColor = config.GetOrientationBlockConfig().regularItemColor;
+        Color distractorColor = config.GetOrientationBlockConfig().distracterItemColor;
 
 
-        if (false && config.randomizeColors)
+        if (false && config.GetOrientationBlockConfig().randomizeColors)
         {
             Color[] colors = {normalColor, distractorColor};
             GameManager.Shuffle(rng, colors);
@@ -243,7 +243,7 @@ public class OrientationTrials : MonoBehaviour
             GameObject prefabObj = trialObjects[i];
             GameObject obj = Instantiate(prefabObj, objectPositions[i] + shapeCenter, prefabObj.transform.rotation).gameObject;
             obj.transform.SetParent(trialObjectsParent.transform);
-            obj.transform.localScale *= config.itemsScale;
+            obj.transform.localScale *= config.GetOrientationBlockConfig().itemsScale;
 
             int currentBlock = manager.configOptions.GetCurrentBlockNumber();
             int currentTrial = manager.configOptions.GetCurrentTrialNumber();
@@ -266,7 +266,7 @@ public class OrientationTrials : MonoBehaviour
                 }
                 targetObjPosition = obj.transform.position;
             }
-            else if (i < config.distractorObjects.Length + 1)
+            else if (i < config.GetOrientationBlockConfig().distractorObjects.Length + 1)
             {
                 
 
@@ -585,7 +585,7 @@ public class OrientationTrials : MonoBehaviour
         string nextStringDead = manager.configOptions.GetNextTrialString();
 
         Vector3 cameraPos = vrCamera.transform.position;
-        Vector3 cameraForward = vrCamera.transform.forward * config.distanceFromUserMeters;
+        Vector3 cameraForward = vrCamera.transform.forward * config.GetOrientationBlockConfig().distanceFromUserMeters;
         Vector3 shapeCenter = cameraPos + cameraForward;
 
         Instantiate(manager.checkmark, shapeCenter,Quaternion.identity).transform.SetParent(trialObjectsParent.transform);

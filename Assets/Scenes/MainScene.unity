@@ -775,11 +775,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 690639720}
   m_CullTransparentMesh: 1
---- !u!1 &1149211531 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 9014170783705847997, guid: 895f6f3c2d334633b5800312285058d2, type: 3}
-  m_PrefabInstance: {fileID: 452463679}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1175078475
 GameObject:
   m_ObjectHideFlags: 0
@@ -829,10 +824,12 @@ MonoBehaviour:
   isTrialRunning: 0
   isUIShown: 0
   isStartLockedOut: 0
-  configOptions: {fileID: 11400000, guid: 085c8950d956c8842ba5a2d273a6c40e, type: 2}
+  configOptions:
+    configName: 
+  orientationBlockConfig: {fileID: 11400000, guid: dc4a4657441efa84386723cdbd63f223, type: 2}
   trial: 0
-  trackedPositionObject: {fileID: 1149211531}
-  secondTrackedPositionObject: {fileID: 1546928870}
+  rightHandObject: {fileID: 0}
+  leftHandObject: {fileID: 0}
   linePrefab: {fileID: 4056634127491352500, guid: 76a916dc3aa02d44e8a8eefa370e4d4e, type: 3}
   trialObjectsParent: {fileID: 546294148}
   checkmark: {fileID: 5921756293722336148, guid: aa27940eb6d320943ad532f3ec2968a9, type: 3}
@@ -840,7 +837,6 @@ MonoBehaviour:
   horizontalMaterial: {fileID: 2100000, guid: a67da93913f8557449d50bc569907047, type: 2}
   vrCamera: {fileID: 452463683}
   ViewEyeGaze: {fileID: -1073395540140675372, guid: bfbb5f84333981b43a8a20bd63fdf009, type: 3}
-  ActionAsset: {fileID: -944628639613478452, guid: bfbb5f84333981b43a8a20bd63fdf009, type: 3}
   startAction: {fileID: 6086349569046165721, guid: bfbb5f84333981b43a8a20bd63fdf009, type: 3}
   primaryAction: {fileID: -289592092543240485, guid: bfbb5f84333981b43a8a20bd63fdf009, type: 3}
   secondaryAction: {fileID: 1911538307374502818, guid: bfbb5f84333981b43a8a20bd63fdf009, type: 3}
@@ -1083,11 +1079,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!1 &1546928870 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 9014170785475729474, guid: 895f6f3c2d334633b5800312285058d2, type: 3}
-  m_PrefabInstance: {fileID: 452463679}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1631883938
 GameObject:
   m_ObjectHideFlags: 0

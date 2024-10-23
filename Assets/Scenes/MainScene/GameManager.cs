@@ -32,6 +32,7 @@ public class GameManager : MonoBehaviour
     public bool isStartLockedOut = false;
 
     public ProcedureConfig configOptions;
+    public OrientationBlockConfig orientationBlockConfig;
     public Trial trial = Trial.NoTrial;
 
     // Objects that are recorded for trial data. Left and right hand positions
@@ -99,7 +100,7 @@ public class GameManager : MonoBehaviour
         isUIShown = true;
 
         // Generating Procedure Config, read from file
-        configOptions = new ProcedureConfig("procedure", "procedure.txt");
+        configOptions = new ProcedureConfig("procedure", "procedure.txt", orientationBlockConfig);
         isStudyRunning = true;
         
         // Eye Tracking Recording Thread

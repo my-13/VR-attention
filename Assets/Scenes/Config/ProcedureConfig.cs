@@ -21,7 +21,7 @@ public class ProcedureConfig
     private OrientationBlockConfig orientationBlockConfig;
 
     // Constructor
-    public ProcedureConfig(string configName, string path)
+    public ProcedureConfig(string configName, string path, OrientationBlockConfig orientationBlockConfig)
     {
         this.configName = configName;
         this.ReadProcedureFile(path);
