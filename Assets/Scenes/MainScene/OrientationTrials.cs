@@ -181,7 +181,7 @@ public class OrientationTrials : MonoBehaviour
             return;
         }
 
-        string nextString = manager.configOptions.procedureConfig.GetNextTrialString();
+        string nextString = manager.configOptions.GetNextTrialString();
         isTrialRunning = true;
         manager.isTrialRunning = true;
         
@@ -228,7 +228,7 @@ public class OrientationTrials : MonoBehaviour
             distractorColor = colors[1];
         }
 
-        if (manager.configOptions.procedureConfig.GetCurrentMainColor()){
+        if (manager.configOptions.GetCurrentMainColor()){
             Color[] colors = {normalColor, distractorColor};
             normalColor = colors[0];
             distractorColor = colors[1];
@@ -251,27 +251,27 @@ public class OrientationTrials : MonoBehaviour
             {
                 
                 obj.GetComponent<Renderer>().material.color = normalColor;
-                if (manager.configOptions.procedureConfig.GetCurrentFeedbackType() == FeedbackType.Reaching)
+                if (manager.configOptions.GetCurrentFeedbackType() == FeedbackType.Reaching)
                 {
                     obj.GetComponent<XRGrabInteractable>().enabled = true;
                     obj.GetComponent<XRGrabInteractable>().selectEntered.AddListener((interactor) => ObjectGrabbed(manager, config, obj.GetComponent<XRGrabInteractable>() ));
                 }
                 
-                if (manager.configOptions.procedureConfig.GetCurrentFeedbackType() == FeedbackType.ButtonInput)
+                if (manager.configOptions.GetCurrentFeedbackType() == FeedbackType.ButtonInput)
                 {
-                    itemOrientation = RandLineOrientation(obj, manager.verticalMaterial, manager.horizontalMaterial,  manager.configOptions.procedureConfig.GetCurrentOrientation());
+                    itemOrientation = RandLineOrientation(obj, manager.verticalMaterial, manager.horizontalMaterial,  manager.configOptions.GetCurrentOrientation());
                 }
                 targetObjPosition = obj.transform.position;
             }
             else if (i < config.distractorObjects.Length + 1)
             {
                 
-                if (manager.configOptions.procedureConfig.GetCurrentDistractor() )
+                if (manager.configOptions.GetCurrentDistractor() )
                 {
                     trialHadDistractor = true;
                     distractorObjPosition = obj.transform.position;
                     obj.GetComponent<Renderer>().material.color = distractorColor;
-                    if (manager.configOptions.procedureConfig.GetCurrentFeedbackType() == FeedbackType.ButtonInput)
+                    if (manager.configOptions.GetCurrentFeedbackType() == FeedbackType.ButtonInput)
                     {
                         RandLineOrientation(obj, manager.verticalMaterial, manager.horizontalMaterial);
                     }
@@ -282,7 +282,7 @@ public class OrientationTrials : MonoBehaviour
                     trialHadDistractor = false;
                     distractorObjPosition = Vector3.zero;
                     obj.GetComponent<Renderer>().material.color = normalColor;
-                    if (manager.configOptions.procedureConfig.GetCurrentFeedbackType() == FeedbackType.ButtonInput)
+                    if (manager.configOptions.GetCurrentFeedbackType() == FeedbackType.ButtonInput)
                     {
                         RandLineOrientation(obj, manager.verticalMaterial, manager.horizontalMaterial);
                     }
@@ -293,7 +293,7 @@ public class OrientationTrials : MonoBehaviour
             {
                 obj.GetComponent<Renderer>().material.color = normalColor;
 
-                if (manager.configOptions.procedureConfig.GetCurrentFeedbackType() == FeedbackType.ButtonInput)
+                if (manager.configOptions.GetCurrentFeedbackType() == FeedbackType.ButtonInput)
                 {
                     RandLineOrientation(obj, manager.verticalMaterial, manager.horizontalMaterial);
                 }
@@ -318,8 +318,8 @@ public class OrientationTrials : MonoBehaviour
         
         string dateTime = DateTime.Now.ToString("yyyyMMddHHmmss");
 
-        int feedbackType = manager.configOptions.procedureConfig.GetCurrentFeedbackType() == FeedbackType.ButtonInput ? 1 : 0;
-        int distractorPresent = manager.configOptions.procedureConfig.GetCurrentDistractor() ? 1 : 0;
+        int feedbackType = manager.configOptions.GetCurrentFeedbackType() == FeedbackType.ButtonInput ? 1 : 0;
+        int distractorPresent = manager.configOptions.GetCurrentDistractor() ? 1 : 0;
         int colorVariability = manager.configOptions.GetCurrentBlockConfig().isMainColorSwapped ? 1 : 0;
         int objectType = manager.configOptions.GetCurrentBlockConfig().isItemsRealistic ? 1 : 0;
 
@@ -328,12 +328,12 @@ public class OrientationTrials : MonoBehaviour
         int category = 1 + feedbackType * 1 + distractorPresent * 2 + colorVariability * 4 + objectType * 8;
         
         string participantID = OrientationTrials.trials.participantID;
-        int currentTrialID = OrientationTrials.gameManager.configOptions.procedureConfig.currentTrial - 1;
+        int currentTrialID = OrientationTrials.gameManager.configOptions.GetCurrentTrialNumber() - 1;
         
         // I don't wanna talk about it... (actually hour 8 of development)
         if (currentTrialID < 0) currentTrialID = 0;
 
-        int currentBlockID = manager.configOptions.procedureConfig.currentBlock;
+        int currentBlockID = manager.configOptions.GetCurrentBlockNumber();
 
         // Main File (Time, EventCode, Left Hand Position, Left Hand Rotation, Right Hand position, Right Hand Rotation, Head Position, Head Rotation, Filtered Eye Data)
         string mainPath = "./data/main_" + dateTime + "_" + category + "_" + participantID + "_" + currentBlockID + "_" + currentTrialID + ".txt";
@@ -343,10 +343,10 @@ public class OrientationTrials : MonoBehaviour
         string trialInfoContent = "";
         
         Debug.Log(currentTrialID);
-        if (manager.configOptions.procedureConfig.GetCurrentFeedbackType() == FeedbackType.Reaching){
+        if (manager.configOptions.GetCurrentFeedbackType() == FeedbackType.Reaching){
             trialInfoContent = "" + OrientationTrials.trials.hadDistractor[currentTrialID] + "," + OrientationTrials.trials.trialTimesMiliseconds + "," + OrientationTrials.targetObjPosition.x + "," + OrientationTrials.targetObjPosition.y + ","+ OrientationTrials.targetObjPosition.z + "," + OrientationTrials.distractorObjPosition.x + "," + OrientationTrials.distractorObjPosition.y + "," + OrientationTrials.distractorObjPosition.z + "\n";
         }
-        else if(manager.configOptions.procedureConfig.GetCurrentFeedbackType() == FeedbackType.ButtonInput){
+        else if(manager.configOptions.GetCurrentFeedbackType() == FeedbackType.ButtonInput){
             trialInfoContent = "" +  OrientationTrials.trials.selectedOrientation[currentTrialID] + "," + OrientationTrials.trials.actualOrientation[currentTrialID] +"," +OrientationTrials.trials.hadDistractor[currentTrialID] + OrientationTrials.trials.trialTimesMiliseconds[currentTrialID]+  ","+ OrientationTrials.targetObjPosition.x + "," + OrientationTrials.targetObjPosition.y + ","+ OrientationTrials.targetObjPosition.z + "," + OrientationTrials.distractorObjPosition.x + "," + OrientationTrials.distractorObjPosition.y + "," + OrientationTrials.distractorObjPosition.z + "\n";
         }
         //trialTimesMiliseconds
@@ -431,10 +431,10 @@ public class OrientationTrials : MonoBehaviour
             Destroy(transform.gameObject);
         }
 
-        if (manager.configOptions.procedureConfig.IsLastTrial())
+        if (manager.configOptions.IsLastTrial())
         {
             
-            if (manager.configOptions.procedureConfig.IsLastBlock()){
+            if (manager.configOptions.IsLastBlock()){
                 
                 BlockEnd(manager, config);
                 manager.EndStudy();                
@@ -578,10 +578,9 @@ public class OrientationTrials : MonoBehaviour
         }else{
             File.AppendAllText(dataPath, json);
         }
-        
-        //manager.configOptions.procedureConfig.currentTrial = 0;
+
         // Format: orientation_trials_XXXX_YY.json where XXXX is the participant ID and YY is the block ID
-        string nextStringDead = manager.configOptions.procedureConfig.GetNextTrialString();
+        string nextStringDead = manager.configOptions.GetNextTrialString();
 
         Vector3 cameraPos = vrCamera.transform.position;
         Vector3 cameraForward = vrCamera.transform.forward * config.distanceFromUserMeters;

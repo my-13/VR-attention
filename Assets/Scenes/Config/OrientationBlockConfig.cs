@@ -11,7 +11,6 @@ public enum ItemLocation
 [CreateAssetMenu(fileName = "OrientationBlockConfig", menuName = "ScriptableObjects/OrientationBlockConfig", order = 2)]
 public class OrientationBlockConfig: ScriptableObject
 {
-    public ConfigOptions configOptions;
     public string configName;
     public GameObject targetObject;
     public GameObject[] otherObjects;
@@ -33,11 +32,9 @@ public class OrientationBlockConfig: ScriptableObject
     [Range(0.01f, 10)]
     public float itemsScale = 1;
     public bool changeItemPosition = false;
-    public int numberOfTrials = 10;
     [Range(0, 180)]
     public int rotationDegrees = 0;
     public bool randomRotation = false;
     public FeedbackType feedbackType = FeedbackType.ButtonInput;
     public bool isItemsRealistic = false;
-    public bool isMainColorSwapped = false;
 }

@@ -10,7 +10,7 @@ using UnityEngine;
 public class ConfigOptions : ScriptableObject
 {
     public string configName;
-
+    /*
     public OrientationBlockConfig[] orientationBlocks;
     public ProcedureConfig procedureConfig;
 
@@ -66,7 +66,7 @@ public class ConfigOptions : ScriptableObject
         currentBlockConfig.isItemsRealistic = procedureConfig.procedureBlocks[procedureConfig.currentBlock][0][1] == '0' ? false : true;
         
         return currentBlockConfig;
-    }
+    }*/
 }
 
 

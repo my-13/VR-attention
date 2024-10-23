@@ -9,12 +9,18 @@ using System.Linq;
 [Serializable]
 public class ProcedureConfig
 {
+    // Name of Configuration
     public string configName;
+    // Number of Current Block
     private int currentBlock = 0;
+    // Number of Current Trial
     private int currentTrial = -1;
+    // List of strings holding the procedures as strings
     private string[][] procedureBlocks;
+    // Orientation Block Config
+    private OrientationBlockConfig orientationBlockConfig;
 
-    // Construct ProcedureConfig object
+    // Constructor
     public ProcedureConfig(string configName, string path)
     {
         this.configName = configName;
@@ -31,21 +37,6 @@ public class ProcedureConfig
         this.currentBlock = 0;
         this.currentTrial = 0;
     }
-    
-    public bool IsLastBlock() { return currentBlock >= procedureBlocks.Length - 1; }
-    public bool IsLastTrial() { return currentTrial >= procedureBlocks[currentBlock].Length - 1; }
-    public bool IsBlockAvailable() { return currentBlock < procedureBlocks.Length; }
-    public bool IsTrialAvailable() { return currentTrial < procedureBlocks[currentBlock].Length; }
-    
-    public static void Shuffle<T> (System.Random rng, T[] array)
-    {
-        int n = array.Length;
-        while (n > 1) 
-        {
-            int k = rng.Next(n--);
-            (array[k], array[n]) = (array[n], array[k]);
-        }
-    }
 
     public string GetNextTrialString()
     {
@@ -58,35 +49,20 @@ public class ProcedureConfig
         return procedureBlocks[currentBlock][currentTrial];
     }
 
+    public int GetCurrentTrialNumber() { return this.currentTrial; }
+    public int GetCurrentBlockNumber() { return this.currentBlock; }
+    public bool IsLastBlock() { return this.currentBlock >= this.procedureBlocks.Length - 1; }
+    public bool IsLastTrial() { return this.currentTrial >= this.procedureBlocks[currentBlock].Length - 1; }
+    public bool IsBlockAvailable() { return this.currentBlock < this.procedureBlocks.Length; }
+    public bool IsTrialAvailable() { return this.currentTrial < this.procedureBlocks[currentBlock].Length; }
 
-    public string GetCurrentTrialString()
-    {
-        return new string(procedureBlocks[currentBlock][currentTrial].Where(c => !Char.IsWhiteSpace(c)).ToArray());
-    }
-
-    public string[] GetCurrentTrialArray()
-    {
-        return GetCurrentTrialString().Split(",");
-    }
-
-    public FeedbackType GetCurrentFeedbackType()
-    {
-        return GetCurrentTrialArray()[0] == "0" ? FeedbackType.ButtonInput : FeedbackType.Reaching;
-    }
-
-    public LineOrientation GetCurrentOrientation(){
-        return GetCurrentTrialArray()[1] == "0" ? LineOrientation.Horizontal : LineOrientation.Vertical;
-    }
-
-    public bool GetCurrentMainColor(){
-        return GetCurrentTrialArray()[2] == "0";
-    }
-
-    public bool GetCurrentDistractor(){
-        return GetCurrentTrialArray()[3] == "1";
-    }
-
-
+    public OrientationBlockConfig GetOrientationBlockConfig(){ return this.orientationBlockConfig; }
+    public string GetTrialString(int block, int trial){ return this.procedureBlocks[block][trial]; }
+    public string[] GetTrialArray(int block, int trial) { return this.procedureBlocks[block][trial].Split(","); }
+    public FeedbackType GetTrialFeedbackType(int block, int trial) { return GetTrialArray(block, trial)[0] == "0" ? FeedbackType.ButtonInput : FeedbackType.Reaching; }
+    public LineOrientation GetTrialOrientation(int block, int trial) { return GetTrialArray(block, trial)[1] == "0" ? LineOrientation.Horizontal : LineOrientation.Vertical; }
+    public bool GetTrialMainColor(int block, int trial) { return GetTrialArray(block, trial)[2] == "0"; }
+    public bool GetTrialDistractor(int block, int trial) { return GetTrialArray(block, trial)[3] == "1"; }
 
     private void ReadProcedureFile(string path){
         StreamReader reader = new StreamReader(path);
@@ -125,6 +101,16 @@ public class ProcedureConfig
         }
 
         reader.Close();
+    }
+
+    private void Shuffle<T> (System.Random rng, T[] array)
+    {
+        int n = array.Length;
+        while (n > 1) 
+        {
+            int k = rng.Next(n--);
+            (array[k], array[n]) = (array[n], array[k]);
+        }
     }
 }
 

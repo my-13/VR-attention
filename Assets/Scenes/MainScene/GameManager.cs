@@ -30,8 +30,8 @@ public class GameManager : MonoBehaviour
     private bool isStudyRunning = false;
     public bool isUIShown = false;
     public bool isStartLockedOut = false;
-    
-    public ConfigOptions configOptions;
+
+    public ProcedureConfig configOptions;
     public Trial trial = Trial.NoTrial;
 
     // Objects that are recorded for trial data. Left and right hand positions
@@ -99,7 +99,7 @@ public class GameManager : MonoBehaviour
         isUIShown = true;
 
         // Generating Procedure Config, read from file
-        configOptions.procedureConfig = new ProcedureConfig("procedure", "procedure.txt");
+        configOptions = new ProcedureConfig("procedure", "procedure.txt");
         isStudyRunning = true;
         
         // Eye Tracking Recording Thread
@@ -223,7 +223,7 @@ public class GameManager : MonoBehaviour
     {
         if (isTrialRunning)
         {
-            if (trial == Trial.Orientation && configOptions.procedureConfig.GetCurrentFeedbackType() == FeedbackType.ButtonInput)
+            if (trial == Trial.Orientation && configOptions.GetCurrentFeedbackType() == FeedbackType.ButtonInput)
             {
                 OrientationTrials.PrimaryButtonPressed(this, configOptions.GetCurrentBlockConfig());
             }
@@ -233,7 +233,7 @@ public class GameManager : MonoBehaviour
     public void ObjectGrabbed(){
         if (isTrialRunning)
         {
-            if (configOptions.procedureConfig.GetCurrentFeedbackType() == FeedbackType.Reaching)
+            if (configOptions.GetCurrentFeedbackType() == FeedbackType.Reaching)
             {
                 //OrientationTrials.ObjectGrabbed(this, configOptions.GetCurrentBlockConfig());
             }
@@ -244,7 +244,7 @@ public class GameManager : MonoBehaviour
     {
         if (isTrialRunning)
         {
-            if (trial == Trial.Orientation && configOptions.procedureConfig.GetCurrentFeedbackType() == FeedbackType.ButtonInput)
+            if (trial == Trial.Orientation && configOptions.GetCurrentFeedbackType() == FeedbackType.ButtonInput)
             {
                 OrientationTrials.SecondaryButtonPressed(this, configOptions.GetCurrentBlockConfig());
             }
