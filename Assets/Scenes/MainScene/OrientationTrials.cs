@@ -78,7 +78,7 @@ public class OrientationTrials : MonoBehaviour
     /**
         Generates static data for each block
     */
-    public static void BlockStart(GameManager manager, OrientationBlockConfig config)
+    public static void BlockStart(GameManager manager, ProcedureConfig config)
     {
 
         if (manager.isStartLockedOut)
@@ -108,7 +108,7 @@ public class OrientationTrials : MonoBehaviour
         Show the block instructions for the particpant.
         This requires the Right controller trigger to be pressed to start the trial
     */
-    public static void ShowUI(GameManager manager, OrientationBlockConfig config)
+    public static void ShowUI(GameManager manager, ProcedureConfig config)
     {
 
         // Grab the UI text object, rewrite text for the block instructions, and then show text
@@ -116,10 +116,10 @@ public class OrientationTrials : MonoBehaviour
         GameObject uiText = uiTextArr[0];
 
         manager.isUIShown = true;
-        if (config.feedbackType == FeedbackType.ButtonInput){
+        if (config.GetCurrentFeedbackType() == FeedbackType.ButtonInput){
             uiText.GetComponent<TMPro.TextMeshProUGUI>().fontSize = 0.15f;
             uiText.GetComponent<TMPro.TextMeshProUGUI>().text = "In this next section, you will be asked to identify the orientation of the line for the Diamond shape as quickly as possible. \n If the line is vertical, press the top button on the the controller (A/X).\n If the line is horizontal, press the bottom button (B/Y). \n Press the right controller trigger button to start.";
-        }else if(config.feedbackType == FeedbackType.Reaching){
+        }else if(config.GetCurrentFeedbackType() == FeedbackType.Reaching){
             uiText.GetComponent<TMPro.TextMeshProUGUI>().fontSize = 0.15f;
             uiText.GetComponent<TMPro.TextMeshProUGUI>().text = "In this next section, you will be asked to find the milk carton as quickly as possible, shown below. \n Once you have found the object below, reach out and grab using the controller, with your dominant hand. \nThe object may change color, or may stay the same color through this section.\nAs soon as you grab the object, it will dissapear, and the trial will repeat. Please keep your arm up, centered in between the objects if possible. \nPress the right trigger button to start.";
         }
@@ -130,13 +130,13 @@ public class OrientationTrials : MonoBehaviour
     /** 
         Setup the block for the participant
     */
-    public static void SetupBlock(GameManager manager, OrientationBlockConfig config) {
+    public static void SetupBlock(GameManager manager, ProcedureConfig config) {
 
         // All that is Coded is to change the wall color to the background color
         GameObject[] walls = GameObject.FindGameObjectsWithTag("Wall");
         foreach (GameObject wall in walls)
         {
-            wall.GetComponent<Renderer>().material.color = config.backgroundColor;
+            wall.GetComponent<Renderer>().material.color = config.GetOrientationBlockConfig().backgroundColor;
         }
     }
 
@@ -144,19 +144,19 @@ public class OrientationTrials : MonoBehaviour
     /**
         Waits for a random amount of time (seconds) between the pre-defined ranges before starting the trial
     */
-    public static IEnumerator WaitForTrial(GameManager manager, bool wait, OrientationBlockConfig config)
+    public static IEnumerator WaitForTrial(GameManager manager, bool wait, ProcedureConfig config)
     {   
         
         if (wait)
         {
-            yield return new WaitForSeconds(UnityEngine.Random.Range(config.timeToSpawnMin, config.timeToSpawnMax));
+            yield return new WaitForSeconds(UnityEngine.Random.Range(config.GetOrientationBlockConfig().timeToSpawnMin, config.GetOrientationBlockConfig().timeToSpawnMax));
             RunOrientationTrial(manager, config);
         }
         yield return new WaitForSeconds(0);
         RunOrientationTrial(manager, config);
     }
 
-    public static IEnumerator TimeoutBreak(GameManager manager, int waitTime, OrientationBlockConfig config)
+    public static IEnumerator TimeoutBreak(GameManager manager, int waitTime, ProcedureConfig config)
     {
         // Put on text to wait
         manager.isStartLockedOut = true;
@@ -172,7 +172,7 @@ public class OrientationTrials : MonoBehaviour
         // Remove text to wait
 
     }
-    public static void RunOrientationTrial(GameManager manager, OrientationBlockConfig config)
+    public static void RunOrientationTrial(GameManager manager, ProcedureConfig config)
     {
         if (isTrialRunning == true)
         {
@@ -409,7 +409,7 @@ public class OrientationTrials : MonoBehaviour
         RecordTrialData(manager);
     }
 
-    public static void StopOrientationTrial(GameManager manager, OrientationBlockConfig config)
+    public static void StopOrientationTrial(GameManager manager, ProcedureConfig config)
     {   
         // Get the ending time
         long end_time_ms = stopwatch.ElapsedMilliseconds;
@@ -454,7 +454,7 @@ public class OrientationTrials : MonoBehaviour
         }
     }
 
-    public static void StopOrientationTrial(GameManager manager, LineOrientation orientation, OrientationBlockConfig config)
+    public static void StopOrientationTrial(GameManager manager, LineOrientation orientation, ProcedureConfig config)
     {   
         bool wasCorrect = orientation == itemOrientation;
         trials.actualOrientation.Add(itemOrientation);
@@ -522,7 +522,7 @@ public class OrientationTrials : MonoBehaviour
         return orientation;
     }
     
-    public static void UIStartPressed(GameManager manager, OrientationBlockConfig config)
+    public static void UIStartPressed(GameManager manager, ProcedureConfig config)
     {
         GameObject[] uiTextArr = GameObject.FindObjectsByType<GameObject>(FindObjectsInactive.Include, FindObjectsSortMode.None).Where(sr => sr.name == "StartText").ToArray();
         GameObject uiText = uiTextArr[0];
@@ -533,7 +533,7 @@ public class OrientationTrials : MonoBehaviour
         manager.StartCoroutine(WaitForTrial(manager, true, config));
     }
 
-    public static void ObjectGrabbed(GameManager manager, OrientationBlockConfig config, XRGrabInteractable interactable)
+    public static void ObjectGrabbed(GameManager manager, ProcedureConfig config, XRGrabInteractable interactable)
     {   
         if (interactable.isSelected){
             List<IXRSelectInteractor> interactor = interactable.interactorsSelecting;
@@ -552,7 +552,7 @@ public class OrientationTrials : MonoBehaviour
         }
     }
 
-    public static void PrimaryButtonPressed(GameManager manager, OrientationBlockConfig config)
+    public static void PrimaryButtonPressed(GameManager manager, ProcedureConfig config)
     {
         if (isTrialRunning)
         {
@@ -560,7 +560,7 @@ public class OrientationTrials : MonoBehaviour
         }
     }
 
-    public static void SecondaryButtonPressed(GameManager manager, OrientationBlockConfig config)
+    public static void SecondaryButtonPressed(GameManager manager, ProcedureConfig config)
     {
         if (isTrialRunning)
         {
@@ -568,7 +568,7 @@ public class OrientationTrials : MonoBehaviour
         }
     }
 
-    public static void BlockEnd(GameManager manager, OrientationBlockConfig config)
+    public static void BlockEnd(GameManager manager, ProcedureConfig config)
     {
         // Save the data to a file
         string json = JsonUtility.ToJson(OrientationTrials.trials);
