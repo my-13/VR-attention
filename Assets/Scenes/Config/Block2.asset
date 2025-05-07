@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 018eddff1d53d954c9a5a3a7a4606cf7, type: 3}
+  m_Name: Block2
+  m_EditorClassIdentifier: 
+  configOptions: {fileID: 0}
+  configName: Trial1
+  targetObject: {fileID: 4738884146677316936, guid: 00b25e9ac6f14a142abe3c68f7075302, type: 3}
+  otherObjects:
+  - {fileID: 712017872843657796, guid: 4e678fdfbcdbedc408eaf53335cd081d, type: 3}
+  - {fileID: 1336360365455971465, guid: 5b117de6c97729d43913c972ab5e5405, type: 3}
+  - {fileID: 6903831718991961272, guid: 768f8c9ed278f6343a376e968e30fcf7, type: 3}
+  distractorObjects:
+  - {fileID: 8654528346439485169, guid: 65e85d938b3fb7d4f8ea2bbb572bd306, type: 3}
+  distracterItemColor: {r: 0.8901961, g: 0, b: 0, a: 0}
+  regularItemColor: {r: 0, g: 0.14795828, b: 1, a: 0}
+  timeToSpawnMin: 2
+  timeToSpawnMax: 5
+  backgroundColor: {r: 0, g: 0, b: 0, a: 1}
+  randomizeColors: 0
+  has2DShapes: 0
+  randomPercentageOfDistractor: 50
+  radiusOfObjectsMeters: 0.25
+  distanceFromUserMeters: 0.5
+  itemLocation: 1
+  itemsScale: 0.8
+  changeItemPosition: 0
+  numberOfTrials: 10
+  rotationDegrees: 0
+  randomRotation: 0
+  feedbackType: 0
+  isItemsRealistic: 1
+  isMainColorSwapped: 1

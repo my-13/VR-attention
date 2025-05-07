@@ -6,6 +6,7 @@
 [Bb]uilds/
 [Ll]ogs/
 [Mm]emoryCaptures/
+data/*
 
 # Visual Studio / MonoDevelop generated files
 .vscode/
