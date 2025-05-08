@@ -599,7 +599,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c24a42872c94f924698ccc385f4723ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  participantID: 0001
+  participantID: 0002
   isTrialRunning: 0
   isUIShown: 0
   isStartLockedOut: 0
@@ -659,7 +659,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
+        m_CallState: 1
     m_ActionId: 7b36ca1a-c4fb-40c6-9bac-cdaddcf1f0bf
     m_ActionName: Player/Start[/Keyboard/space]
   - m_PersistentCalls:
@@ -715,7 +715,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
+        m_CallState: 1
     m_ActionId: e56e56fc-cd53-465f-b424-8ba93361ef74
     m_ActionName: Player/A
   - m_PersistentCalls:
@@ -731,7 +731,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
+        m_CallState: 1
     m_ActionId: e153bd71-96bd-4428-8685-819aa01af5bf
     m_ActionName: Player/B
   - m_PersistentCalls:
@@ -751,7 +751,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
+        m_CallState: 1
     m_ActionId: 845249ee-ef1a-4bed-9e2e-d84bca817458
     m_ActionName: Player/UIAcceot[/Keyboard/enter]
   - m_PersistentCalls:
@@ -763,7 +763,7 @@ MonoBehaviour:
     m_ActionId: 6894d52a-02de-451e-a1cb-10d86b0d38c8
     m_ActionName: Player/viewRotation
   m_NeverAutoSwitchControlSchemes: 0
-  m_DefaultControlScheme: 
+  m_DefaultControlScheme: XR
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 1735870587}
@@ -940,6 +940,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1883230248363655243, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: m_FarAttachMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1883230248363655243, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: m_EnableFarCasting
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2190828208922718286, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -948,6 +956,14 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3074471628601745017, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: m_RaycastMask.m_Bits
+      value: 33
+      objectReference: {fileID: 0}
+    - target: {fileID: 5456733348963664102, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: m_RaycastMask.m_Bits
+      value: 33
+      objectReference: {fileID: 0}
     - target: {fileID: 5944131804917401860, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -955,6 +971,10 @@ PrefabInstance:
     - target: {fileID: 6501755809687671949, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8877177980677234388, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: m_EnableFarCasting
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

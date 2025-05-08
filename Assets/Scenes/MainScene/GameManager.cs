@@ -271,6 +271,7 @@ public class GameManager : MonoBehaviour
     {
         if (isTrialRunning)
         {
+            Debug.Log("Secondary Button Pressed");
             if (trial == Trial.Orientation && configOptions.GetCurrentFeedbackType() == FeedbackType.ButtonInput)
             {
                 OrientationTrials.SecondaryButtonPressed(this, configOptions);
@@ -282,6 +283,12 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("End of study");
         isStudyRunning = false;
+        // Set the start text to show the end of the study
+        GameObject uiText = GameObject.FindGameObjectWithTag("StartUI");
+        uiText.SetActive(true);
+        uiText.GetComponent<UnityEngine.UI.Text>().text = "End of Study.\n Thank you for participating!";
+        uiText.GetComponent<UnityEngine.UI.Text>().color = Color.green;
+
     }
 
     public IEnumerator ClearTrialObjects()
