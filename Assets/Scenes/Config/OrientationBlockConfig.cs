@@ -7,6 +7,11 @@ public enum ItemLocation
     InAir
 }
 
+/**
+    * This scriptable object is used to configure the orientation block game.
+    * It contains various settings such as colors, spawn times, and item locations.
+    * The settings can be adjusted in the Unity editor and are used to customize the trial experience.
+    */
 [Serializable]
 [CreateAssetMenu(fileName = "OrientationBlockConfig", menuName = "ScriptableObjects/OrientationBlockConfig", order = 2)]
 public class OrientationBlockConfig : ScriptableObject

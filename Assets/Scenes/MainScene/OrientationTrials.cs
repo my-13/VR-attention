@@ -13,7 +13,9 @@ using UnityEngine;
 public class OrientationBlockData
 {
     //public OrientationBlockConfig saveDataUsed;
+    
     public string participantID = "0000";
+
     public int blockID = 0;
     public List<float> trialTimesMiliseconds = new();
     public List<LineOrientation> selectedOrientation = new();
@@ -94,7 +96,12 @@ public class OrientationTrials : MonoBehaviour
         manager.isStartLockedOut = true;
         manager.trial = Trial.Orientation;
         trials = new OrientationBlockData();
-        trials.participantID = manager.participantID;
+
+        if (manager.participantID == "0000"){
+            trials.participantID = GetUnusedParticipantID();
+        }else {
+            trials.participantID = manager.participantID;
+        }
 
         // Saving the GameObjects for the trial to be used. 
         // TODO: replace all times that I use vrCamera with the manager.vrCamera
@@ -103,6 +110,28 @@ public class OrientationTrials : MonoBehaviour
 
         // Show block instructions to the participant
         ShowUI(manager, config);
+    }
+
+    public static string GetUnusedParticipantID()
+    {
+        int numID = 0;
+        string[] files = Directory.GetFiles("./data/");
+        // Loop through all the folder names in the data folder, and find the highest number
+        // They will always be in the format of "0000" or "0001" or "0002"
+        foreach (string file in files)
+        {
+            string[] split = file.Split('/');
+            string folderName = split[split.Length - 1];
+            if (folderName.Length == 4 && int.TryParse(folderName, out int id))
+            {
+                numID = Math.Max(numID, id);
+            }
+        }
+
+        // Increment the number by 1, and return it as a string with leading zeros
+        numID++;
+        string participantID = numID.ToString("0000");
+        return participantID;
     }
 
     /** 
@@ -263,6 +292,7 @@ public class OrientationTrials : MonoBehaviour
                 obj.GetComponent<Renderer>().material.color = normalColor;
                 if (feedbackType == FeedbackType.Reaching)
                 {
+                    // Adding the ability to grab the object
                     obj.GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>().enabled = true;
                     obj.GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>().selectEntered.AddListener((interactor) => ObjectGrabbed(manager, config, obj.GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>()));
                 }

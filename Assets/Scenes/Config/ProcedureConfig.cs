@@ -74,6 +74,12 @@ public class ProcedureConfig
     public bool GetTrialDistractor(int block, int trial) { return this.GetTrialArray(block, trial)[3] == "1"; }
 
 
+    /*
+    * This function is used to read the procedure file and split it into blocks.
+    * Each block is separated by a '#' character.
+    * The function reads the file line by line and stores each block in a list of strings.
+    * Finally, it converts the list of strings into an array of string arrays.
+    */
     private void ReadProcedureFile(string path)
     {
         StreamReader reader = new StreamReader(path);
@@ -115,6 +121,9 @@ public class ProcedureConfig
         reader.Close();
     }
 
+    /*
+     * This function is used to shuffle an array
+    */
     private void Shuffle<T>(System.Random rng, T[] array)
     {
         int n = array.Length;

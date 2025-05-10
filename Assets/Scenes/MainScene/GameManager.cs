@@ -18,7 +18,7 @@ public enum Trial
 
 public class GameManager : MonoBehaviour
 {
-    // Global Variables, used to keep track of the state of the game
+    // Used to override the default settings in the inspector
     public string participantID = "0000";
     public bool isTrialRunning = false;
     private bool isStudyRunning = false;
@@ -255,9 +255,13 @@ public class GameManager : MonoBehaviour
             }
         }
     }
-
+    
+    /*
+     * A deprecated function that used to check if the object was grabbed.
+     */
     public void ObjectGrabbed()
     {
+        // This function does nothing, but removing it causes the app to not compile, so here be warnings.
         if (isTrialRunning)
         {
             if (configOptions.GetCurrentFeedbackType() == FeedbackType.Reaching)

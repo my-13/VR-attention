@@ -39,7 +39,8 @@ Input System 1.11.2
 # General
 Once your VR headset is set up, to run a trial, open the MainScene scene. There will be a node called "GameManager"
 There will be a variable called "Participant ID" will be a unique identification code defined.
-Once a unique participant ID is defined, ensure the participant is wearing the VR headset, then you can hit the play button in the Unity Editor. and then they can read instructions. Researchers will be able to follow along by looking at the screen. 
+If the participant ID is "0000", then the next highest available participant ID will be selected. If not, then the participant ID will be overwritten.
+Ensure the participant is wearing the VR headset, then you can hit the play button in the Unity Editor. and then they can read instructions. Researchers will be able to follow along by looking at the screen. 
 
 # Notes:
 In between having the headset being setup and the researcher pressing play, the participants will be in a SteamVR environment. Use a dedicated lab steam account.
