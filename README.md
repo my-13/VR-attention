@@ -1,8 +1,8 @@
 # VR Attention
 
 A virtual reality platform developed to record the effect of visual distractors on visuokinematic data. 
-If I had more time, I would rewrite a codebase
 
+"If I had more time, I would have programmed a shorter code base" - Tony
 
 ## Table of Contents
 
@@ -14,27 +14,47 @@ If I had more time, I would rewrite a codebase
 ## Installation
 
 Download and install Unity LTS 2022.3 (2022.3.39f1)
-Download and install SteamVR (Requires Steam and Steam account)
+Download and install SteamVR (Requires Steam and a Steam account)
 Download and install VIVE Business Streaming
+Requires a USB-C 3.1 short cable, and ideally a USB C 3.0 long cable. 
+Plugins require for this project: 
+VIVE OpenXR Plugin 2.5.1
+OpenXR Plugin 1.14.3
+Input System 1.11.2
 
 ## Usage
 
 # For VIVE Focus 3:
-Open VIVE Buisiness Streaming on PC
-Open SteamVR on PC
-Open VIVE Business Streaming on VR
-Plug in headset using long cable to PC
-Plug in Eye Tracking module to headset using short cable. 
-Open Unity Project, and open the MainScene scene.
-Make sure that you are in SteamVR mode on the headset. This can be confirmed by clicking the menu button on the left hand controller. 
-If in SteamVR mode, press play in the Unity Editor. 
-If not in SteamVR mode, make sure that SteamVR is running and has all modules enabled.
+* Open VIVE Buisiness Streaming on PC
+* Open SteamVR on PC
+* Open VIVE Business Streaming on VR
+* Plug in headset using long cable to PC
+* Plug in Eye Tracking module to headset using short cable. 
+* Open Unity Project, and open the MainScene scene.
+* Make sure that you are in SteamVR mode on the headset. This can be confirmed by clicking the menu button on the left hand controller. 
+* If in SteamVR mode, press play in the Unity Editor. 
+* If not in SteamVR mode, make sure that SteamVR is running and has all modules enabled.
 
 
 # General
 Once your VR headset is set up, to run a trial, open the MainScene scene. There will be a node called "GameManager"
 There will be a variable called "Participant ID" will be a unique identification code defined.
-Once a unique participant ID is defined, then you can hit the play button in the Unity Editor. Ensure the participant is wearing the VR headset, and then they can read instructions. Researchers will be able to follow along by looking at the screen. 
+Once a unique participant ID is defined, ensure the participant is wearing the VR headset, then you can hit the play button in the Unity Editor. and then they can read instructions. Researchers will be able to follow along by looking at the screen. 
+
+# Notes:
+In between having the headset being setup and the researcher pressing play, the participants will be in a SteamVR environment. Use a dedicated lab steam account.
+
+procedure.txt is how the order of the procedures are defined. There are 4 seperate categories that can currently be modified, 
+such as inputText (how the participants select their input), distractor (whether there exists a distractor), mainColor (whether the target color is primary or secondary), and horizontal (whether the target has a horizontal line or a vertical line). These are created to ensure that there is an equal distribution of distractors, so they are currently symetrical, but can be modified to test for different procedures.  
+
+Despite the page specifying USB 3.0, the eye tracking hardware on the VIVE Focus 3 seems to require at least a USB 3.1 Gen 2 cable.
+Without the proper cable, the eye tracking hardware will randomly connect and disconnect, and will not be able to complete the calibration.
+
+The participants will likely need to be taught a basic concept of how VR controllers are setup, as some terms are controller specific.
+* Grabbing: Squeezing on controller, pressing the side with ring or pinky finger.
+* Trigger: The trigger at the top of the controller, pressed by the index finger. 
+* Buttons: The two A/X/Y/B buttons on each controller, pressed by the thumb.
+* Joystick: The one stick next to the buttons, controlled using the thumb. 
 
 ## File Explanation
 GameManager.cs - Handles the entire "game" and globally just manages the world. Passes interactions towards trials
@@ -58,8 +78,11 @@ Meshes that aren't supported by unity's default meshes
 Prefabs for any object that will be summoned. Incldues grab-able items, and the check-mark
 
 ## Builds
-Currently, builds do not work. They are built, but potentially due to reading files, there is a lack of a procedure file for the build. 
-This can potentially be fixed using Unity's IO file reader instead of C#'s system IO
+Currently, builds do not work. Builds can compile, but results in file reading errors due to my lack of understanding of Unity's File System.
+
+## Running
+To run the study, have the participant calibrate the eye tracking hardware. From the Lobby, select Settings. Select Inputs > Eye tracker. Make sure Eye tracker is turned on, and has a consistent connection. Select **Calibrate** and follow the onscreen instructions to complete the calibration process. 
+Once the participant is calibrated, then the researcher can select a unique particiapnt ID, press the Play button on the MainScene scene, and then ensure the researcher is in the scene. Once in the scene, the participant will have a set of instructions that they can read, which will explain the project. 
 
 ## License
 MIT License @ 2024
