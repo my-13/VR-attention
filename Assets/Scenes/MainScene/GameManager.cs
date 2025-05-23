@@ -60,12 +60,16 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         // Spawning a grey sphere at the center of the screen. This is used to focus the user's attention
-        GameObject focusSphere = GameObject.FindGameObjectsWithTag("ItemSpawn")[0];
-        // Spawns at eye level with VR headset
-        focusSphere.transform.position = new Vector3(focusSphere.transform.position.x, vrCamera.transform.position.y, focusSphere.transform.position.z);
+        StartCoroutine(SetFocusSpherePos());
     }
 
-
+    IEnumerator SetFocusSpherePos(){
+        yield return new WaitForSeconds(1);
+        GameObject focusSphere = GameObject.FindGameObjectsWithTag("ItemSpawn")[0];
+        // Spawns at eye level with VR headset
+        
+        focusSphere.transform.position = new Vector3(focusSphere.transform.position.x, vrCamera.transform.position.y, focusSphere.transform.position.z);
+    }
 
     public void StartRandomGame()
     {

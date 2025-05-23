@@ -32,6 +32,7 @@ Input System 1.11.2
 * Go to Settings -> Input -> Calibrate Eye Tracker, and go through the process of calibrating the eye trackers 
 * Open Unity Project, and open the MainScene scene.
 * Make sure that you are in SteamVR mode on the headset. This can be confirmed by clicking the menu button on the left hand controller, opening a Steam interface 
+* Ensure the participant has the headset in the correct position, that they will be tested in. 
 * If in SteamVR mode, press play in the Unity Editor. 
 * If not in SteamVR mode, make sure that SteamVR is running, go to settings and ensure all modules are enabled.
 

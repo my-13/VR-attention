@@ -232,7 +232,7 @@ public class OrientationTrials : MonoBehaviour
         GameObject[] trialObjects = pointsData.Item2;
         int numberOfObjects = pointsData.Item3;
 
-
+        // TODO: Save these in the trial data. 
 
         // Shuffle the positions of the objects to randomize study
         var rng = new System.Random();
