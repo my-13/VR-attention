@@ -12,12 +12,11 @@ A virtual reality platform developed to record the effect of visual distractors 
 - [License](#license)
 
 ## Installation
-
-Download and install Unity LTS 2022.3 (2022.3.39f1)
-Download and install SteamVR (Requires Steam and a Steam account)
-Download and install VIVE Business Streaming
-Requires a USB-C 3.1 short cable, and ideally a USB C 3.0 long cable. 
-Plugins require for this project: 
+Download and install Unity LTS 2022.3 (2022.3.56f1)
+Download and install SteamVR (Free) This requires Steam to download and a Steam account
+Download and install VIVE Business Streaming [https://business.vive.com/eu/solutions/streaming/]
+Requires a USB-C 3.1 short cable, and ideally at least USB-C 3.0 long cable. 
+Unity Plugins require for this project: 
 VIVE OpenXR Plugin 2.5.1
 OpenXR Plugin 1.14.3
 Input System 1.11.2
@@ -27,20 +26,21 @@ Input System 1.11.2
 # For VIVE Focus 3:
 * Open VIVE Buisiness Streaming on PC
 * Open SteamVR on PC
-* Open VIVE Business Streaming on VR
 * Plug in headset using long cable to PC
-* Plug in Eye Tracking module to headset using short cable. 
+* Open VIVE Business Streaming on VR. You should see yourself in a room with screens on the walls. 
+* Plug in Eye Tracking module to headset using short cable. This should show a new setting called Eye tracker.
+* Go to Settings -> Input -> Calibrate Eye Tracker, and go through the process of calibrating the eye trackers 
 * Open Unity Project, and open the MainScene scene.
-* Make sure that you are in SteamVR mode on the headset. This can be confirmed by clicking the menu button on the left hand controller. 
+* Make sure that you are in SteamVR mode on the headset. This can be confirmed by clicking the menu button on the left hand controller, opening a Steam interface 
 * If in SteamVR mode, press play in the Unity Editor. 
-* If not in SteamVR mode, make sure that SteamVR is running and has all modules enabled.
+* If not in SteamVR mode, make sure that SteamVR is running, go to settings and ensure all modules are enabled.
 
 
 # General
 Once your VR headset is set up, to run a trial, open the MainScene scene. There will be a node called "GameManager"
 There will be a variable called "Participant ID" will be a unique identification code defined.
 If the participant ID is "0000", then the next highest available participant ID will be selected. If not, then the participant ID will be overwritten.
-Ensure the participant is wearing the VR headset, then you can hit the play button in the Unity Editor. and then they can read instructions. Researchers will be able to follow along by looking at the screen. 
+Ensure the participant is wearing the VR headset, then you can hit the play button in the Unity Editor. and then they can read instructions. Researchers will be able to follow along by looking at the Game tab in the Unity Editor. 
 
 # Notes:
 In between having the headset being setup and the researcher pressing play, the participants will be in a SteamVR environment. Use a dedicated lab steam account.
@@ -48,7 +48,7 @@ In between having the headset being setup and the researcher pressing play, the 
 procedure.txt is how the order of the procedures are defined. There are 4 seperate categories that can currently be modified, 
 such as inputText (how the participants select their input), distractor (whether there exists a distractor), mainColor (whether the target color is primary or secondary), and horizontal (whether the target has a horizontal line or a vertical line). These are created to ensure that there is an equal distribution of distractors, so they are currently symetrical, but can be modified to test for different procedures.  
 
-Despite the page specifying USB 3.0, the eye tracking hardware on the VIVE Focus 3 seems to require at least a USB 3.1 Gen 2 cable.
+Despite documentation specifying USB 3.0, the eye tracking hardware on the VIVE Focus 3 seems to require at least a USB 3.1 Gen 2 cable.
 Without the proper cable, the eye tracking hardware will randomly connect and disconnect, and will not be able to complete the calibration.
 
 The participants will likely need to be taught a basic concept of how VR controllers are setup, as some terms are controller specific.
@@ -63,23 +63,23 @@ OrientationTrials.cs - A static class that handles all the logic and variables f
 
 ## Directories
 
-# ./Scenes/Config
+### ./Scenes/Config
 Holds all Config .cs files
 ConfigOptions.cs - Holds all OrientationBlockConfigs, and uses ProcedureConfig to generate an OrientationBlockConfig that has the correct data
 ProcedureConfig.cs - Reads the procedure file, stores procedure file as string, and also saves which trial the user is on (This should be the only working track of current trial and current block that should be updated)
 OrientationBlockConfig.cs - Object meant to store block data. Unfortunately, some variables are unused, or had to be ignored when adding procedure files.
 
-# ./Scenes/Materials
+### ./Scenes/Materials
 Shaders. 
 
-# ./Scenes/Models
-Meshes that aren't supported by unity's default meshes
+### ./Scenes/Models
+Game Meshes that aren't supported by unity's default meshes
 
-# ./Scenes/Objects
+###  ./Scenes/Objects
 Prefabs for any object that will be summoned. Incldues grab-able items, and the check-mark
 
 ## Builds
-Currently, builds do not work. Builds can compile, but results in file reading errors due to my lack of understanding of Unity's File System.
+I don't know how Unity handles file reading, so I do not hae instructions with setting up builds
 
 ## Running
 To run the study, have the participant calibrate the eye tracking hardware. From the Lobby, select Settings. Select Inputs > Eye tracker. Make sure Eye tracker is turned on, and has a consistent connection. Select **Calibrate** and follow the onscreen instructions to complete the calibration process. 
