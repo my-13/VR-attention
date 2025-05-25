@@ -21,8 +21,7 @@ public class OrientationBlockData
     public List<LineOrientation> selectedOrientation = new();
 
     public List<LineOrientation> actualOrientation = new();
-    public List<Pose> viewPoses = new();
-    public List<long> viewPosesTime = new();
+    public List<Vector3> itemPositions = new();
     public List<bool> hadDistractor = new();
 }
 
@@ -233,6 +232,8 @@ public class OrientationTrials : MonoBehaviour
         int numberOfObjects = pointsData.Item3;
 
         // TODO: Save these in the trial data. 
+
+        trials.itemPositions = objectPositions.Select(pos => pos + shapeCenter).ToList();
 
         // Shuffle the positions of the objects to randomize study
         var rng = new System.Random();

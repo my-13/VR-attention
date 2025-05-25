@@ -207,8 +207,11 @@ public class GameManager : MonoBehaviour
         // The target, the distractors, and the other objects are all in the same array
         GameObject[] configObjects = new GameObject[blockConfig.otherObjects.Length + blockConfig.distractorObjects.Length + 1];
 
+        // The target object is always the first one in the array
         configObjects[0] = blockConfig.targetObject;
+        // The distractor objects are the other objects in the array (this might be zero, one, or more objects)
         blockConfig.distractorObjects.CopyTo(configObjects, 1);
+        // The other objects are copied after the distractor objects
         blockConfig.otherObjects.CopyTo(configObjects, blockConfig.distractorObjects.Length + 1);
 
         int numPositionPoints = configObjects.Length;
