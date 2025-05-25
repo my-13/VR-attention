@@ -371,7 +371,7 @@ public class OrientationTrials : MonoBehaviour
 
         string dateTime = DateTime.Now.ToString("yyyyMMddHHmmss");
 
-        int trialID = OrientationTrials.gameManager.configOptions.GetCurrentTrialNumber();
+        int trialID = manager.configOptions.GetCurrentTrialNumber();
         int blockID = manager.configOptions.GetCurrentBlockNumber();
 
         // I don't wanna talk about it... (actually hour 8 of development)

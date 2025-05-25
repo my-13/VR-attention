@@ -39,6 +39,7 @@ public class GameManager : MonoBehaviour
     public GameObject checkmark;
     public Material verticalMaterial;
     public Material horizontalMaterial;
+    private GameObject startUIText;
 
     // Eye tracking thread. Runs the RecordEyeData function
     public Thread eyeThread;
@@ -90,6 +91,7 @@ public class GameManager : MonoBehaviour
 
         // Get starting text and hide it
         GameObject[] uiText = GameObject.FindGameObjectsWithTag("StartUI");
+        startUIText = uiText[0];
         foreach (GameObject text in uiText)
         {
             text.SetActive(false);
@@ -295,11 +297,10 @@ public class GameManager : MonoBehaviour
         Debug.Log("End of study");
         isStudyRunning = false;
         // Set the start text to show the end of the study
-        GameObject uiText = GameObject.FindGameObjectWithTag("StartUI");
+        GameObject uiText = startUIText;
         uiText.SetActive(true);
-        uiText.GetComponent<UnityEngine.UI.Text>().text = "End of Study.\n Thank you for participating!";
-        uiText.GetComponent<UnityEngine.UI.Text>().color = Color.green;
-
+        uiText.GetComponent<TMPro.TextMeshProUGUI>().text = "End of Study.\n Thank you for participating!";
+        uiText.GetComponent<TMPro.TextMeshProUGUI>().color = Color.green;
     }
 
     public IEnumerator ClearTrialObjects()
