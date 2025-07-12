@@ -153,7 +153,7 @@ public class OrientationTrials : MonoBehaviour
         else if (config.GetCurrentFeedbackType() == FeedbackType.Reaching)
         {
             uiText.GetComponent<TMPro.TextMeshProUGUI>().fontSize = 0.15f;
-            uiText.GetComponent<TMPro.TextMeshProUGUI>().text = "In this next section, you will be asked to find the octahedron as quickly as possible, shown below. \n Once you have found the object below, reach out and grab using the controller, with your dominant hand. \nThe object may change color, or may stay the same color through this section.\nAs soon as you grab the object, it will dissapear, and the trial will repeat. Please keep your arm up, centered in between the objects if possible. \nPress the right trigger button to start.";
+            uiText.GetComponent<TMPro.TextMeshProUGUI>().text = "In this next section, you will be asked to find the octahedron as quickly as possible, shown below. \n Once you have found the object below, reach out and grab using the controller, with your dominant hand. \nThe object may change color, or may stay the same color through this section.\nAs soon as you grab the object, it will disappear, and the trial will repeat. Please keep your arm up, centered in between the objects if possible. \nPress the right trigger button to start.";
         }
         uiText.SetActive(true);
     }
@@ -359,9 +359,9 @@ public class OrientationTrials : MonoBehaviour
         // Year, Month, Day, Hour(24), Minute, Second
         if (isDataRecording) return;
         // Make sure that data/participantID/ is created
-        if (!Directory.Exists("./data"))
+        if (!Directory.Exists("data"))
         {
-            Directory.CreateDirectory("./data");
+            Directory.CreateDirectory("data");
         }
         if (!Directory.Exists("./data/" + OrientationTrials.trials.participantID))
         {
